@@ -1,0 +1,630 @@
+"""
+TeamAI - Department Intelligence System
+FastAPI backend: handles meeting ingestion, chat Q&A, task management.
+K2-Think-V2 = reasoning brain | K2-V2-Instruct = Q&A | OpenClaw = execution
+"""
+from __future__ import annotations
+import uuid
+import json
+import asyncio
+from datetime import datetime
+from pathlib import Path
+from typing import Optional
+
+from fastapi import FastAPI, HTTPException, UploadFile, File, Form
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+
+from .agents.extraction_agent import extract_meeting, detect_cross_meeting_insights
+from .agents.departments import list_departments, get_department
+from .agents.memory_store import (
+    init_db, save_meeting, get_all_tasks, get_all_meetings,
+    get_meeting_by_id, update_task_status, update_task_notion_urls,
+    get_department_state, search_memory,
+    save_team_member, get_team_members, delete_team_member,
+    get_org_context, save_org_context,
+)
+from .agents.query_agent import answer_question
+from .agents.openclaw_client import openclaw
+from .agents.notion_client import sync_tasks as notion_sync_tasks
+from .agents.telegram_client import send_due_reminders, check_bot_status, send_task_assigned
+from .agents.email_client import send_task_email
+from .models.schemas import (
+    MeetingUploadRequest, ChatRequest, ChatResponse,
+    TaskUpdateRequest, NotionSyncRequest, TeamMemberRequest, OrgContextRequest,
+    NotificationRequest
+)
+
+app = FastAPI(
+    title="TeamAI - Department Intelligence System",
+    description="AI that attends meetings, understands decisions, and becomes the interface to team knowledge.",
+    version="1.0.0",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Serve frontend
+frontend_path = Path(__file__).parent.parent / "frontend"
+if frontend_path.exists():
+    app.mount("/static", StaticFiles(directory=str(frontend_path)), name="static")
+
+
+def _find_member(owner: str, team: list[dict]) -> Optional[dict]:
+    """Fuzzy-match a task owner name to a team member record."""
+    if not owner or not team:
+        return None
+    owner_lower = owner.lower().strip()
+    # Exact match
+    for m in team:
+        if m["name"].lower() == owner_lower:
+            return m
+    # Partial: owner is substring of name or vice versa (handles first-name-only)
+    for m in team:
+        name_lower = m["name"].lower()
+        if owner_lower in name_lower or name_lower.split()[0] in owner_lower:
+            return m
+    return None
+
+
+@app.on_event("startup")
+async def startup():
+    """Initialize DB and check OpenClaw availability."""
+    init_db()
+    available = await openclaw.check_health()
+    print(f"[TeamAI] OpenClaw gateway: {'CONNECTED' if available else 'not running (fallback mode)'}")
+    print("[TeamAI] K2-Think-V2 + K2-V2-Instruct ready")
+
+    # Start email forwarding service if configured
+    from .config import TEAMAI_EMAIL, TEAMAI_EMAIL_PASSWORD
+    if TEAMAI_EMAIL and TEAMAI_EMAIL_PASSWORD and TEAMAI_EMAIL_PASSWORD != "PUT_YOUR_16_CHAR_APP_PASSWORD_HERE":
+        from .agents.email_forwarder import EmailForwarder, process_forwarded_email
+
+        forwarder = EmailForwarder(
+            email_address=TEAMAI_EMAIL,
+            password=TEAMAI_EMAIL_PASSWORD
+        )
+
+        async def handle_email(email_data):
+            """Process forwarded emails - route to department based on sender and subject"""
+            sender_email = email_data['sender']['email'].lower()
+            subject = email_data['subject'].lower()
+
+            # Check subject for department tags: [Innovation], [MarCom], etc.
+            dept_from_subject = None
+            if '[innovation]' in subject or '[innov]' in subject:
+                dept_from_subject = 'innovation'
+            elif '[marcom]' in subject or '[marketing]' in subject:
+                dept_from_subject = 'marcom'
+            elif '[engineering]' in subject or '[eng]' in subject:
+                dept_from_subject = 'engineering'
+            elif '[hr]' in subject:
+                dept_from_subject = 'hr'
+            elif '[sales]' in subject:
+                dept_from_subject = 'sales'
+            elif '[product]' in subject:
+                dept_from_subject = 'product'
+
+            # Map emails to default departments
+            email_to_dept = {
+                "avani.gupta@mbzuai.ac.ae": "innovation",  # Avani's primary dept
+                "ramzi.benouaghrem@mbzuai.ac.ae": "innovation",  # Ramzi
+                # Add more team members as needed
+            }
+
+            # Priority: Subject tag > Email mapping > Default to engineering
+            if dept_from_subject:
+                department = dept_from_subject
+                print(f"[EmailForwarder] Routing via subject tag → {department} department")
+            else:
+                department = email_to_dept.get(sender_email, "engineering")
+                print(f"[EmailForwarder] Routing {sender_email} → {department} department")
+
+            try:
+                result = await process_forwarded_email(email_data, department=department)
+                print(f"[EmailForwarder] Processed email '{email_data['subject']}' → Meeting ID: {result['meeting_id']}")
+
+                # Send auto-reply with summary and Notion link
+                from .agents.email_forwarder import send_processing_confirmation
+                from .agents.memory_store import get_org_context
+
+                # Get Notion database URL for this department
+                org_context = get_org_context(department)
+                notion_db_id = org_context.get("notion_database_id", "")
+                notion_url = None
+                if notion_db_id:
+                    notion_url = f"https://www.notion.so/{notion_db_id.replace('-', '')}"
+
+                # Send confirmation email
+                send_processing_confirmation(
+                    to_email=email_data['sender']['email'],
+                    original_subject=email_data['subject'],
+                    extraction_result=result,
+                    notion_database_url=notion_url
+                )
+
+            except Exception as e:
+                print(f"[EmailForwarder] Failed to process email: {e}")
+
+        # Start polling in background
+        asyncio.create_task(forwarder.poll_inbox(interval=30, callback=handle_email))
+        print(f"[EmailForwarder] Started polling {TEAMAI_EMAIL} every 30 seconds")
+    else:
+        print("[EmailForwarder] Skipped - email credentials not configured")
+
+
+@app.get("/")
+async def root():
+    index = frontend_path / "index.html"
+    if index.exists():
+        return FileResponse(str(index))
+    return {"message": "TeamAI API running. See /docs for API reference."}
+
+
+# ──────────────────────────────────────────────────────
+# MEETINGS
+# ──────────────────────────────────────────────────────
+
+@app.post("/api/meetings/upload")
+async def upload_meeting(request: MeetingUploadRequest):
+    """
+    Upload a meeting transcript.
+    K2-Think-V2 extracts tasks, decisions, risks.
+    OpenClaw writes meeting notes to its workspace.
+    Cross-meeting insights are generated automatically.
+    """
+    if len(request.transcript.strip()) < 50:
+        raise HTTPException(400, "Transcript too short (minimum 50 characters)")
+
+    # Extract structured data with K2-Think-V2
+    try:
+        extraction, summary = await extract_meeting(
+            transcript=request.transcript,
+            title=request.title,
+            department=request.department,
+        )
+    except Exception as e:
+        raise HTTPException(500, f"Extraction failed: {str(e)}")
+
+    # Assign IDs to extracted items
+    meeting_id = str(uuid.uuid4())
+    for task in extraction.tasks:
+        task.id = str(uuid.uuid4())
+        task.meeting_id = meeting_id
+        task.created_at = datetime.utcnow().isoformat()
+    for decision in extraction.decisions:
+        decision.id = str(uuid.uuid4())
+        decision.meeting_id = meeting_id
+    for risk in extraction.risks:
+        risk.id = str(uuid.uuid4())
+        risk.meeting_id = meeting_id
+
+    # Save to memory (SQLite + Chroma)
+    saved_id = save_meeting(
+        title=request.title,
+        transcript=request.transcript,
+        summary=summary,
+        extraction=extraction,
+        department=request.department,
+    )
+
+    # OpenClaw: write meeting notes to workspace + sync task board
+    board_result = await openclaw.sync_tasks_to_board([
+        {
+            "id": t.id,
+            "description": t.description,
+            "owner": t.owner,
+            "deadline": t.deadline,
+            "status": t.status,
+            "meeting_id": saved_id,
+            "meeting_title": request.title,
+        }
+        for t in extraction.tasks
+    ])
+
+    await openclaw.write_meeting_summary(
+        meeting_id=saved_id,
+        title=request.title,
+        summary=summary,
+        extraction={
+            "tasks": [t.dict() for t in extraction.tasks],
+            "decisions": [d.dict() for d in extraction.decisions],
+            "risks": [r.dict() for r in extraction.risks],
+        },
+    )
+
+    # Notion: sync tasks to Tasks Tracker database (unless HITL review mode)
+    notion_result = {"ok": False, "created": 0, "pages": [], "url_map": {}, "skipped": False}
+    if request.auto_sync_notion:
+        notion_result = await notion_sync_tasks(
+            tasks=[t.dict() for t in extraction.tasks],
+            meeting_title=request.title,
+            department=request.department,
+        )
+        # Persist Notion page URLs back to SQLite
+        if notion_result.get("ok") and notion_result.get("url_map"):
+            update_task_notion_urls(notion_result["url_map"])
+    else:
+        notion_result = {"ok": False, "skipped": True, "message": "HITL review mode — select tasks to sync"}
+
+    # Cross-meeting insights (K2-Think-V2 reasoning across meetings)
+    all_meetings = get_all_meetings()
+    insights = []
+    if len(all_meetings) > 1:
+        previous = [
+            {
+                "title": m["title"],
+                "summary": m.get("summary", ""),
+                "tasks": [t for t in get_all_tasks() if t["meeting_id"] == m["id"]],
+            }
+            for m in all_meetings[1:6]  # skip current, use last 5
+        ]
+        try:
+            insights = await detect_cross_meeting_insights(extraction, previous)
+        except Exception:
+            insights = []
+
+    # Personalized task dispatch + stakeholder detection
+    team = get_team_members(department=request.department)
+    dispatch_log = []
+    unknown_stakeholders = []
+    team_names_lower = {m["name"].lower() for m in team}
+
+    for task in extraction.tasks:
+        owner = (task.owner or "").strip()
+        if not owner or owner.lower() in ("unassigned", "team", "everyone", ""):
+            continue
+        member = _find_member(owner, team)
+        if member:
+            sent_telegram = False
+            sent_email = False
+            task_dict = task.dict()
+            task_dict["department"] = request.department
+            if member.get("telegram_handle"):
+                try:
+                    sent_telegram = await send_task_assigned(member, task_dict, request.title)
+                except Exception:
+                    sent_telegram = False
+            if member.get("email"):
+                try:
+                    sent_email = await send_task_email(member, task_dict, request.title)
+                except Exception:
+                    sent_email = False
+            dispatch_log.append({
+                "task": task.description,
+                "owner": owner,
+                "member_found": True,
+                "telegram": sent_telegram,
+                "email": sent_email,
+            })
+        else:
+            dispatch_log.append({"task": task.description, "owner": owner, "member_found": False})
+            # Flag if not a generic role word
+            if not any(owner.lower() in tn or tn in owner.lower() for tn in team_names_lower):
+                if owner not in unknown_stakeholders:
+                    unknown_stakeholders.append(owner)
+
+    dept_info = get_department(request.department)
+    return {
+        "meeting_id": saved_id,
+        "title": request.title,
+        "department": request.department,
+        "department_name": dept_info["name"],
+        "department_icon": dept_info["icon"],
+        "summary": summary,
+        "extraction": {
+            "tasks": [t.dict() for t in extraction.tasks],
+            "decisions": [d.dict() for d in extraction.decisions],
+            "risks": [r.dict() for r in extraction.risks],
+        },
+        "cross_meeting_insights": insights,
+        "task_board": board_result,
+        "notion": notion_result,
+        "openclaw_active": openclaw.available,
+        "dispatch": dispatch_log,
+        "unknown_stakeholders": unknown_stakeholders,
+    }
+
+
+@app.get("/api/departments")
+async def get_departments():
+    """List all available departments with their metadata and sample transcripts."""
+    from .agents.departments import DEPARTMENTS
+    return {"departments": list_departments(), "samples": {k: v["sample_transcript"] for k, v in DEPARTMENTS.items()}}
+
+
+@app.get("/api/meetings")
+async def list_meetings(department: Optional[str] = None):
+    """List all processed meetings, optionally filtered by department."""
+    meetings = get_all_meetings(department=department)
+    return {"meetings": meetings, "total": len(meetings)}
+
+
+@app.get("/api/meetings/{meeting_id}")
+async def get_meeting(meeting_id: str):
+    """Get full meeting details including tasks, decisions, risks."""
+    meeting = get_meeting_by_id(meeting_id)
+    if not meeting:
+        raise HTTPException(404, "Meeting not found")
+    return meeting
+
+
+# ──────────────────────────────────────────────────────
+# TASKS
+# ──────────────────────────────────────────────────────
+
+@app.get("/api/tasks")
+async def list_tasks(status: Optional[str] = None, department: Optional[str] = None):
+    """List all tasks. Filter by status and/or department."""
+    tasks = get_all_tasks(status=status, department=department)
+    return {"tasks": tasks, "total": len(tasks)}
+
+
+@app.patch("/api/tasks/{task_id}")
+async def update_task(task_id: str, request: TaskUpdateRequest):
+    """Update task status and sync to OpenClaw task board."""
+    success = update_task_status(task_id, request.status)
+    if not success:
+        raise HTTPException(404, "Task not found")
+
+    # Sync update to OpenClaw board
+    await openclaw.update_task_status_on_board(task_id, request.status)
+
+    return {"ok": True, "task_id": task_id, "status": request.status}
+
+
+@app.post("/api/meetings/sync-notion")
+async def sync_selected_to_notion(request: NotionSyncRequest):
+    """
+    HITL: Sync only the user-approved task IDs to Notion.
+    Called from the frontend after the user reviews and checks tasks.
+    """
+    all_tasks = get_all_tasks()
+    # Filter to only the approved task IDs
+    tasks_to_sync = [t for t in all_tasks if t["id"] in request.task_ids]
+    if not tasks_to_sync:
+        raise HTTPException(400, "No matching tasks found for provided task_ids")
+
+    notion_result = await notion_sync_tasks(
+        tasks=tasks_to_sync,
+        meeting_title=request.meeting_title,
+        department=request.department,
+    )
+    if notion_result.get("ok") and notion_result.get("url_map"):
+        update_task_notion_urls(notion_result["url_map"])
+    return notion_result
+
+
+@app.get("/api/board")
+async def get_task_board():
+    """Get the live task board managed by OpenClaw."""
+    board = await openclaw.get_task_board()
+    return board
+
+
+# ──────────────────────────────────────────────────────
+# CHAT (Department Q&A)
+# ──────────────────────────────────────────────────────
+
+@app.post("/api/chat")
+async def chat(request: ChatRequest):
+    """
+    Ask the department AI a question.
+    Uses K2-V2-Instruct + semantic memory (Chroma) + structured data (SQLite).
+    Routes through OpenClaw agent if available for autonomous tool execution.
+    """
+    if not request.message.strip():
+        raise HTTPException(400, "Message cannot be empty")
+
+    history = [{"role": m.role, "content": m.content} for m in (request.history or [])]
+
+    try:
+        answer, sources, used_openclaw = await answer_question(
+            question=request.message,
+            history=history,
+            use_openclaw=True,
+            department=request.department,
+        )
+    except Exception as e:
+        raise HTTPException(500, f"Query failed: {str(e)}")
+
+    return ChatResponse(
+        answer=answer,
+        sources=sources,
+        used_openclaw=used_openclaw,
+    )
+
+
+# ──────────────────────────────────────────────────────
+# DEPARTMENT STATE
+# ──────────────────────────────────────────────────────
+
+@app.get("/api/state")
+async def department_state(department: Optional[str] = None):
+    """
+    Get full department state snapshot.
+    Pass ?department=engineering|hr|marcom|innovation to filter.
+    """
+    state = get_department_state(department=department)
+    state["openclaw_active"] = openclaw.available
+    return state
+
+
+@app.get("/api/search")
+async def search(q: str, n: int = 5, department: Optional[str] = None):
+    """Semantic search over department memory, optionally filtered by department."""
+    if not q.strip():
+        raise HTTPException(400, "Query required")
+    results = search_memory(q, n_results=n, department=department)
+    return {"query": q, "results": results}
+
+
+# ──────────────────────────────────────────────────────
+# OPENCLAW STATUS
+# ──────────────────────────────────────────────────────
+
+@app.get("/api/openclaw/status")
+async def openclaw_status():
+    """Check OpenClaw gateway status."""
+    available = await openclaw.check_health()
+    return {
+        "available": available,
+        "base_url": openclaw.base_url,
+        "agent_id": "department-ai",
+        "message": "OpenClaw gateway connected" if available else "OpenClaw not running - using fallback mode",
+    }
+
+
+@app.post("/api/openclaw/execute")
+async def openclaw_execute(payload: dict):
+    """
+    Execute an action via OpenClaw tools invoke.
+    Supported: create_task, shell, file_write, notify
+    """
+    if not openclaw.available:
+        raise HTTPException(503, "OpenClaw gateway not running. Start it with: openclaw dashboard")
+
+    tool = payload.get("tool")
+    args = payload.get("args", {})
+
+    if not tool:
+        raise HTTPException(400, "tool is required")
+
+    try:
+        result = await openclaw.invoke_tool(tool=tool, args=args)
+        return {"ok": True, "result": result}
+    except Exception as e:
+        raise HTTPException(500, f"OpenClaw tool invocation failed: {str(e)}")
+
+
+# ──────────────────────────────────────────────────────
+# TELEGRAM REMINDERS
+# ──────────────────────────────────────────────────────
+
+@app.get("/api/reminders/status")
+async def telegram_status():
+    """Check Telegram bot configuration and connectivity."""
+    return await check_bot_status()
+
+
+@app.post("/api/reminders/send")
+async def send_reminders(days: int = 2, department: Optional[str] = None):
+    """
+    Send a Telegram message listing tasks due within the next `days` days.
+    Optionally filter by department.
+    """
+    tasks = get_all_tasks(department=department)
+    result = await send_due_reminders(tasks, days_ahead=days)
+    return result
+
+
+# ──────────────────────────────────────────────────────
+# TEAM MEMBERS
+# ──────────────────────────────────────────────────────
+
+@app.get("/api/team")
+async def list_team(department: Optional[str] = None):
+    """List all team members, optionally filtered by department."""
+    members = get_team_members(department=department)
+    return {"members": members, "total": len(members)}
+
+
+@app.post("/api/team")
+async def add_team_member(request: TeamMemberRequest):
+    """Add a team member to the registry."""
+    member_id = save_team_member(
+        name=request.name,
+        role=request.role,
+        role_details=request.role_details,
+        responsibilities=request.responsibilities,
+        department=request.department,
+        email=request.email,
+        telegram_handle=request.telegram_handle,
+    )
+    return {"ok": True, "id": member_id}
+
+
+@app.put("/api/team/{member_id}")
+async def update_team_member(member_id: str, request: TeamMemberRequest):
+    """Update an existing team member."""
+    from .agents.memory_store import _get_db
+
+    conn = _get_db()
+    result = conn.execute(
+        """UPDATE team_members
+           SET name=?, role=?, role_details=?, responsibilities=?, department=?, email=?, telegram_handle=?
+           WHERE id=?""",
+        (request.name, request.role, request.role_details, request.responsibilities,
+         request.department, request.email, request.telegram_handle.lstrip('@'), member_id)
+    )
+    conn.commit()
+    conn.close()
+
+    if result.rowcount == 0:
+        raise HTTPException(404, "Team member not found")
+
+    return {"ok": True, "id": member_id}
+
+
+@app.delete("/api/team/{member_id}")
+async def remove_team_member(member_id: str):
+    """Remove a team member from the registry."""
+    success = delete_team_member(member_id)
+    if not success:
+        raise HTTPException(404, "Team member not found")
+    return {"ok": True}
+
+
+# ──────────────────────────────────────────────────────
+# ORG CONTEXT
+# ──────────────────────────────────────────────────────
+
+@app.get("/api/org/context")
+async def get_context(department: str = "engineering"):
+    """Get the mission/context for a department."""
+    return get_org_context(department)
+
+
+@app.put("/api/org/context")
+async def update_context(request: OrgContextRequest):
+    """Save mission/context for a department (injected into extraction prompt)."""
+    save_org_context(
+        request.department,
+        request.mission,
+        request.notion_database_id,
+        request.notion_page_id
+    )
+    return {"ok": True, "department": request.department}
+
+
+@app.post("/api/notifications/send")
+async def send_notifications(request: NotificationRequest):
+    """Send task notifications to team members in a department."""
+    from .agents.notification_service import send_department_notifications
+
+    result = await send_department_notifications(
+        request.department,
+        request.days_ahead
+    )
+    return result
+
+
+@app.get("/api/notifications/preview")
+async def preview_notifications(department: str, days_ahead: int = 3):
+    """Preview which tasks would trigger notifications."""
+    from .agents.notification_service import get_due_tasks
+
+    tasks = await get_due_tasks(department, days_ahead)
+    return {
+        "ok": True,
+        "department": department,
+        "days_ahead": days_ahead,
+        "tasks_count": len(tasks),
+        "tasks": tasks
+    }

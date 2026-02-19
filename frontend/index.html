@@ -1,0 +1,1636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TeamAI - Department Intelligence System</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #22263a;
+      --border: #2d3148;
+      --accent: #6c63ff;
+      --accent2: #4f46e5;
+      --text: #e2e8f0;
+      --text-muted: #8892a4;
+      --green: #22c55e;
+      --yellow: #f59e0b;
+      --red: #ef4444;
+      --blue: #3b82f6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* Layout */
+    .app { display: grid; grid-template-columns: 260px 1fr; grid-template-rows: 56px 1fr; height: 100vh; }
+    .header { grid-column: 1/-1; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 24px; gap: 12px; }
+    .header h1 { font-size: 18px; font-weight: 700; }
+    .header .badge { background: var(--accent); color: white; font-size: 11px; padding: 2px 8px; border-radius: 999px; font-weight: 600; }
+    .dept-pill { display: flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px; font-size: 12px; font-weight: 600; border: 1.5px solid; cursor: pointer; margin-left: 8px; }
+    .sidebar { background: var(--surface); border-right: 1px solid var(--border); padding: 16px 0; overflow-y: auto; display: flex; flex-direction: column; }
+    .main { overflow-y: auto; }
+
+    /* Department Selector */
+    .dept-selector { padding: 12px; border-bottom: 1px solid var(--border); margin-bottom: 8px; }
+    .dept-selector-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
+    .dept-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .dept-card {
+      padding: 8px 10px; border-radius: 8px; cursor: pointer; border: 1.5px solid var(--border);
+      transition: all 0.15s; background: var(--surface2);
+    }
+    .dept-card:hover { border-color: var(--accent); }
+    .dept-card.active { border-color: var(--dept-color, var(--accent)); background: rgba(108,99,255,0.1); }
+    .dept-card .dept-icon { font-size: 18px; margin-bottom: 2px; }
+    .dept-card .dept-name { font-size: 11px; font-weight: 600; color: var(--text); }
+
+    /* Nav */
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 20px; cursor: pointer; color: var(--text-muted); font-size: 14px; transition: all 0.15s; border-left: 3px solid transparent; }
+    .nav-item:hover { color: var(--text); background: var(--surface2); }
+    .nav-item.active { color: var(--accent); background: rgba(108,99,255,0.1); border-left-color: var(--accent); }
+    .nav-section { font-size: 11px; color: var(--text-muted); padding: 12px 20px 4px; text-transform: uppercase; letter-spacing: 0.08em; }
+    .nav-badge { margin-left: auto; background: var(--accent); color: white; font-size: 10px; padding: 1px 6px; border-radius: 999px; }
+
+    /* Pages */
+    .page { display: none; padding: 28px; }
+    .page.active { display: block; }
+    .page-title { font-size: 22px; font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 10px; }
+    .page-sub { color: var(--text-muted); font-size: 14px; margin-bottom: 24px; }
+
+    /* Cards */
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+    .card-title { font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+    .stat-value { font-size: 28px; font-weight: 700; }
+    .stat-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+    /* Forms */
+    .form-group { margin-bottom: 16px; }
+    label { display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 6px; }
+    input[type=text], textarea, select {
+      width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+      padding: 10px 14px; color: var(--text); font-size: 14px; outline: none; transition: border 0.15s;
+    }
+    input[type=text]:focus, textarea:focus { border-color: var(--accent); }
+    textarea { resize: vertical; min-height: 140px; font-family: inherit; line-height: 1.6; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px;
+      border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s;
+    }
+    .btn-primary { background: var(--accent); color: white; }
+    .btn-primary:hover { background: var(--accent2); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-ghost { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* Task Board */
+    .board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .board-col { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; min-height: 200px; }
+    .board-col-title { font-size: 13px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .board-col-title .dot { width: 8px; height: 8px; border-radius: 50%; }
+    .dot-pending { background: var(--yellow); }
+    .dot-progress { background: var(--blue); }
+    .dot-done { background: var(--green); }
+    .task-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 8px; cursor: pointer; transition: border-color 0.15s; }
+    .task-card:hover { border-color: var(--accent); }
+    .task-desc { font-size: 13px; line-height: 1.5; margin-bottom: 8px; }
+    .task-meta { display: flex; gap: 6px; flex-wrap: wrap; }
+    .tag { font-size: 11px; padding: 2px 8px; border-radius: 999px; background: var(--surface); border: 1px solid var(--border); }
+    .tag-owner { border-color: var(--accent); color: var(--accent); }
+    .tag-deadline { border-color: var(--yellow); color: var(--yellow); }
+    .tag-high { border-color: var(--red); color: var(--red); background: rgba(239,68,68,0.1); }
+    .tag-medium { border-color: var(--yellow); color: var(--yellow); }
+    .tag-low { border-color: var(--green); color: var(--green); }
+
+    /* Chat */
+    .chat-wrap { display: flex; flex-direction: column; height: calc(100vh - 56px); }
+    .chat-header { padding: 20px 28px 0; }
+    .chat-messages { flex: 1; overflow-y: auto; padding: 16px 28px; display: flex; flex-direction: column; gap: 12px; }
+    .chat-input-area { padding: 12px 28px 20px; display: flex; gap: 10px; }
+    .chat-input-area input { flex: 1; }
+    .message { max-width: 80%; }
+    .message.user { align-self: flex-end; }
+    .message.assistant { align-self: flex-start; }
+    .message-bubble { padding: 12px 16px; border-radius: 12px; font-size: 14px; line-height: 1.6; }
+    .message.user .message-bubble { background: var(--accent); color: white; border-radius: 12px 12px 4px 12px; }
+    .message.assistant .message-bubble { background: var(--surface); border: 1px solid var(--border); border-radius: 12px 12px 12px 4px; white-space: pre-wrap; }
+    .message-meta { font-size: 11px; color: var(--text-muted); margin-top: 4px; padding: 0 4px; }
+    .message.user .message-meta { text-align: right; }
+    .sq-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+    .sq-chip { font-size: 12px; padding: 5px 12px; border-radius: 999px; background: var(--surface); border: 1px solid var(--border); cursor: pointer; color: var(--text-muted); transition: all 0.15s; }
+    .sq-chip:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* Upload result */
+    .extraction-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+    .extraction-section { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
+    .extraction-section h4 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; }
+    .extraction-item { font-size: 13px; padding: 8px 0; border-bottom: 1px solid var(--border); display: flex; gap: 8px; align-items: flex-start; }
+    .extraction-item:last-child { border-bottom: none; }
+    .insight { display: flex; gap: 10px; align-items: flex-start; padding: 10px 14px; background: rgba(108,99,255,0.1); border: 1px solid rgba(108,99,255,0.3); border-radius: 8px; margin-bottom: 8px; font-size: 13px; }
+
+    /* Processing */
+    .loader { display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .processing-overlay { text-align: center; padding: 32px; color: var(--text-muted); }
+    .step-list { list-style: none; text-align: left; display: inline-block; margin-top: 12px; }
+    .step-list li { padding: 4px 0; font-size: 13px; }
+    .step-list li.done::before { content: '✓ '; color: var(--green); }
+    .step-list li.active::before { content: '→ '; color: var(--accent); }
+    .step-list li.wait::before { content: '○ '; color: var(--text-muted); }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    /* Toast */
+    #toast { position: fixed; bottom: 24px; right: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 20px; font-size: 13px; z-index: 1000; transform: translateY(100px); opacity: 0; transition: all 0.3s; }
+    #toast.show { transform: translateY(0); opacity: 1; }
+    #toast.success { border-color: var(--green); }
+    #toast.error { border-color: var(--red); }
+
+    /* Modals */
+    #welcome-modal, #member-modal, #landing-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+    #welcome-modal.show, #member-modal.show, #landing-modal.show { display: flex; }
+    .modal-content { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto; animation: modalSlide 0.3s ease-out; }
+    @keyframes modalSlide { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+    .modal-header { padding: 24px 24px 16px; border-bottom: 1px solid var(--border); }
+    .modal-header h2 { font-size: 24px; display: flex; align-items: center; gap: 12px; }
+    .modal-header p { color: var(--text-muted); font-size: 14px; margin-top: 8px; line-height: 1.6; }
+    .modal-body { padding: 24px; }
+    .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; gap: 12px; justify-content: flex-end; }
+    .setup-step { margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+    .setup-step:last-child { border-bottom: none; }
+    .setup-step-title { font-size: 16px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .step-number { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: white; font-size: 12px; font-weight: 700; }
+    .member-card { cursor: pointer; transition: all 0.15s; }
+    .member-card:hover { background: var(--surface2); }
+
+    .meeting-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.15s; }
+    .dept-board-card { transition: border-color 0.15s, transform 0.1s; }
+    .dept-board-card:hover { border-color: var(--dc, var(--accent)); transform: translateY(-2px); }
+    .type-btn { padding:7px 14px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text-muted);font-size:13px;cursor:pointer;transition:all 0.15s; }
+    .type-btn.active { border-color:var(--accent);color:var(--accent);background:rgba(108,99,255,0.1); }
+    .type-btn:hover { border-color:var(--accent);color:var(--accent); }
+    .meeting-item:hover { background: var(--surface2); }
+  </style>
+</head>
+<body>
+<div class="app">
+  <!-- Header -->
+  <header class="header">
+    <div style="font-size:20px">🧠</div>
+    <h1>TeamAI</h1>
+    <span class="badge">Department Intelligence</span>
+    <div id="active-dept-pill" class="dept-pill" style="display:none;border-color:#6c63ff;color:#6c63ff;background:rgba(108,99,255,0.1)"></div>
+    <div style="display:flex;align-items:center;gap:6px;margin-left:auto;">
+      <button onclick="showLandingModal()"
+        style="background:rgba(108,99,255,0.1);border:1px solid var(--accent);color:var(--accent);padding:6px 12px;border-radius:6px;font-size:12px;cursor:pointer;font-weight:600;transition:all 0.15s"
+        onmouseover="this.style.background='var(--accent)';this.style.color='white'"
+        onmouseout="this.style.background='rgba(108,99,255,0.1)';this.style.color='var(--accent)'">
+        🚀 Quick Setup
+      </button>
+      <div class="status-dot" id="oc-dot" style="width:8px;height:8px;border-radius:50%;background:var(--text-muted)"></div>
+      <span style="font-size:12px;color:var(--text-muted)" id="oc-label">checking...</span>
+    </div>
+  </header>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <!-- Department Selector -->
+    <div class="dept-selector">
+      <div class="dept-selector-label">Active Department</div>
+      <div class="dept-grid" id="dept-grid">
+        <!-- filled by JS -->
+      </div>
+    </div>
+
+    <div class="nav-section">Overview</div>
+    <div class="nav-item active" onclick="nav('dashboard')"><span>📊</span> Dashboard</div>
+    <div class="nav-section">Intelligence</div>
+    <div class="nav-item" onclick="nav('upload')"><span>📨</span> Upload Meeting/Email</div>
+    <div class="nav-item" onclick="nav('chat')"><span>💬</span> Ask AI</div>
+    <div class="nav-section">Data</div>
+    <div class="nav-item" onclick="window.open('https://www.notion.so/30a4529e75ee80b08e33e1d6c582a95c','_blank')"><span>✅</span> Task Board <span style="font-size:10px;opacity:0.5">↗</span> <span class="nav-badge" id="task-count">0</span></div>
+    <div class="nav-item" onclick="nav('meetings');loadMeetings()"><span>📋</span> Meetings</div>
+    <div class="nav-section">System</div>
+    <div class="nav-item" onclick="nav('team');loadTeam()"><span>👥</span> Team Setup</div>
+    <div class="nav-item" onclick="nav('openclaw')"><span>⚙️</span> OpenClaw</div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+
+    <!-- Dashboard -->
+    <div class="page active" id="page-dashboard">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+        <div class="page-title"><span id="dash-dept-icon">📊</span> <span id="dash-dept-title">Department Overview</span></div>
+        <a href="https://www.notion.so/30a4529e75ee80b08e33e1d6c582a95c" target="_blank"
+           style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:13px;color:var(--text-muted);text-decoration:none;transition:all 0.15s"
+           onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'"
+           onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">
+          📋 View in Notion
+        </a>
+      </div>
+      <div class="page-sub" id="dash-dept-sub">Live state of team work, decisions, and risks.</div>
+      <div class="stats-grid">
+        <div class="stat-card" style="border-color:var(--accent)">
+          <div class="stat-value" id="stat-meetings">—</div>
+          <div class="stat-label">Meetings Processed</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-tasks" style="color:var(--yellow)">—</div>
+          <div class="stat-label">Pending Tasks</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-decisions" style="color:var(--blue)">—</div>
+          <div class="stat-label">Decisions Made</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-risks" style="color:var(--red)">—</div>
+          <div class="stat-label">Open Risks</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="card">
+          <div class="card-title">Pending Tasks</div>
+          <div id="dash-tasks"><div style="color:var(--text-muted);font-size:13px">No tasks yet. Upload a meeting.</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Open Risks</div>
+          <div id="dash-risks"><div style="color:var(--text-muted);font-size:13px">No risks identified.</div></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:0">
+        <div class="card-title">Recent Decisions</div>
+        <div id="dash-decisions"><div style="color:var(--text-muted);font-size:13px">No decisions recorded.</div></div>
+      </div>
+    </div>
+
+    <!-- Upload -->
+    <div class="page" id="page-upload">
+      <div class="page-title"><span id="upload-dept-icon">📨</span> Upload Meeting or Email</div>
+      <div class="page-sub">Paste a meeting transcript or email content. K2-Think-V2 extracts tasks, decisions, and risks automatically. You can also forward emails to <strong>teamaiassistant@gmail.com</strong> for automatic processing.</div>
+
+      <div id="upload-form">
+        <div class="card">
+          <!-- Department reminder -->
+          <div id="upload-dept-banner" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.3);border-radius:8px;margin-bottom:16px;font-size:13px">
+            <span id="upload-dept-banner-icon">⚙️</span>
+            <span>Processing for <strong id="upload-dept-banner-name">Engineering</strong> department</span>
+            <span style="margin-left:auto;color:var(--text-muted);font-size:11px">Change in sidebar</span>
+          </div>
+
+          <!-- Source type toggle -->
+          <div style="display:flex;gap:8px;margin-bottom:16px">
+            <button id="type-meeting" class="type-btn active" onclick="setSourceType('meeting')">🎤 Meeting transcript</button>
+            <button id="type-email" class="type-btn" onclick="setSourceType('email')">📧 Email thread</button>
+          </div>
+
+          <div class="form-group">
+            <label id="title-label">Meeting Title</label>
+            <input type="text" id="meeting-title" placeholder="e.g. Sprint Planning Week 14" />
+          </div>
+          <div class="form-group">
+            <label id="content-label">Meeting Transcript</label>
+            <textarea id="meeting-transcript" rows="12" placeholder="Paste your meeting transcript here..."></textarea>
+          </div>
+          <!-- HITL toggle -->
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;padding:10px 14px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">
+            <label class="toggle-wrap" style="display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none">
+              <input type="checkbox" id="auto-notion-toggle" checked onchange="updateNotionToggle()"
+                     style="width:16px;height:16px;accent-color:var(--accent);cursor:pointer">
+              <span id="notion-toggle-label" style="font-size:13px;color:var(--text)">🤖 Auto-sync tasks to Notion</span>
+            </label>
+            <span id="notion-toggle-hint" style="margin-left:auto;font-size:11px;color:var(--text-muted)">All tasks created automatically</span>
+          </div>
+          <button class="btn btn-primary" onclick="uploadMeeting()" id="upload-btn">Process</button>
+          <button class="btn btn-ghost" style="margin-left:8px" onclick="fillDemoTranscript()">Load Sample</button>
+        </div>
+      </div>
+
+      <div id="upload-processing" style="display:none">
+        <div class="card processing-overlay">
+          <div class="loader" style="width:36px;height:36px;border-width:3px;margin:0 auto 16px"></div>
+          <div style="font-size:15px;font-weight:600;color:var(--text)" id="processing-label">Processing...</div>
+          <ul class="step-list">
+            <li class="active" id="step-1">K2-Think-V2 reasoning over content</li>
+            <li class="wait" id="step-2">Extracting tasks, decisions, risks</li>
+            <li class="wait" id="step-3">Storing in department memory</li>
+            <li class="wait" id="step-4">Syncing to Notion + OpenClaw</li>
+            <li class="wait" id="step-5">Cross-meeting insight analysis</li>
+          </ul>
+        </div>
+      </div>
+
+      <div id="upload-result" style="display:none"></div>
+    </div>
+
+    <!-- Chat -->
+    <div class="page" id="page-chat">
+      <div class="chat-wrap">
+        <div class="chat-header">
+          <div class="page-title"><span id="chat-dept-icon">💬</span> <span id="chat-dept-title">Department AI</span></div>
+          <div class="page-sub" id="chat-dept-sub">Ask anything about your team's work.</div>
+          <div class="sq-chips" id="sq-chips">
+            <div class="sq-chip" onclick="askQ(this)">What tasks are pending?</div>
+            <div class="sq-chip" onclick="askQ(this)">What are the current risks?</div>
+            <div class="sq-chip" onclick="askQ(this)">What decisions were made?</div>
+            <div class="sq-chip" onclick="askQ(this)">Who owns the most tasks?</div>
+          </div>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+          <div class="message assistant">
+            <div class="message-bubble" id="chat-welcome">Hi! I'm your Department AI. Select a department and upload meetings to get started.</div>
+            <div class="message-meta">Department AI • ready</div>
+          </div>
+        </div>
+        <div class="chat-input-area">
+          <input type="text" id="chat-input" placeholder="Ask about tasks, decisions, risks..." onkeydown="if(event.key==='Enter')sendChat()" />
+          <button class="btn btn-primary" onclick="sendChat()" id="chat-btn">Send</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tasks -->
+    <div class="page" id="page-tasks">
+      <div class="page-title"><span id="tasks-dept-icon">📋</span> Department Task Boards</div>
+      <div class="page-sub">All extracted tasks sync to Notion, tagged by department.</div>
+
+      <!-- Department board grid -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+        <div class="card dept-board-card" style="--dc:#3b82f6;cursor:pointer" onclick="window.open('https://www.notion.so/30a4529e75ee80b08e33e1d6c582a95c','_blank')">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+            <span style="font-size:28px">⚙️</span>
+            <div><div style="font-weight:700;font-size:15px">Engineering</div><div style="font-size:12px;color:var(--text-muted)">Sprints · Tech debt · Deployments</div></div>
+          </div>
+          <div style="font-size:12px;color:var(--blue);display:flex;align-items:center;gap:4px">Open in Notion <span>↗</span></div>
+        </div>
+        <div class="card dept-board-card" style="--dc:#8b5cf6;cursor:pointer" onclick="window.open('https://www.notion.so/30a4529e75ee80b08e33e1d6c582a95c','_blank')">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+            <span style="font-size:28px">👥</span>
+            <div><div style="font-weight:700;font-size:15px">HR</div><div style="font-size:12px;color:var(--text-muted)">Hiring · Onboarding · Reviews</div></div>
+          </div>
+          <div style="font-size:12px;color:#8b5cf6;display:flex;align-items:center;gap:4px">Open in Notion <span>↗</span></div>
+        </div>
+        <div class="card dept-board-card" style="--dc:#f59e0b;cursor:pointer" onclick="window.open('https://www.notion.so/30a4529e75ee80b08e33e1d6c582a95c','_blank')">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+            <span style="font-size:28px">📣</span>
+            <div><div style="font-weight:700;font-size:15px">Marketing & Comms</div><div style="font-size:12px;color:var(--text-muted)">Campaigns · Content · Events</div></div>
+          </div>
+          <div style="font-size:12px;color:#f59e0b;display:flex;align-items:center;gap:4px">Open in Notion <span>↗</span></div>
+        </div>
+        <div class="card dept-board-card" style="--dc:#22c55e;cursor:pointer" onclick="window.open('https://www.notion.so/30a4529e75ee80b08e33e1d6c582a95c','_blank')">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+            <span style="font-size:28px">🚀</span>
+            <div><div style="font-weight:700;font-size:15px">Industry Innovation</div><div style="font-size:12px;color:var(--text-muted)">Research · Grants · Partnerships</div></div>
+          </div>
+          <div style="font-size:12px;color:#22c55e;display:flex;align-items:center;gap:4px">Open in Notion <span>↗</span></div>
+        </div>
+      </div>
+
+      <div class="card" style="background:rgba(108,99,255,0.06);border-color:rgba(108,99,255,0.2);padding:16px 20px">
+        <div style="font-size:13px;font-weight:600;margin-bottom:8px">💡 Set up department-filtered views in Notion</div>
+        <div style="font-size:12px;color:var(--text-muted);line-height:1.8">
+          1. Open the Notion board above → click <strong style="color:var(--text)">+ Add a view</strong><br>
+          2. Name it <strong style="color:var(--text)">"Engineering Tasks"</strong> → click <strong style="color:var(--text)">Filter</strong> → Department = Engineering<br>
+          3. Repeat for HR, Marketing &amp; Comms, Industry Innovation<br>
+          4. Each view will auto-populate as meetings are uploaded
+        </div>
+      </div>
+
+      <!-- hidden cols kept for dashboard counter -->
+      <div id="col-pending" style="display:none"></div>
+      <div id="col-progress" style="display:none"></div>
+      <div id="col-done" style="display:none"></div>
+    </div>
+
+    <!-- Meetings -->
+    <div class="page" id="page-meetings">
+      <div class="page-title">Processed Meetings</div>
+      <div class="page-sub">All meetings in department memory.</div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <div id="meetings-list"><div style="padding:20px;color:var(--text-muted);font-size:13px">No meetings yet.</div></div>
+      </div>
+    </div>
+
+    <!-- Team Setup -->
+    <div class="page" id="page-team">
+      <div class="page-title">👥 Team Setup</div>
+      <div class="page-sub">Add team members so TeamAI can dispatch tasks and send personalized notifications.</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+        <!-- Add member form -->
+        <div class="card">
+          <div class="card-title">Add Team Member</div>
+          <div class="form-group">
+            <label>Full Name *</label>
+            <input type="text" id="tm-name" placeholder="e.g. Avani Gupta" />
+          </div>
+          <div class="form-group">
+            <label>Role</label>
+            <input type="text" id="tm-role" placeholder="e.g. Engineering Lead" />
+          </div>
+          <div class="form-group">
+            <label>Responsibilities <span style="color:var(--text-muted);font-size:11px">(helps AI assign tasks)</span></label>
+            <textarea id="tm-responsibilities" rows="3" placeholder="e.g. Backend architecture, API design, code reviews, team mentorship"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Department</label>
+            <select id="tm-dept">
+              <option value="">All departments</option>
+              <option value="engineering">Engineering</option>
+              <option value="hr">HR</option>
+              <option value="marcom">Marketing & Comms</option>
+              <option value="innovation">Innovation</option>
+              <option value="sales">Sales</option>
+              <option value="product">Product</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="text" id="tm-email" placeholder="avani@company.com" />
+          </div>
+          <div class="form-group">
+            <label>Telegram Handle <span style="color:var(--text-muted);font-size:11px">(without @)</span></label>
+            <input type="text" id="tm-telegram" placeholder="avani_g" />
+          </div>
+          <button class="btn btn-primary" onclick="addTeamMember()">Add Member</button>
+        </div>
+
+        <!-- Mission/context -->
+        <div class="card">
+          <div class="card-title">Department Mission & Priorities</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px;line-height:1.6">
+            This context is injected into every extraction — K2-Think-V2 uses it to prioritize relevant tasks and decisions.
+          </div>
+          <div class="form-group">
+            <label>Department</label>
+            <select id="ctx-dept" onchange="loadOrgContext()">
+              <option value="engineering">Engineering</option>
+              <option value="hr">HR</option>
+              <option value="marcom">Marketing & Comms</option>
+              <option value="innovation">Innovation</option>
+              <option value="sales">Sales</option>
+              <option value="product">Product</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Mission / Priorities</label>
+            <textarea id="ctx-mission" rows="6"
+              placeholder="e.g. We are building a B2B SaaS product. Priority: ship v2 by March. Key focus: infra stability, customer onboarding, and reducing churn."></textarea>
+          </div>
+          <button class="btn btn-primary" onclick="saveOrgContext()">Save Context</button>
+        </div>
+      </div>
+
+      <!-- Team list -->
+      <div class="card">
+        <div class="card-title">Team Members <span id="team-count" style="font-weight:400;color:var(--text-muted)"></span></div>
+        <div id="team-list">
+          <div style="color:var(--text-muted);font-size:13px">No team members yet. Add your first member above.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OpenClaw -->
+    <div class="page" id="page-openclaw">
+      <div class="page-title">OpenClaw Orchestration</div>
+      <div class="page-sub">Execution layer — runs tools, updates boards, routes actions.</div>
+      <div class="card" id="oc-status-card">
+        <div style="text-align:center;padding:20px"><div class="loader" style="width:32px;height:32px;border-width:3px;margin:0 auto 12px"></div><div style="color:var(--text-muted)">Checking...</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Architecture</div>
+        <div style="font-size:13px;line-height:2;color:var(--text-muted)">
+          <div><strong style="color:var(--text)">K2-Think-V2</strong> → Reasoning: extracts tasks/decisions/risks, cross-meeting analysis</div>
+          <div><strong style="color:var(--text)">K2-V2-Instruct</strong> → Q&A: answers questions with department memory context</div>
+          <div><strong style="color:var(--text)">OpenClaw</strong> → Execution: task board, file writes, Slack/Notion integrations</div>
+          <div><strong style="color:var(--text)">Notion</strong> → Live task board synced on every meeting upload</div>
+          <div><strong style="color:var(--text)">Chroma + SQLite</strong> → Department memory: semantic search + structured data</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Setup OpenClaw</div>
+        <pre style="background:var(--surface2);padding:14px;border-radius:8px;font-size:12px;overflow-x:auto;color:var(--text-muted)">npm install -g openclaw
+openclaw onboard --install-daemon
+cp openclaw/openclaw.json ~/.openclaw/openclaw.json
+openclaw dashboard   # starts on port 18789</pre>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Initial Landing Modal -->
+<div id="landing-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>🧠 Welcome to TeamAI</h2>
+      <p>Your AI-powered department intelligence system</p>
+    </div>
+    <div class="modal-body">
+      <div style="display:grid;gap:16px;margin-top:8px">
+        <div onclick="showRegisterDepartment()" style="padding:24px;border:2px solid var(--border);border-radius:12px;cursor:pointer;transition:all 0.15s;background:var(--surface2)"
+             onmouseover="this.style.borderColor='var(--accent)';this.style.background='rgba(108,99,255,0.05)'"
+             onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--surface2)'">
+          <div style="font-size:32px;margin-bottom:12px">🚀</div>
+          <div style="font-size:18px;font-weight:700;margin-bottom:8px">Register New Department</div>
+          <div style="font-size:14px;color:var(--text-muted);line-height:1.6">Set up a department, add team members, and configure AI context for intelligent task assignment and decision tracking.</div>
+        </div>
+
+        <div onclick="viewExistingDepartments()" style="padding:24px;border:2px solid var(--border);border-radius:12px;cursor:pointer;transition:all 0.15s;background:var(--surface2)"
+             onmouseover="this.style.borderColor='var(--accent)';this.style.background='rgba(108,99,255,0.05)'"
+             onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--surface2)'">
+          <div style="font-size:32px;margin-bottom:12px">👥</div>
+          <div style="font-size:18px;font-weight:700;margin-bottom:8px">View Existing Departments</div>
+          <div style="font-size:14px;color:var(--text-muted);line-height:1.6">Browse and manage your departments, view team members, and update organizational context.</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeLandingModal()">Skip for now</button>
+    </div>
+  </div>
+</div>
+
+<!-- Department Registration Modal -->
+<div id="welcome-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>🚀 Register New Department</h2>
+      <p>Configure your department's mission, priorities, and team members for AI-powered intelligence.</p>
+    </div>
+    <div class="modal-body">
+      <div class="setup-step">
+        <div class="setup-step-title"><span class="step-number">1</span> Department Name</div>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px">What is the name of this department?</p>
+        <div class="form-group">
+          <input type="text" id="setup-department-name" placeholder="e.g., Innovation, Engineering, Sales..." />
+        </div>
+        <p style="font-size:12px;color:var(--text-muted);margin-top:8px">💡 Or choose a template:</p>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px">
+          <button onclick="setDepartmentTemplate('engineering')" class="btn btn-ghost" style="font-size:11px;padding:6px 10px">⚙️ Engineering</button>
+          <button onclick="setDepartmentTemplate('hr')" class="btn btn-ghost" style="font-size:11px;padding:6px 10px">👥 HR</button>
+          <button onclick="setDepartmentTemplate('marcom')" class="btn btn-ghost" style="font-size:11px;padding:6px 10px">📣 MarCom</button>
+          <button onclick="setDepartmentTemplate('innovation')" class="btn btn-ghost" style="font-size:11px;padding:6px 10px">🚀 Innovation</button>
+          <button onclick="setDepartmentTemplate('sales')" class="btn btn-ghost" style="font-size:11px;padding:6px 10px">💼 Sales</button>
+          <button onclick="setDepartmentTemplate('product')" class="btn btn-ghost" style="font-size:11px;padding:6px 10px">🎨 Product</button>
+        </div>
+      </div>
+
+      <div class="setup-step">
+        <div class="setup-step-title"><span class="step-number">2</span> Department Mission & Priorities</div>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px">What is this department's mission and key priorities?</p>
+        <div class="form-group">
+          <textarea id="setup-mission" placeholder="e.g., Build innovative AI products that empower teams. Focus on user experience, scalability, and rapid iteration." style="min-height:100px"></textarea>
+        </div>
+      </div>
+
+      <div class="setup-step">
+        <div class="setup-step-title"><span class="step-number">3</span> Team Members</div>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px">Add your team members so AI can assign tasks to the right people.</p>
+        <div id="setup-members-list" style="margin-bottom:12px"></div>
+        <div class="form-group" style="display:grid;grid-template-columns:2fr 1fr 3fr;gap:8px;margin-bottom:8px">
+          <input type="text" id="setup-member-name" placeholder="Name" style="min-height:auto;padding:8px 12px">
+          <input type="text" id="setup-member-role" placeholder="Role" style="min-height:auto;padding:8px 12px">
+          <input type="text" id="setup-member-resp" placeholder="Responsibilities" style="min-height:auto;padding:8px 12px">
+        </div>
+        <button class="btn btn-ghost" onclick="addSetupMember()" style="width:100%">+ Add Team Member</button>
+      </div>
+
+      <div class="setup-step">
+        <div class="setup-step-title"><span class="step-number">4</span> Notion Integration <span style="font-size:11px;color:var(--text-muted);font-weight:normal;margin-left:8px">(Optional)</span></div>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px">Connect a Notion database to sync tasks automatically.</p>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+          <div onclick="selectNotionOption('existing')" id="notion-option-existing" style="padding:16px;border:2px solid var(--border);border-radius:8px;cursor:pointer;transition:all 0.15s">
+            <div style="font-size:24px;margin-bottom:8px">📋</div>
+            <div style="font-weight:600;margin-bottom:4px">Use Existing Database</div>
+            <div style="font-size:11px;color:var(--text-muted)">Connect to your current Notion workspace</div>
+          </div>
+          <div onclick="selectNotionOption('create')" id="notion-option-create" style="padding:16px;border:2px solid var(--border);border-radius:8px;cursor:pointer;transition:all 0.15s">
+            <div style="font-size:24px;margin-bottom:8px">✨</div>
+            <div style="font-weight:600;margin-bottom:4px">Create New Database</div>
+            <div style="font-size:11px;color:var(--text-muted)">We'll create a database for you</div>
+          </div>
+        </div>
+
+        <div id="notion-existing-form" style="display:none">
+          <div class="form-group">
+            <label>Notion Database ID</label>
+            <input type="text" id="setup-notion-db-id" placeholder="e.g., 30a4529e75ee80b08e33e1d6c582a95c">
+            <div style="font-size:11px;color:var(--text-muted);margin-top:4px">
+              Find this in your Notion database URL: notion.so/<strong>DATABASE_ID</strong>
+            </div>
+          </div>
+        </div>
+
+        <div id="notion-create-form" style="display:none">
+          <div style="background:var(--surface2);padding:12px;border-radius:8px;border:1px solid var(--border)">
+            <div style="font-size:13px;margin-bottom:8px">We'll create a Notion database with:</div>
+            <ul style="font-size:12px;color:var(--text-muted);margin-left:20px;line-height:1.8">
+              <li>Task name, Status, Priority columns</li>
+              <li>Assignee and Due date fields</li>
+              <li>Department tags</li>
+            </ul>
+            <div style="margin-top:12px;font-size:11px;color:var(--text-muted)">
+              ⚠️ Feature coming soon - For now, use "Use Existing Database"
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:12px;font-size:11px;color:var(--text-muted)">
+          💡 You can skip this and configure Notion later from Team Setup page
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="skipSetup()">Skip for now</button>
+      <button class="btn btn-ghost" onclick="resetSetup()" style="border-color:var(--yellow);color:var(--yellow)">🔄 Clear Department Data</button>
+      <button class="btn btn-primary" onclick="completeSetup()">✓ Register Department</button>
+    </div>
+  </div>
+</div>
+
+<!-- Team Member View/Edit Modal -->
+<div id="member-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="member-modal-title">👤 Team Member</h2>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-member-id">
+      <div class="form-group">
+        <label>Full Name *</label>
+        <input type="text" id="edit-name" placeholder="e.g. Avani Gupta" />
+      </div>
+      <div class="form-group">
+        <label>Role</label>
+        <input type="text" id="edit-role" placeholder="e.g. Engineering Lead" />
+      </div>
+      <div class="form-group">
+        <label>Responsibilities <span style="color:var(--text-muted);font-size:11px">(helps AI assign tasks)</span></label>
+        <textarea id="edit-responsibilities" rows="3" placeholder="e.g. Backend architecture, API design, code reviews, team mentorship"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Department</label>
+        <select id="edit-dept">
+          <option value="">All departments</option>
+          <option value="engineering">Engineering</option>
+          <option value="hr">HR</option>
+          <option value="marcom">Marketing & Comms</option>
+          <option value="innovation">Innovation</option>
+          <option value="sales">Sales</option>
+          <option value="product">Product</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="text" id="edit-email" placeholder="avani@company.com" />
+      </div>
+      <div class="form-group">
+        <label>Telegram Handle <span style="color:var(--text-muted);font-size:11px">(without @)</span></label>
+        <input type="text" id="edit-telegram" placeholder="avani_g" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeMemberModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveEditedMember()">💾 Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const API = 'http://localhost:8001';  // Backend is on port 8001
+let chatHistory = [];
+let activeDept = null;
+let departments = {};
+let sampleTranscripts = {};
+let sourceType = 'meeting';  // 'meeting' | 'email'
+
+function setSourceType(type) {
+  sourceType = type;
+  document.getElementById('type-meeting').classList.toggle('active', type === 'meeting');
+  document.getElementById('type-email').classList.toggle('active', type === 'email');
+  if (type === 'email') {
+    document.getElementById('title-label').textContent = 'Email Subject / Topic';
+    document.getElementById('content-label').textContent = 'Email Thread (paste full email)';
+    document.getElementById('meeting-title').placeholder = 'e.g. Q1 Campaign Follow-up';
+    document.getElementById('meeting-transcript').placeholder = 'Paste the full email thread here...\n\nFrom: Sarah\nTo: Team\nSubject: ...\n\n(Works with forwarded threads too)';
+  } else {
+    document.getElementById('title-label').textContent = 'Meeting Title';
+    document.getElementById('content-label').textContent = 'Meeting Transcript';
+    document.getElementById('meeting-title').placeholder = 'e.g. Sprint Planning Week 14';
+    document.getElementById('meeting-transcript').placeholder = 'Paste your meeting transcript here...';
+  }
+}
+
+// ── Init ─────────────────────────────────────────
+async function init() {
+  checkOpenClaw();
+  await loadDepartments();
+  // Default to first dept
+  if (Object.keys(departments).length > 0) {
+    selectDept(Object.keys(departments)[0], false);
+  }
+  loadDashboard();
+  // Check OpenClaw once on load; only re-checks when user visits that page
+
+  // Check if first-time setup is needed
+  await checkFirstTimeSetup();
+}
+
+// ── First-Time Setup ─────────────────────────────────────────
+let setupMembers = [];
+let selectedSetupDept = null;  // null = create new dept, otherwise = use template ID
+
+async function checkFirstTimeSetup() {
+  // Always show landing modal on load for maximum engagement
+  // This makes every session feel fresh and gives clear navigation
+  setTimeout(() => showLandingModal(), 500); // Small delay for better UX
+}
+
+// Landing Modal
+function showLandingModal() {
+  document.getElementById('landing-modal').classList.add('show');
+}
+
+function closeLandingModal() {
+  document.getElementById('landing-modal').classList.remove('show');
+}
+
+function showRegisterDepartment() {
+  closeLandingModal();
+  // Clear the form and reset to create NEW department (not template)
+  document.getElementById('setup-department-name').value = '';
+  document.getElementById('setup-mission').value = '';
+  setupMembers = [];
+  selectedSetupDept = null;  // IMPORTANT: Reset to null to create new dept
+  renderSetupMembers();
+  showWelcomeModal();
+}
+
+function viewExistingDepartments() {
+  closeLandingModal();
+  nav('team');
+  loadTeam();
+}
+
+// Department templates
+function setDepartmentTemplate(deptId) {
+  const dept = departments[deptId];
+  if (!dept) return;
+
+  document.getElementById('setup-department-name').value = dept.name;
+
+  // Set sample mission based on department
+  const sampleMissions = {
+    engineering: "Build scalable, reliable software products. Focus on code quality, infrastructure stability, and rapid iteration.",
+    hr: "Attract, develop, and retain top talent. Prioritize employee wellbeing, performance management, and company culture.",
+    marcom: "Drive brand awareness and customer engagement. Focus on content creation, campaigns, and measurable marketing ROI.",
+    innovation: "Research and develop cutting-edge AI solutions. Prioritize paper submissions, partnerships, and grant funding.",
+    sales: "Drive revenue growth and customer success. Focus on pipeline management, deal closure, and client relationships.",
+    product: "Build products users love. Focus on user research, roadmap prioritization, and data-driven decisions."
+  };
+
+  document.getElementById('setup-mission').value = sampleMissions[deptId] || '';
+  selectedSetupDept = deptId;
+}
+
+// Team Registration Modal
+function showWelcomeModal() {
+  document.getElementById('welcome-modal').classList.add('show');
+}
+
+function hideWelcomeModal() {
+  document.getElementById('welcome-modal').classList.remove('show');
+}
+
+function addSetupMember() {
+  const name = document.getElementById('setup-member-name').value.trim();
+  const role = document.getElementById('setup-member-role').value.trim();
+  const resp = document.getElementById('setup-member-resp').value.trim();
+
+  if (!name) {
+    toast('Please enter a name', 'error');
+    return;
+  }
+
+  setupMembers.push({ name, role, responsibilities: resp, department: selectedSetupDept });
+  renderSetupMembers();
+
+  // Clear inputs
+  document.getElementById('setup-member-name').value = '';
+  document.getElementById('setup-member-role').value = '';
+  document.getElementById('setup-member-resp').value = '';
+}
+
+function renderSetupMembers() {
+  const list = document.getElementById('setup-members-list');
+  if (setupMembers.length === 0) {
+    list.innerHTML = '<p style="font-size:13px;color:var(--text-muted);font-style:italic">No team members added yet</p>';
+    return;
+  }
+  list.innerHTML = setupMembers.map((m, i) => `
+    <div style="display:flex;align-items:center;gap:8px;padding:8px;background:var(--surface2);border-radius:6px;margin-bottom:6px">
+      <div style="flex:1">
+        <div style="font-weight:600;font-size:13px">${m.name}${m.role ? ` <span style="color:var(--text-muted)">— ${m.role}</span>` : ''}</div>
+        ${m.responsibilities ? `<div style="font-size:12px;color:var(--text-muted);margin-top:2px">${m.responsibilities}</div>` : ''}
+      </div>
+      <button onclick="removeSetupMember(${i})" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:16px;padding:4px">×</button>
+    </div>
+  `).join('');
+}
+
+function removeSetupMember(index) {
+  setupMembers.splice(index, 1);
+  renderSetupMembers();
+}
+
+function selectNotionOption(option) {
+  // Update visual selection
+  const existingOption = document.getElementById('notion-option-existing');
+  const createOption = document.getElementById('notion-option-create');
+  const existingForm = document.getElementById('notion-existing-form');
+  const createForm = document.getElementById('notion-create-form');
+
+  if (option === 'existing') {
+    existingOption.style.borderColor = 'var(--accent)';
+    existingOption.style.background = 'rgba(108,99,255,0.1)';
+    createOption.style.borderColor = 'var(--border)';
+    createOption.style.background = 'transparent';
+    existingForm.style.display = 'block';
+    createForm.style.display = 'none';
+  } else {
+    createOption.style.borderColor = 'var(--accent)';
+    createOption.style.background = 'rgba(108,99,255,0.1)';
+    existingOption.style.borderColor = 'var(--border)';
+    existingOption.style.background = 'transparent';
+    createForm.style.display = 'block';
+    existingForm.style.display = 'none';
+  }
+}
+
+async function completeSetup() {
+  const deptName = document.getElementById('setup-department-name').value.trim();
+  const mission = document.getElementById('setup-mission').value.trim();
+
+  if (!deptName) {
+    toast('Please enter a department name', 'error');
+    return;
+  }
+
+  if (!mission && setupMembers.length === 0) {
+    toast('Please add department mission or at least one team member', 'error');
+    return;
+  }
+
+  // Use department name as ID (lowercase, no spaces)
+  const deptId = selectedSetupDept || deptName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+
+  // Get Notion database ID if provided (element might not exist or be hidden)
+  const notionDbIdElement = document.getElementById('setup-notion-db-id');
+  const notionDatabaseId = notionDbIdElement ? notionDbIdElement.value.trim() : '';
+
+  try {
+    // Save org context with Notion integration
+    await fetch(API + '/api/org/context', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        department: deptId,
+        mission: mission,
+        notion_database_id: notionDatabaseId,
+        notion_page_id: ''
+      })
+    });
+
+    // Save team members
+    for (const member of setupMembers) {
+      await fetch(API + '/api/team', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: member.name,
+          role: member.role,
+          role_details: '',
+          responsibilities: member.responsibilities,
+          department: deptId,
+          email: '',
+          telegram_handle: ''
+        })
+      });
+    }
+
+    hideWelcomeModal();
+
+    // If it's a predefined department, switch to it
+    if (departments[deptId]) {
+      selectDept(deptId);
+    }
+
+    toast(`${deptName} department registered successfully! 🎉`, 'success');
+
+    // Navigate to team page
+    nav('team');
+    loadTeam();
+
+    // Reset setup state
+    setupMembers = [];
+    renderSetupMembers();
+    document.getElementById('setup-department-name').value = '';
+    document.getElementById('setup-mission').value = '';
+    selectedSetupDept = null;
+  } catch(e) {
+    toast('Setup failed: ' + e.message, 'error');
+  }
+}
+
+function skipSetup() {
+  hideWelcomeModal();
+  // Don't set localStorage - let landing modal show again next time
+}
+
+async function resetSetup() {
+  const deptName = document.getElementById('setup-department-name').value.trim();
+
+  if (!deptName) {
+    toast('Enter a department name first', 'error');
+    return;
+  }
+
+  if (!confirm(`⚠️ This will delete all data for ${deptName}. Continue?`)) return;
+
+  try {
+    const deptId = selectedSetupDept || deptName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+
+    // Get all team members and delete them
+    const teamRes = await fetch(API + `/api/team?department=${deptId}`);
+    const teamData = await teamRes.json();
+
+    for (const member of teamData.members || []) {
+      await fetch(API + `/api/team/${member.id}`, { method: 'DELETE' });
+    }
+
+    // Clear org context
+    await fetch(API + '/api/org/context', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ department: deptId, mission: '' })
+    });
+
+    // Reset the modal form
+    document.getElementById('setup-department-name').value = '';
+    document.getElementById('setup-mission').value = '';
+    setupMembers = [];
+    renderSetupMembers();
+
+    toast(`${deptName} data cleared! 🔄`, 'success');
+  } catch(e) {
+    toast('Reset failed: ' + e.message, 'error');
+  }
+}
+
+// Keyboard shortcut: Press 'D' key to toggle demo mode
+document.addEventListener('keydown', function(e) {
+  // Press 'D' key (not in input fields)
+  if (e.key === 'D' && !['INPUT', 'TEXTAREA'].includes(e.target.tagName)) {
+    showLandingModal();
+  }
+  // Press 'Escape' key to close modals
+  if (e.key === 'Escape') {
+    hideWelcomeModal();
+    closeLandingModal();
+    closeMemberModal();
+  }
+});
+
+// ── Departments ───────────────────────────────────
+async function loadDepartments() {
+  try {
+    const r = await fetch(API + '/api/departments');
+    const data = await r.json();
+    data.departments.forEach(d => { departments[d.id] = d; });
+    sampleTranscripts = data.samples || {};
+    renderDeptGrid();
+  } catch(e) { console.error('Failed to load departments', e); }
+}
+
+function renderDeptGrid() {
+  const grid = document.getElementById('dept-grid');
+  grid.innerHTML = Object.values(departments).map(d => `
+    <div class="dept-card ${activeDept === d.id ? 'active' : ''}" id="dept-card-${d.id}"
+         style="--dept-color:${d.color}" onclick="selectDept('${d.id}')">
+      <div class="dept-icon">${d.icon}</div>
+      <div class="dept-name">${d.name}</div>
+    </div>`).join('');
+}
+
+function selectDept(id, reload = true) {
+  activeDept = id;
+  const dept = departments[id];
+  if (!dept) return;
+
+  // Update sidebar cards
+  document.querySelectorAll('.dept-card').forEach(c => c.classList.remove('active'));
+  document.getElementById('dept-card-' + id)?.classList.add('active');
+
+  // Update header pill
+  const pill = document.getElementById('active-dept-pill');
+  pill.style.display = 'flex';
+  pill.style.borderColor = dept.color;
+  pill.style.color = dept.color;
+  pill.style.background = dept.color + '18';
+  pill.innerHTML = `${dept.icon} ${dept.name}`;
+
+  // Update page headers
+  document.getElementById('dash-dept-icon').textContent = dept.icon;
+  document.getElementById('dash-dept-title').textContent = dept.name + ' Overview';
+  document.getElementById('dash-dept-sub').textContent = `Live state of the ${dept.name} team.`;
+  document.getElementById('upload-dept-icon').textContent = dept.icon;
+  document.getElementById('upload-dept-banner-icon').textContent = dept.icon;
+  document.getElementById('upload-dept-banner-name').textContent = dept.name;
+  document.getElementById('chat-dept-icon').textContent = dept.icon;
+  document.getElementById('chat-dept-title').textContent = dept.name + ' AI';
+  document.getElementById('chat-dept-sub').textContent = `Ask anything about the ${dept.name} team.`;
+  document.getElementById('tasks-dept-icon').textContent = dept.icon;
+  document.getElementById('chat-welcome').textContent =
+    `Hi! I'm the ${dept.name} Department AI. Upload a meeting transcript and I'll know everything about your team's tasks, decisions, and risks.`;
+
+  // Update suggested questions per dept
+  const qs = {
+    engineering: ['What are open bugs?', 'Sprint blockers?', 'Who owns deployments?', 'Technical debt status?'],
+    hr: ['Open positions?', 'Pending reviews?', 'Onboarding tasks?', 'Policy updates?'],
+    marcom: ['Campaign status?', 'Content deadlines?', 'Who owns social media?', 'Event planning?'],
+    innovation: ['Research deadlines?', 'Grant status?', 'Partnership updates?', 'Dataset releases?'],
+  };
+  const chips = qs[id] || ['What tasks are pending?', 'Current risks?', 'Recent decisions?'];
+  document.getElementById('sq-chips').innerHTML = chips.map(q =>
+    `<div class="sq-chip" onclick="askQ(this)">${q}</div>`).join('');
+
+  chatHistory = [];
+
+  if (reload) {
+    loadDashboard();
+    loadTasks();
+    loadMeetings();
+  }
+}
+
+// ── Navigation ──────────────────────────────────
+function nav(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  event?.currentTarget?.classList.add('active');
+  if (page === 'dashboard') loadDashboard();
+  if (page === 'openclaw') checkOpenClaw();
+}
+
+// ── Toast ────────────────────────────────────────
+function toast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'show ' + type;
+  setTimeout(() => t.className = '', 3000);
+}
+
+// ── Dashboard ────────────────────────────────────
+async function loadDashboard() {
+  const dept = activeDept;
+  try {
+    const url = dept ? `${API}/api/state?department=${dept}` : `${API}/api/state`;
+    const r = await fetch(url);
+    const d = await r.json();
+    document.getElementById('stat-meetings').textContent = d.total_meetings ?? 0;
+    document.getElementById('stat-tasks').textContent = d.pending_tasks?.length ?? 0;
+    document.getElementById('stat-decisions').textContent = d.recent_decisions?.length ?? 0;
+    document.getElementById('stat-risks').textContent = d.open_risks?.length ?? 0;
+    document.getElementById('task-count').textContent = d.pending_tasks?.length ?? 0;
+
+    const tasksEl = document.getElementById('dash-tasks');
+    tasksEl.innerHTML = d.pending_tasks?.length
+      ? d.pending_tasks.slice(0,6).map(t => `
+          <div style="padding:8px 0;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:flex-start">
+            <span style="font-size:14px;margin-top:1px">📌</span>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:13px;display:flex;align-items:center;gap:6px">
+                <span style="flex:1">${t.description}</span>
+                ${t.notion_url ? `<a href="${t.notion_url}" target="_blank" onclick="event.stopPropagation()" title="View in Notion" style="color:var(--text-muted);text-decoration:none;font-size:12px;flex-shrink:0;opacity:0.7" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">📋</a>` : ''}
+              </div>
+              <div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap">
+                <span class="tag tag-owner">${t.owner}</span>
+                ${t.deadline && t.deadline !== 'Not specified' ? `<span class="tag tag-deadline">${t.deadline}</span>` : ''}
+              </div>
+            </div>
+          </div>`).join('')
+      : '<div style="color:var(--text-muted);font-size:13px">No pending tasks.</div>';
+
+    const risksEl = document.getElementById('dash-risks');
+    risksEl.innerHTML = d.open_risks?.length
+      ? d.open_risks.slice(0,5).map(r => `
+          <div style="padding:8px 0;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:flex-start">
+            <span>${r.severity==='high'?'🔴':r.severity==='medium'?'🟡':'🟢'}</span>
+            <div>
+              <div style="font-size:13px">${r.description}</div>
+              <span class="tag tag-${r.severity}" style="margin-top:4px;display:inline-block">${r.severity}</span>
+            </div>
+          </div>`).join('')
+      : '<div style="color:var(--text-muted);font-size:13px">No open risks.</div>';
+
+    const decisionsEl = document.getElementById('dash-decisions');
+    decisionsEl.innerHTML = d.recent_decisions?.length
+      ? d.recent_decisions.slice(0,5).map(dec =>
+          `<div style="padding:8px 0;border-bottom:1px solid var(--border);display:flex;gap:8px;font-size:13px"><span>⚖️</span>${dec.description}</div>`).join('')
+      : '<div style="color:var(--text-muted);font-size:13px">No decisions recorded.</div>';
+  } catch(e) { console.error(e); }
+}
+
+// ── Upload helpers ────────────────────────────────
+function updateNotionToggle() {
+  const auto = document.getElementById('auto-notion-toggle').checked;
+  document.getElementById('notion-toggle-label').textContent = auto
+    ? '🤖 Auto-sync tasks to Notion'
+    : '👤 Review tasks before Notion sync';
+  document.getElementById('notion-toggle-hint').textContent = auto
+    ? 'All tasks created automatically'
+    : 'You approve each task before it goes to Notion';
+}
+
+// ── Upload ────────────────────────────────────────
+function fillDemoTranscript() {
+  const transcript = sampleTranscripts[activeDept] || '';
+  const names = {engineering:'Sprint Planning',hr:'HR Monthly Sync',marcom:'Campaign Review',innovation:'Innovation Lab Sync'};
+  document.getElementById('meeting-title').value = names[activeDept] || 'Team Meeting';
+  document.getElementById('meeting-transcript').value = transcript;
+}
+
+async function uploadMeeting() {
+  const title = document.getElementById('meeting-title').value.trim();
+  const transcript = document.getElementById('meeting-transcript').value.trim();
+  if (!title) { toast('Enter a meeting title', 'error'); return; }
+  if (transcript.length < 50) { toast('Transcript too short', 'error'); return; }
+
+  document.getElementById('upload-form').style.display = 'none';
+  document.getElementById('upload-processing').style.display = 'block';
+  document.getElementById('upload-result').style.display = 'none';
+
+  const steps = ['step-1','step-2','step-3','step-4','step-5'];
+  let si = 0;
+  const iv = setInterval(() => {
+    if (si > 0) document.getElementById(steps[si-1]).className = 'done';
+    if (si < steps.length) document.getElementById(steps[si]).className = 'active';
+    si++;
+    if (si >= steps.length) clearInterval(iv);
+  }, 1200);
+
+  try {
+    const autoNotion = document.getElementById('auto-notion-toggle').checked;
+    const r = await fetch(API + '/api/meetings/upload', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({title, transcript, department: activeDept || 'engineering', auto_sync_notion: autoNotion})
+    });
+    clearInterval(iv);
+    steps.forEach(s => document.getElementById(s).className = 'done');
+    if (!r.ok) { const e = await r.json(); throw new Error(e.detail || 'Upload failed'); }
+    const data = await r.json();
+    showUploadResult(data);
+    toast('Meeting processed!');
+    loadDashboard();
+  } catch(e) {
+    clearInterval(iv);
+    document.getElementById('upload-processing').style.display = 'none';
+    document.getElementById('upload-form').style.display = 'block';
+    toast(e.message || 'Failed', 'error');
+  }
+}
+
+function showUploadResult(data) {
+  document.getElementById('upload-processing').style.display = 'none';
+  document.getElementById('upload-result').style.display = 'block';
+  const ex = data.extraction;
+  const insights = data.cross_meeting_insights || [];
+  const dept = departments[data.department] || {};
+
+  document.getElementById('upload-result').innerHTML = `
+    <div class="card" style="border-color:var(--green)">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <span style="font-size:20px">✅</span>
+        <div>
+          <div style="font-weight:700;font-size:15px">${data.title}</div>
+          <div style="font-size:12px;color:var(--text-muted)">${data.department_icon} ${data.department_name} • K2-Think-V2 ${data.openclaw_active?'+ OpenClaw':''}</div>
+        </div>
+        <button class="btn btn-ghost" style="margin-left:auto;font-size:12px" onclick="resetUpload()">Upload Another</button>
+      </div>
+      <div style="font-size:13px;line-height:1.7;color:var(--text-muted);padding:12px;background:var(--surface2);border-radius:8px;margin-bottom:12px">${data.summary}</div>
+      ${data.notion?.ok && data.notion.created > 0 ? `
+      <a href="${data.notion.database_url}" target="_blank" style="display:inline-flex;align-items:center;gap:8px;padding:8px 14px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;font-size:13px;color:var(--text);text-decoration:none;margin-bottom:12px">
+        📋 <span>${data.notion.created} task${data.notion.created>1?'s':''} synced to Notion</span>
+        <span style="color:var(--accent);font-size:11px">Open →</span>
+      </a>` : ''}
+      <div class="extraction-grid">
+        <div class="extraction-section">
+          <h4 style="color:var(--yellow)">Tasks (${ex.tasks.length})${data.notion?.skipped?` <span style="font-size:11px;color:var(--text-muted);font-weight:400">— select to sync to Notion</span>`:''}</h4>
+          ${(()=>{
+            const urlMap=Object.fromEntries((data.notion?.pages||[]).map(p=>[p.task_id,p.notion_url]));
+            const hitl = data.notion?.skipped;
+            const meetingId = data.meeting_id;
+            const dept = data.department;
+            const title = data.title;
+            return ex.tasks.map(t=>`
+              <div class="extraction-item" style="${hitl?'align-items:flex-start;gap:8px':''}">
+                ${hitl?`<input type="checkbox" data-task-id="${t.id}" class="hitl-check" checked style="margin-top:3px;accent-color:var(--accent);flex-shrink:0">`:''}<span>📌</span>
+                <div style="flex:1">
+                  <div style="display:flex;align-items:center;gap:6px">
+                    <span style="flex:1">${t.description}</span>
+                    ${urlMap[t.id]?`<a href="${urlMap[t.id]}" target="_blank" title="View in Notion" style="color:var(--text-muted);text-decoration:none;font-size:11px;opacity:0.7" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">📋</a>`:''}
+                  </div>
+                  <div style="display:flex;gap:6px;margin-top:4px"><span class="tag tag-owner">${t.owner}</span>${t.deadline!=='Not specified'?`<span class="tag tag-deadline">${t.deadline}</span>`:''}</div>
+                </div>
+              </div>`).join('')||'<div style="color:var(--text-muted);font-size:12px">None</div>';
+          })()}
+          ${data.notion?.skipped ? `
+            <button class="btn btn-primary" style="margin-top:12px;font-size:13px"
+              onclick="syncSelectedToNotion('${data.meeting_id}','${data.department}',${JSON.stringify(data.title)})">
+              📋 Sync selected tasks to Notion
+            </button>` : ''}
+        </div>
+        <div class="extraction-section">
+          <h4 style="color:var(--blue)">Decisions (${ex.decisions.length})</h4>
+          ${ex.decisions.map(d=>`<div class="extraction-item"><span>⚖️</span><div>${d.description}</div></div>`).join('')||'<div style="color:var(--text-muted);font-size:12px">None</div>'}
+        </div>
+        <div class="extraction-section" style="grid-column:1/-1">
+          <h4 style="color:var(--red)">Risks (${ex.risks.length})</h4>
+          ${ex.risks.map(r=>`<div class="extraction-item"><span>${r.severity==='high'?'🔴':r.severity==='medium'?'🟡':'🟢'}</span><div>${r.description} <span class="tag tag-${r.severity}" style="margin-left:6px">${r.severity}</span></div></div>`).join('')||'<div style="color:var(--text-muted);font-size:12px">None</div>'}
+        </div>
+      </div>
+    </div>
+    ${insights.length?`<div class="card" style="border-color:var(--accent)"><div class="card-title" style="color:var(--accent)">Cross-Meeting Insights</div>${insights.map(i=>`<div class="insight"><span>💡</span>${i}</div>`).join('')}</div>`:''}
+    ${(data.unknown_stakeholders||[]).length?`
+    <div class="card" style="border-color:var(--yellow);background:rgba(245,158,11,0.06)">
+      <div class="card-title" style="color:var(--yellow)">⚠️ Unknown Stakeholders Detected</div>
+      <div style="font-size:13px;color:var(--text-muted);margin-bottom:10px">These people were mentioned but aren\\'t in your team registry:</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+        ${(data.unknown_stakeholders).map(n=>`<span style="padding:4px 12px;background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.3);border-radius:999px;font-size:13px;font-weight:600">${n}</span>`).join('')}
+      </div>
+      <button class="btn btn-ghost" style="font-size:12px" onclick="nav('team');loadTeam()">
+        👥 Add them to Team Setup →
+      </button>
+    </div>` : ''}
+    ${(data.dispatch||[]).length?`
+    <div class="card">
+      <div class="card-title">📬 Task Dispatch Log</div>
+      ${(data.dispatch||[]).map(d=>`
+        <div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px">
+          <span style="flex-shrink:0;margin-top:1px">${d.member_found?'✅':'⚠️'}</span>
+          <div style="flex:1">
+            <div>${(d.task||'').substring(0,70)}${(d.task||'').length>70?'…':''}</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:3px;display:flex;gap:8px;flex-wrap:wrap">
+              <span>👤 ${d.owner}</span>
+              ${d.member_found
+                ? `${d.telegram?'<span style="color:var(--green)">💬 Telegram sent</span>':''}${d.email?'<span style="color:var(--green)">✉️ Email sent</span>':''}${!d.telegram&&!d.email?'<span style="color:var(--text-muted)">No contact set</span>':''}`
+                : '<span style="color:var(--yellow)">Not in team registry</span>'}
+            </div>
+          </div>
+        </div>`).join('')}
+    </div>` : ''}`;
+}
+
+function resetUpload() {
+  document.getElementById('upload-form').style.display = 'block';
+  document.getElementById('upload-result').style.display = 'none';
+  document.getElementById('meeting-title').value = '';
+  document.getElementById('meeting-transcript').value = '';
+}
+
+// ── Chat ────────────────────────────────────────
+function askQ(el) { document.getElementById('chat-input').value = el.textContent; sendChat(); }
+
+async function sendChat() {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+  const btn = document.getElementById('chat-btn');
+  input.value = ''; btn.disabled = true;
+  addMsg('user', msg);
+  chatHistory.push({role:'user',content:msg});
+  const tid = addTyping();
+  try {
+    const r = await fetch(API + '/api/chat', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({message:msg, history:chatHistory.slice(-6), department:activeDept})
+    });
+    const data = await r.json();
+    removeTyping(tid);
+    const meta = [data.used_openclaw?'via OpenClaw':'K2-V2-Instruct', ...(data.sources||[]).slice(0,2).map(s=>`📋 ${s}`)].join(' • ');
+    addMsg('assistant', data.answer, meta);
+    chatHistory.push({role:'assistant',content:data.answer});
+  } catch(e) {
+    removeTyping(tid);
+    addMsg('assistant', 'Error connecting to department AI.');
+  }
+  btn.disabled = false; input.focus();
+}
+
+function addMsg(role, content, meta='') {
+  const msgs = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = `message ${role}`;
+  div.innerHTML = `<div class="message-bubble">${content.replace(/\n/g,'<br>')}</div>${meta?`<div class="message-meta">${meta}</div>`:''}`;
+  msgs.appendChild(div); msgs.scrollTop = msgs.scrollHeight;
+}
+function addTyping() {
+  const id = 'tp-'+Date.now();
+  const msgs = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'message assistant'; div.id = id;
+  div.innerHTML = `<div class="message-bubble"><div class="loader" style="width:14px;height:14px;border-width:2px;display:inline-block"></div></div>`;
+  msgs.appendChild(div); msgs.scrollTop = msgs.scrollHeight;
+  return id;
+}
+function removeTyping(id) { document.getElementById(id)?.remove(); }
+
+// ── Tasks ────────────────────────────────────────
+async function loadTasks() {
+  const url = activeDept ? `${API}/api/tasks?department=${activeDept}` : `${API}/api/tasks`;
+  try {
+    const r = await fetch(url);
+    const data = await r.json();
+    const tasks = data.tasks || [];
+    document.getElementById('task-count').textContent = tasks.filter(t=>t.status==='pending').length;
+    const cols = {pending:[],in_progress:[],done:[]};
+    tasks.forEach(t => { const k=t.status==='in_progress'?'in_progress':(t.status==='done'?'done':'pending'); cols[k].push(t); });
+    renderCol('col-pending', cols.pending, 'pending');
+    renderCol('col-progress', cols.in_progress, 'in_progress');
+    renderCol('col-done', cols.done, 'done');
+  } catch(e) {}
+}
+
+function renderCol(id, tasks, status) {
+  const el = document.getElementById(id);
+  el.innerHTML = tasks.length
+    ? tasks.map(t=>`<div class="task-card" onclick="cycleTask('${t.id}','${status}')"><div class="task-desc" style="display:flex;align-items:flex-start;gap:6px"><span style="flex:1">${t.description}</span>${t.notion_url?`<a href="${t.notion_url}" target="_blank" onclick="event.stopPropagation()" title="View in Notion" style="color:var(--text-muted);text-decoration:none;font-size:12px;flex-shrink:0;opacity:0.6;margin-top:1px" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">📋</a>`:''}</div><div class="task-meta"><span class="tag tag-owner">${t.owner}</span>${t.deadline&&t.deadline!=='Not specified'?`<span class="tag tag-deadline">${t.deadline}</span>`:''}</div></div>`).join('')
+    : '<div style="color:var(--text-muted);font-size:13px">No tasks</div>';
+}
+
+async function cycleTask(id, cur) {
+  const next = {pending:'in_progress',in_progress:'done',done:'pending'}[cur];
+  try {
+    await fetch(`${API}/api/tasks/${id}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({task_id:id,status:next})});
+    toast(`→ ${next.replace('_',' ')}`); loadTasks();
+  } catch(e) { toast('Update failed','error'); }
+}
+
+// ── Meetings ─────────────────────────────────────
+async function loadMeetings() {
+  const url = activeDept ? `${API}/api/meetings?department=${activeDept}` : `${API}/api/meetings`;
+  try {
+    const r = await fetch(url);
+    const data = await r.json();
+    const el = document.getElementById('meetings-list');
+    el.innerHTML = data.meetings?.length
+      ? data.meetings.map(m=>{
+          const dept = departments[m.department] || {};
+          return `<div class="meeting-item">
+            <div style="width:36px;height:36px;border-radius:8px;background:rgba(108,99,255,0.2);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">${dept.icon||'📋'}</div>
+            <div style="flex:1"><div style="font-size:14px;font-weight:600">${m.title}</div><div style="font-size:12px;color:var(--text-muted);margin-top:2px">${new Date(m.created_at).toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</div></div>
+            <span class="tag" style="color:${dept.color||'var(--text-muted)'};border-color:${dept.color||'var(--border)'}">${dept.name||m.department}</span>
+          </div>`;}).join('')
+      : '<div style="padding:20px;color:var(--text-muted);font-size:13px">No meetings yet.</div>';
+  } catch(e) {}
+}
+
+// ── Team Setup ────────────────────────────────────
+async function loadTeam() {
+  const dept = activeDept || '';
+  try {
+    const r = await fetch(API + `/api/team${dept ? '?department=' + dept : ''}`);
+    const data = await r.json();
+    renderTeamList(data.members || []);
+
+    // Sync context dropdown to active dept
+    const ctxDept = document.getElementById('ctx-dept');
+    if (ctxDept && activeDept) ctxDept.value = activeDept;
+    loadOrgContext();
+
+    // Sync member dept dropdown to active dept
+    const tmDept = document.getElementById('tm-dept');
+    if (tmDept && activeDept) tmDept.value = activeDept;
+  } catch(e) {}
+}
+
+function renderTeamList(members) {
+  const el = document.getElementById('team-list');
+  const count = document.getElementById('team-count');
+  if (count) count.textContent = `(${members.length})`;
+  if (!members.length) {
+    el.innerHTML = '<div style="color:var(--text-muted);font-size:13px">No team members yet.</div>';
+    return;
+  }
+  el.innerHTML = members.map(m => `
+    <div class="member-card" style="display:flex;align-items:center;gap:12px;padding:10px;border-bottom:1px solid var(--border);border-radius:8px" onclick="openMemberModal(${JSON.stringify(m).replace(/"/g, '&quot;')})">
+      <div style="width:36px;height:36px;border-radius:50%;background:rgba(108,99,255,0.2);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex-shrink:0;color:var(--accent)">
+        ${m.name.charAt(0).toUpperCase()}
+      </div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:14px;font-weight:600">${m.name}</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:2px;display:flex;gap:8px;flex-wrap:wrap">
+          ${m.role ? `<span>${m.role}</span>` : ''}
+          ${m.department ? `<span style="color:var(--accent)">• ${m.department}</span>` : ''}
+          ${m.email ? `<span>✉️ ${m.email}</span>` : ''}
+          ${m.telegram_handle ? `<span>💬 @${m.telegram_handle}</span>` : ''}
+        </div>
+        ${m.responsibilities ? `<div style="font-size:12px;color:var(--text-muted);margin-top:4px;font-style:italic">📌 ${m.responsibilities}</div>` : ''}
+      </div>
+      <button onclick="event.stopPropagation(); deleteTeamMember('${m.id}')"
+        style="background:none;border:1px solid var(--border);border-radius:6px;padding:4px 10px;color:var(--text-muted);cursor:pointer;font-size:12px;flex-shrink:0"
+        onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'"
+        onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">
+        Remove
+      </button>
+    </div>`).join('');
+}
+
+async function addTeamMember() {
+  const name = document.getElementById('tm-name').value.trim();
+  if (!name) { toast('Name is required', 'error'); return; }
+  try {
+    const r = await fetch(API + '/api/team', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        name,
+        role: document.getElementById('tm-role').value.trim(),
+        role_details: '',
+        responsibilities: document.getElementById('tm-responsibilities').value.trim(),
+        department: document.getElementById('tm-dept').value,
+        email: document.getElementById('tm-email').value.trim(),
+        telegram_handle: document.getElementById('tm-telegram').value.trim().replace(/^@/, ''),
+      })
+    });
+    if (!r.ok) throw new Error('Failed');
+    toast(`${name} added to team`);
+    ['tm-name','tm-role','tm-responsibilities','tm-email','tm-telegram'].forEach(id => document.getElementById(id).value = '');
+    loadTeam();
+  } catch(e) { toast('Failed to add member', 'error'); }
+}
+
+async function deleteTeamMember(id) {
+  if (!confirm('Remove this team member?')) return;
+  try {
+    await fetch(API + '/api/team/' + id, {method: 'DELETE'});
+    toast('Team member removed', 'success');
+    loadTeam();
+  } catch(e) { toast('Failed to remove', 'error'); }
+}
+
+function openMemberModal(member) {
+  document.getElementById('edit-member-id').value = member.id;
+  document.getElementById('edit-name').value = member.name || '';
+  document.getElementById('edit-role').value = member.role || '';
+  document.getElementById('edit-responsibilities').value = member.responsibilities || '';
+  document.getElementById('edit-dept').value = member.department || '';
+  document.getElementById('edit-email').value = member.email || '';
+  document.getElementById('edit-telegram').value = member.telegram_handle || '';
+  document.getElementById('member-modal-title').textContent = `✏️ Edit ${member.name}`;
+  document.getElementById('member-modal').classList.add('show');
+}
+
+function closeMemberModal() {
+  document.getElementById('member-modal').classList.remove('show');
+}
+
+async function saveEditedMember() {
+  const memberId = document.getElementById('edit-member-id').value;
+  const name = document.getElementById('edit-name').value.trim();
+
+  if (!name) {
+    toast('Name is required', 'error');
+    return;
+  }
+
+  try {
+    const r = await fetch(API + '/api/team/' + memberId, {
+      method: 'PUT',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        name,
+        role: document.getElementById('edit-role').value.trim(),
+        role_details: '',
+        responsibilities: document.getElementById('edit-responsibilities').value.trim(),
+        department: document.getElementById('edit-dept').value,
+        email: document.getElementById('edit-email').value.trim(),
+        telegram_handle: document.getElementById('edit-telegram').value.trim().replace(/^@/, ''),
+      })
+    });
+
+    if (!r.ok) throw new Error('Update failed');
+
+    toast('Team member updated! ✓', 'success');
+    closeMemberModal();
+    loadTeam();
+  } catch(e) {
+    toast('Failed to update member', 'error');
+  }
+}
+
+async function loadOrgContext() {
+  const dept = document.getElementById('ctx-dept')?.value || activeDept || 'engineering';
+  try {
+    const r = await fetch(API + '/api/org/context?department=' + dept);
+    const data = await r.json();
+    document.getElementById('ctx-mission').value = data.mission || '';
+  } catch(e) {}
+}
+
+async function saveOrgContext() {
+  const dept = document.getElementById('ctx-dept').value;
+  const mission = document.getElementById('ctx-mission').value.trim();
+  try {
+    const r = await fetch(API + '/api/org/context', {
+      method: 'PUT',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({department: dept, mission})
+    });
+    if (!r.ok) throw new Error();
+    toast('Context saved — will apply to next extraction');
+  } catch(e) { toast('Failed to save', 'error'); }
+}
+
+// ── HITL Notion Sync ─────────────────────────────
+async function syncSelectedToNotion(meetingId, department, meetingTitle) {
+  const checked = [...document.querySelectorAll('.hitl-check:checked')];
+  const taskIds = checked.map(cb => cb.dataset.taskId);
+  if (!taskIds.length) { toast('No tasks selected', 'error'); return; }
+
+  const btn = event?.currentTarget;
+  if (btn) { btn.disabled = true; btn.textContent = 'Syncing...'; }
+
+  try {
+    const r = await fetch(API + '/api/meetings/sync-notion', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({meeting_id: meetingId, task_ids: taskIds, department, meeting_title: meetingTitle})
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.detail || 'Sync failed');
+
+    toast(`${data.created} task${data.created !== 1 ? 's' : ''} synced to Notion ✓`);
+
+    // Update task rows with Notion links and uncheck + disable checkboxes
+    (data.pages || []).forEach(p => {
+      const cb = document.querySelector(`.hitl-check[data-task-id="${p.task_id}"]`);
+      if (cb) {
+        cb.disabled = true;
+        const row = cb.closest('.extraction-item');
+        if (row) {
+          // Insert notion link after description span
+          const descSpan = row.querySelector('div > span:first-child') || row.querySelector('[style*="flex:1"]');
+          const existing = row.querySelector('a[href*="notion"]');
+          if (!existing && descSpan) {
+            const a = document.createElement('a');
+            a.href = p.notion_url; a.target = '_blank';
+            a.title = 'View in Notion';
+            a.style.cssText = 'color:var(--text-muted);text-decoration:none;font-size:11px;opacity:0.7';
+            a.onmouseover = () => a.style.opacity = '1';
+            a.onmouseout = () => a.style.opacity = '0.7';
+            a.textContent = '📋';
+            descSpan.parentElement?.appendChild(a);
+          }
+        }
+      }
+    });
+
+    // Hide sync button and hide unchecked tasks' checkboxes
+    if (btn) { btn.style.display = 'none'; }
+    document.querySelectorAll('.hitl-check:not(:checked)').forEach(cb => cb.parentElement?.classList.add('hitl-skipped'));
+
+    loadDashboard();
+  } catch(e) {
+    toast(e.message || 'Sync failed', 'error');
+    if (btn) { btn.disabled = false; btn.textContent = '📋 Sync selected tasks to Notion'; }
+  }
+}
+
+// ── OpenClaw ─────────────────────────────────────
+async function checkOpenClaw() {
+  try {
+    const r = await fetch(API + '/api/openclaw/status');
+    const d = await r.json();
+    document.getElementById('oc-dot').style.background = d.available ? 'var(--green)' : 'var(--text-muted)';
+    document.getElementById('oc-label').textContent = d.available ? 'OpenClaw connected' : 'OpenClaw: fallback';
+    const card = document.getElementById('oc-status-card');
+    if (card) card.innerHTML = d.available
+      ? `<div style="display:flex;align-items:center;gap:12px"><div style="width:40px;height:40px;border-radius:10px;background:rgba(34,197,94,0.2);display:flex;align-items:center;justify-content:center;font-size:20px">⚙️</div><div><div style="font-weight:700;color:var(--green)">OpenClaw Connected</div><div style="font-size:13px;color:var(--text-muted)">${d.base_url} • Agent: ${d.agent_id}</div></div></div>`
+      : `<div style="display:flex;align-items:center;gap:12px"><div style="width:40px;height:40px;border-radius:10px;background:rgba(245,158,11,0.2);display:flex;align-items:center;justify-content:center;font-size:20px">⚠️</div><div><div style="font-weight:700;color:var(--yellow)">Not Running</div><div style="font-size:13px;color:var(--text-muted)">Fallback mode active. See setup below.</div></div></div>`;
+  } catch(e) {}
+}
+
+init();
+</script>
+</body>
+</html>

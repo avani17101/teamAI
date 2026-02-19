@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:openclaw.ai)",
+      "Bash(curl -s -X POST 'https://build-api.k2think.ai/v1/chat/completions' -H 'accept: application/json' -H 'Authorization: Bearer IFM-i0t2ZCDtLv9Tcr9q' -H 'Content-Type: application/json' -d '{\n  \"\"\"\"model\"\"\"\": \"\"\"\"LLM360/K2-Think-v2\"\"\"\",\n  \"\"\"\"messages\"\"\"\": [\n    {\n      \"\"\"\"role\"\"\"\": \"\"\"\"user\"\"\"\",\n      \"\"\"\"content\"\"\"\": \"\"\"\"Extract tasks, owners, decisions, and risks from this meeting transcript as JSON:\\\\n\\\\nTranscript: Sarah said she will finish the dataset annotations by Friday. John mentioned there is a risk of missing the deadline because two team members are sick. The team decided to postpone the model evaluation to next week. Mark has no assigned tasks yet.\"\"\"\"\n    }\n  ]\n}')",
+      "WebFetch(domain:docs.openclaw.ai)",
+      "Bash(curl -s -X POST \"https://build-api.k2think.ai/v1/chat/completions\" -H \"accept: application/json\" -H \"Authorization: Bearer IFM-i0t2ZCDtLv9Tcr9q\" -H \"Content-Type: application/json\" -d '{\"\"model\"\":\"\"LLM360/K2-Think-v2\"\",\"\"messages\"\":[{\"\"role\"\":\"\"user\"\",\"\"content\"\":\"\"Extract tasks, owners, decisions, and risks from this meeting transcript as JSON:\\\\n\\\\nTranscript: Sarah said she will finish the dataset annotations by Friday. John mentioned there is a risk of missing the deadline because two team members are sick. The team decided to postpone the model evaluation to next week. Mark has no assigned tasks yet.\"\"}]}')",
+      "Bash(chmod:*)",
+      "Bash(python3:*)",
+      "Bash(source venv/bin/activate)",
+      "Bash(pip install:*)",
+      "Bash(curl:*)",
+      "Bash(source:*)",
+      "Bash(timeout 5 uvicorn:*)",
+      "Bash(openclaw config set:*)",
+      "Bash(./venv/bin/openclaw config set:*)",
+      "Bash(./venv/bin/tiny-agents config set:*)",
+      "Bash(./venv/bin/tiny-agents:*)",
+      "Bash(python -m backend.main:*)",
+      "Bash(pkill:*)",
+      "Bash(python:*)",
+      "Bash(sqlite3:*)",
+      "Bash(timeout 10 python:*)",
+      "Bash(ls:*)",
+      "Bash(lsof:*)",
+      "Bash(kill:*)",
+      "Bash(uvicorn:*)",
+      "Bash(tail:*)",
+      "Bash(xargs kill:*)",
+      "Bash(while read table)",
+      "Bash(do echo '=== $table ===')",
+      "Bash(done)"
+    ]
+  }
+}

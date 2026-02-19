@@ -1,0 +1,37 @@
+{
+  "gateway": {
+    "auth": {
+      "mode": "token",
+      "token": "teamai-local-token"
+    },
+    "http": {
+      "port": 18789,
+      "endpoints": {
+        "chatCompletions": {
+          "enabled": true
+        },
+        "toolsInvoke": {
+          "enabled": true
+        }
+      }
+    },
+    "tools": {
+      "deny": ["sessions_spawn", "sessions_send", "gateway", "whatsapp_login"],
+      "allow": ["shell", "file_read", "file_write", "browser"]
+    }
+  },
+  "agents": {
+    "defaults": {
+      "thinkingDefault": "high"
+    },
+    "department-ai": {
+      "workspace": "./workspace",
+      "model": {
+        "provider": "openai-compatible",
+        "baseUrl": "http://instruct-api-3.ifmapp.net:8000",
+        "apiKey": "sk-XRQV0fFqJ7VfUIcfswIpZTckzFfL8LTqC1M2R1O30z7d2KQA2S",
+        "model": "LLM360/K2-V2-Instruct"
+      }
+    }
+  }
+}

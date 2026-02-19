@@ -1,0 +1,1257 @@
+{
+  "tasks": [
+    {
+      "id": "31a54bd7-c95f-483b-afa3-eff0864bae75",
+      "description": "Complete the dataset annotation pipeline",
+      "owner": "Sarah",
+      "deadline": "Friday",
+      "status": "pending",
+      "meeting_id": "6aec697c-09d3-4820-be5f-d98050879252",
+      "meeting_title": "Research Team Weekly Sync - Week 7"
+    },
+    {
+      "id": "feb67218-df44-4e8e-9479-a79691352da0",
+      "description": "Work on data validation scripts",
+      "owner": "Mark",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "6aec697c-09d3-4820-be5f-d98050879252",
+      "meeting_title": "Research Team Weekly Sync - Week 7"
+    },
+    {
+      "id": "e750a0b4-8e9b-4062-a9eb-c375435ac035",
+      "description": "Prepare the slide deck for the sponsor presentation",
+      "owner": "Emily",
+      "deadline": "March 15th",
+      "status": "pending",
+      "meeting_id": "6aec697c-09d3-4820-be5f-d98050879252",
+      "meeting_title": "Research Team Weekly Sync - Week 7"
+    },
+    {
+      "id": "4638c1f0-7ff7-433a-9929-8f4aafc15255",
+      "description": "Provide preliminary benchmark results to Emily",
+      "owner": "Model Team",
+      "deadline": "March 12th",
+      "status": "pending",
+      "meeting_id": "6aec697c-09d3-4820-be5f-d98050879252",
+      "meeting_title": "Research Team Weekly Sync - Week 7"
+    },
+    {
+      "id": "7d68fb6e-6a79-4d06-b42e-8da2a729a2e7",
+      "description": "Hold quick daily standup meetings this week",
+      "owner": "Unassigned",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "6aec697c-09d3-4820-be5f-d98050879252",
+      "meeting_title": "Research Team Weekly Sync - Week 7"
+    },
+    {
+      "id": "d73783f0-dbfc-46ce-8e60-db0a9a3d5c8a",
+      "description": "Complete dataset annotation pipeline",
+      "owner": "Sarah",
+      "deadline": "Friday",
+      "status": "pending",
+      "meeting_id": "70a57bf8-e0c5-4120-a5f9-a73e1aafb352",
+      "meeting_title": "Research Team Weekly Sync"
+    },
+    {
+      "id": "ab87d189-a9c1-4673-bb5d-664741d4ad5a",
+      "description": "Develop data validation scripts",
+      "owner": "Mark",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "70a57bf8-e0c5-4120-a5f9-a73e1aafb352",
+      "meeting_title": "Research Team Weekly Sync"
+    },
+    {
+      "id": "ee9753c6-05ba-4c9b-ad0f-39e745cb4109",
+      "description": "Provide preliminary benchmark results",
+      "owner": "Model team",
+      "deadline": "March 12th",
+      "status": "pending",
+      "meeting_id": "70a57bf8-e0c5-4120-a5f9-a73e1aafb352",
+      "meeting_title": "Research Team Weekly Sync"
+    },
+    {
+      "id": "9313ddf8-c4e0-4559-857a-93aae854091b",
+      "description": "Build the API integration",
+      "owner": "Alice",
+      "deadline": "next Wednesday",
+      "status": "pending",
+      "meeting_id": "34107a84-9c86-4c10-b5a0-bb16611e5997",
+      "meeting_title": "Notion Test Meeting"
+    },
+    {
+      "id": "4fe8f01a-2856-4af0-a958-e90b1f847534",
+      "description": "Write tests for the API integration",
+      "owner": "Bob",
+      "deadline": "Thursday",
+      "status": "pending",
+      "meeting_id": "34107a84-9c86-4c10-b5a0-bb16611e5997",
+      "meeting_title": "Notion Test Meeting"
+    },
+    {
+      "id": "4d366ab3-f34c-4173-9bf1-212ddbc3365b",
+      "description": "Complete the dataset annotation pipeline",
+      "owner": "Sarah",
+      "deadline": "Friday (this week)",
+      "status": "pending",
+      "meeting_id": "535156a3-e292-4680-a1b5-8a0bc830c3b7",
+      "meeting_title": "Research Team Weekly Sync - Week 7"
+    },
+    {
+      "id": "d426b554-0a6c-42a2-9415-d63c22f97365",
+      "description": "Work on data validation scripts",
+      "owner": "Mark",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "535156a3-e292-4680-a1b5-8a0bc830c3b7",
+      "meeting_title": "Research Team Weekly Sync - Week 7"
+    },
+    {
+      "id": "05a7133c-89b4-4c37-b7bb-a052e954cdad",
+      "description": "Prepare the slide deck for the sponsor presentation",
+      "owner": "Emily",
+      "deadline": "March 15th",
+      "status": "pending",
+      "meeting_id": "535156a3-e292-4680-a1b5-8a0bc830c3b7",
+      "meeting_title": "Research Team Weekly Sync - Week 7"
+    },
+    {
+      "id": "2ae48ce0-b632-424d-8a4b-4c564b2d14f3",
+      "description": "Provide preliminary benchmark results to Emily",
+      "owner": "Model Team",
+      "deadline": "March 12th",
+      "status": "pending",
+      "meeting_id": "535156a3-e292-4680-a1b5-8a0bc830c3b7",
+      "meeting_title": "Research Team Weekly Sync - Week 7"
+    },
+    {
+      "id": "4a4bed26-4605-45c8-bf6a-11e0fa06504f",
+      "description": "Hold quick daily standup meetings this week",
+      "owner": "Unassigned",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "535156a3-e292-4680-a1b5-8a0bc830c3b7",
+      "meeting_title": "Research Team Weekly Sync - Week 7"
+    },
+    {
+      "id": "94ba3347-3b6d-4e97-98ac-55ff772c047c",
+      "description": "Lead screening for Senior ML Engineer role",
+      "owner": "Khalid",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "1d57ae31-1937-4600-b60e-275f6a01d0f7",
+      "meeting_title": "HR Monthly Sync - February"
+    },
+    {
+      "id": "f00e1812-2329-4225-9714-01c96a0a0b5f",
+      "description": "Schedule first round interviews for Senior ML Engineer role",
+      "owner": "Unassigned",
+      "deadline": "Next week",
+      "status": "pending",
+      "meeting_id": "1d57ae31-1937-4600-b60e-275f6a01d0f7",
+      "meeting_title": "HR Monthly Sync - February"
+    },
+    {
+      "id": "7829025f-19f4-4047-a7b4-cb9b6399f248",
+      "description": "Prepare onboarding pack for Omar Saeed",
+      "owner": "Sara",
+      "deadline": "Friday",
+      "status": "pending",
+      "meeting_id": "1d57ae31-1937-4600-b60e-275f6a01d0f7",
+      "meeting_title": "HR Monthly Sync - February"
+    },
+    {
+      "id": "f205271f-c1c0-4fae-b1b8-e15d12b39610",
+      "description": "Communicate new remote work policy via email",
+      "owner": "Rania",
+      "deadline": "Wednesday",
+      "status": "pending",
+      "meeting_id": "1d57ae31-1937-4600-b60e-275f6a01d0f7",
+      "meeting_title": "HR Monthly Sync - February"
+    },
+    {
+      "id": "05c4f385-d21f-4a92-8ab4-7bc337d258ef",
+      "description": "Complete Q1 performance reviews",
+      "owner": "Managers",
+      "deadline": "March 1st",
+      "status": "pending",
+      "meeting_id": "1d57ae31-1937-4600-b60e-275f6a01d0f7",
+      "meeting_title": "HR Monthly Sync - February"
+    },
+    {
+      "id": "bdaa04f2-39c7-48e8-973c-9c17174dc206",
+      "description": "Deliver all creative assets to the design team by February 28th",
+      "owner": "Zainab",
+      "deadline": "Feb 28",
+      "status": "pending",
+      "meeting_id": "0fad49b5-c6e0-45ae-ba4e-48bbdb94c014",
+      "meeting_title": "Campaign Review"
+    },
+    {
+      "id": "4a23fde6-3723-428f-8e57-fa9e428210e9",
+      "description": "Review copy with legal (scheduled for tomorrow)",
+      "owner": "Unassigned",
+      "deadline": "Tomorrow",
+      "status": "pending",
+      "meeting_id": "0fad49b5-c6e0-45ae-ba4e-48bbdb94c014",
+      "meeting_title": "Campaign Review"
+    },
+    {
+      "id": "939a2e44-9cb1-41c4-864d-03cb405eb3e3",
+      "description": "Finalize the March Instagram and LinkedIn content calendar",
+      "owner": "Tariq",
+      "deadline": "Monday",
+      "status": "pending",
+      "meeting_id": "0fad49b5-c6e0-45ae-ba4e-48bbdb94c014",
+      "meeting_title": "Campaign Review"
+    },
+    {
+      "id": "9fc8804c-a5f7-47ac-8a4f-9a4d1a2c9e1b",
+      "description": "Launch the new product landing page by March 5th",
+      "owner": "Hassan",
+      "deadline": "March 5",
+      "status": "pending",
+      "meeting_id": "0fad49b5-c6e0-45ae-ba4e-48bbdb94c014",
+      "meeting_title": "Campaign Review"
+    },
+    {
+      "id": "5874a02a-16d8-4950-a668-b311fb76437a",
+      "description": "Obtain CEO quote approval (due tomorrow)",
+      "owner": "Unassigned",
+      "deadline": "Tomorrow",
+      "status": "pending",
+      "meeting_id": "0fad49b5-c6e0-45ae-ba4e-48bbdb94c014",
+      "meeting_title": "Campaign Review"
+    },
+    {
+      "id": "89a1dc74-72db-4174-a8ab-7f4edc94e071",
+      "description": "Distribute the product launch press release to the press list on March 8th",
+      "owner": "Nadia",
+      "deadline": "March 8",
+      "status": "pending",
+      "meeting_id": "0fad49b5-c6e0-45ae-ba4e-48bbdb94c014",
+      "meeting_title": "Campaign Review"
+    },
+    {
+      "id": "41d51522-df3b-477b-a95f-dcf2f16c0499",
+      "description": "Launch the webinar registration page this week",
+      "owner": "Lina",
+      "deadline": "This week",
+      "status": "pending",
+      "meeting_id": "0fad49b5-c6e0-45ae-ba4e-48bbdb94c014",
+      "meeting_title": "Campaign Review"
+    },
+    {
+      "id": "d3a40256-bd3b-484c-aa44-c9ff6dd1ee07",
+      "description": "Confirm the pending webinar speaker",
+      "owner": "Lina",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "0fad49b5-c6e0-45ae-ba4e-48bbdb94c014",
+      "meeting_title": "Campaign Review"
+    },
+    {
+      "id": "6b223424-1578-43c8-8c94-38b5d62fc57d",
+      "description": "Secure GPU access on the cluster to complete benchmark experiments for the Arabic NLP paper",
+      "owner": "Dr. Aisha",
+      "deadline": "March 15th",
+      "status": "pending",
+      "meeting_id": "749241a3-ef0e-48c3-b2ec-d999ba7ecf63",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "1d87f4d4-64c1-4273-89a3-71fd8c2d0cd1",
+      "description": "Follow up with legal to confirm signing date for the TechCorp MoU",
+      "owner": "Mohammed",
+      "deadline": "Tomorrow",
+      "status": "pending",
+      "meeting_id": "749241a3-ef0e-48c3-b2ec-d999ba7ecf63",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "f3b1bf35-e4d2-4ab5-8119-4f92d055b9f6",
+      "description": "Sign the MoU with TechCorp before the end of the month",
+      "owner": "Mohammed",
+      "deadline": "End of month",
+      "status": "pending",
+      "meeting_id": "749241a3-ef0e-48c3-b2ec-d999ba7ecf63",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "c12ff681-28a7-4c5f-87ba-946ae7bc3cfe",
+      "description": "Write the technical proposal for the ADEK research grant",
+      "owner": "Nadia",
+      "deadline": "March 17th",
+      "status": "pending",
+      "meeting_id": "749241a3-ef0e-48c3-b2ec-d999ba7ecf63",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "54cb7c2c-2a3b-4c8e-b669-85e59210e676",
+      "description": "Prepare the financial section for the ADEK research grant",
+      "owner": "Sara",
+      "deadline": "March 17th",
+      "status": "pending",
+      "meeting_id": "749241a3-ef0e-48c3-b2ec-d999ba7ecf63",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "b36b245b-a8aa-4e7e-a152-313647819c32",
+      "description": "Merge the technical and financial proposals and review them for the ADEK grant",
+      "owner": "Unassigned",
+      "deadline": "March 17th",
+      "status": "pending",
+      "meeting_id": "749241a3-ef0e-48c3-b2ec-d999ba7ecf63",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "7b612359-26bf-4701-891d-5c5da41f55cc",
+      "description": "Conduct IT security review for the Arabic Voice Dataset v2",
+      "owner": "Khalid",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "749241a3-ef0e-48c3-b2ec-d999ba7ecf63",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "88ac0097-e438-44e4-ac9d-8011cb674c4c",
+      "description": "Publish the Arabic Voice Dataset v2 on HuggingFace after security sign\u2011off",
+      "owner": "Khalid",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "749241a3-ef0e-48c3-b2ec-d999ba7ecf63",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "da9f779b-3978-4d3b-92e8-b5bb7fb2c3ff",
+      "description": "Conduct integration testing for the healthcare AI pilot with Al Noor Hospital",
+      "owner": "Yusuf",
+      "deadline": "Next week",
+      "status": "pending",
+      "meeting_id": "749241a3-ef0e-48c3-b2ec-d999ba7ecf63",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "8ce7eef8-0126-4c3e-b199-ff479f8fd75d",
+      "description": "Lead the UNESCO AI Ethics grant application",
+      "owner": "Dr. Hana",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "749241a3-ef0e-48c3-b2ec-d999ba7ecf63",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "4f468bb9-664c-4f49-894e-583e327219a9",
+      "description": "Screen candidates for Senior ML Engineer role",
+      "owner": "Khalid",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "f836361c-75e2-4cfe-b544-8e40b7b6aca4",
+      "meeting_title": "HR Monthly Sync"
+    },
+    {
+      "id": "de30e35b-4f1e-4188-8028-4803a5cbf566",
+      "description": "Schedule first round interviews for Senior ML Engineer and Data Scientist positions",
+      "owner": "Unassigned",
+      "deadline": "Next week",
+      "status": "pending",
+      "meeting_id": "f836361c-75e2-4cfe-b544-8e40b7b6aca4",
+      "meeting_title": "HR Monthly Sync"
+    },
+    {
+      "id": "5f233bd7-ea9a-407b-bf5f-ec1350ba0470",
+      "description": "Prepare onboarding pack and system access for Omar Saeed",
+      "owner": "Sara",
+      "deadline": "Friday",
+      "status": "pending",
+      "meeting_id": "f836361c-75e2-4cfe-b544-8e40b7b6aca4",
+      "meeting_title": "HR Monthly Sync"
+    },
+    {
+      "id": "7921f3f7-dd67-432b-be98-041b9b1c8708",
+      "description": "Communicate updated remote work policy via email and update employee handbook",
+      "owner": "Rania",
+      "deadline": "Wednesday",
+      "status": "pending",
+      "meeting_id": "f836361c-75e2-4cfe-b544-8e40b7b6aca4",
+      "meeting_title": "HR Monthly Sync"
+    },
+    {
+      "id": "c880935b-031b-4610-ba7d-3bb83bb67b9a",
+      "description": "Organize mental health awareness workshop series for March",
+      "owner": "Layla",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "f836361c-75e2-4cfe-b544-8e40b7b6aca4",
+      "meeting_title": "HR Monthly Sync"
+    },
+    {
+      "id": "4ee52a77-08ef-4801-9411-448cb049aa2a",
+      "description": "Lead technical setup of Greenhouse recruitment platform",
+      "owner": "Ahmed",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "f836361c-75e2-4cfe-b544-8e40b7b6aca4",
+      "meeting_title": "HR Monthly Sync"
+    },
+    {
+      "id": "bee0e529-8ee5-4c15-9373-0a540a792a0d",
+      "description": "Send reminder emails to managers about Q1 performance reviews",
+      "owner": "Unassigned",
+      "deadline": "This week",
+      "status": "pending",
+      "meeting_id": "f836361c-75e2-4cfe-b544-8e40b7b6aca4",
+      "meeting_title": "HR Monthly Sync"
+    },
+    {
+      "id": "a4c96b1b-846d-4af8-981c-2532d7612867",
+      "description": "Complete Q1 performance reviews in HR system",
+      "owner": "All managers",
+      "deadline": "March 1st",
+      "status": "pending",
+      "meeting_id": "f836361c-75e2-4cfe-b544-8e40b7b6aca4",
+      "meeting_title": "HR Monthly Sync"
+    },
+    {
+      "id": "f5e376aa-1c2d-46d1-9edd-d9ae1594cec7",
+      "description": "Lead screening for the Senior ML Engineer role",
+      "owner": "Khalid",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "a4edba62-66f9-47df-a345-b9167f3b0643",
+      "meeting_title": "HR Monthly Sync"
+    },
+    {
+      "id": "983057ae-a8cc-483b-af07-801025465567",
+      "description": "Schedule first round interviews for the Senior ML Engineer and Data Scientist positions for next week",
+      "owner": "Unassigned",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "a4edba62-66f9-47df-a345-b9167f3b0643",
+      "meeting_title": "HR Monthly Sync"
+    },
+    {
+      "id": "53c8e98b-1107-4631-bb50-72aed36851bd",
+      "description": "Prepare onboarding pack and system access for new hire Omar Saeed by Friday",
+      "owner": "Sara",
+      "deadline": "Friday",
+      "status": "pending",
+      "meeting_id": "a4edba62-66f9-47df-a345-b9167f3b0643",
+      "meeting_title": "HR Monthly Sync"
+    },
+    {
+      "id": "817e4144-042e-4e6f-a45c-ac3ad30f970e",
+      "description": "Send reminder emails to managers about Q1 performance reviews this week",
+      "owner": "Unassigned",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "a4edba62-66f9-47df-a345-b9167f3b0643",
+      "meeting_title": "HR Monthly Sync"
+    },
+    {
+      "id": "b8f07972-d941-4293-a047-78f666c15e68",
+      "description": "All managers complete Q1 performance reviews in the HR system by March 1st",
+      "owner": "All managers",
+      "deadline": "March 1st",
+      "status": "pending",
+      "meeting_id": "a4edba62-66f9-47df-a345-b9167f3b0643",
+      "meeting_title": "HR Monthly Sync"
+    },
+    {
+      "id": "ca81d3d8-dc83-4afc-8d2b-285c7c7a4c76",
+      "description": "Communicate the updated remote work policy (3 days remote per week) to all employees via email by Wednesday",
+      "owner": "Rania",
+      "deadline": "Wednesday",
+      "status": "pending",
+      "meeting_id": "a4edba62-66f9-47df-a345-b9167f3b0643",
+      "meeting_title": "HR Monthly Sync"
+    },
+    {
+      "id": "29ad708a-6df2-479d-a368-87a1496de8f2",
+      "description": "Update the employee handbook with the new remote work policy",
+      "owner": "Rania",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "a4edba62-66f9-47df-a345-b9167f3b0643",
+      "meeting_title": "HR Monthly Sync"
+    },
+    {
+      "id": "7a2d8c36-4a2d-4c61-82cd-01dbd096ce7a",
+      "description": "Organize a mental health awareness workshop series for March",
+      "owner": "Layla",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "a4edba62-66f9-47df-a345-b9167f3b0643",
+      "meeting_title": "HR Monthly Sync"
+    },
+    {
+      "id": "1330afdd-84fd-46c4-8c46-965ce88cf05a",
+      "description": "Lead the technical setup of the new recruitment platform (Greenhouse)",
+      "owner": "Ahmed",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "a4edba62-66f9-47df-a345-b9167f3b0643",
+      "meeting_title": "HR Monthly Sync"
+    },
+    {
+      "id": "119667f1-7ffc-4c1f-9015-270201229b38",
+      "description": "Secure GPU access on the cluster to complete benchmark experiments for the Arabic NLP paper",
+      "owner": "Dr. Aisha",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "55d4fb16-0c29-4acd-b901-a056ed3ab123",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "0ed68e65-c922-4818-944e-f111aae6a321",
+      "description": "Follow up with legal to confirm signing date for the MoU with TechCorp",
+      "owner": "Mohammed",
+      "deadline": "Tomorrow",
+      "status": "pending",
+      "meeting_id": "55d4fb16-0c29-4acd-b901-a056ed3ab123",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "9265741f-5ba9-4038-bbc7-4f8020eb8c89",
+      "description": "Write the technical proposal for the ADEK research grant",
+      "owner": "Nadia",
+      "deadline": "March 17th",
+      "status": "pending",
+      "meeting_id": "55d4fb16-0c29-4acd-b901-a056ed3ab123",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "b282b807-e646-44bd-bf91-48e25e1fdfdb",
+      "description": "Prepare the financial section for the ADEK research grant",
+      "owner": "Sara",
+      "deadline": "March 17th",
+      "status": "pending",
+      "meeting_id": "55d4fb16-0c29-4acd-b901-a056ed3ab123",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "81792c13-a3ee-405a-81c3-eb438bbe5467",
+      "description": "Merge technical and financial proposals and review for the ADEK grant",
+      "owner": "Nadia & Sara",
+      "deadline": "March 17th",
+      "status": "pending",
+      "meeting_id": "55d4fb16-0c29-4acd-b901-a056ed3ab123",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "37cdf34e-4fba-4e60-9b69-014f7ab877e7",
+      "description": "Conduct IT security review for the Arabic Voice Dataset v2",
+      "owner": "Khalid",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "55d4fb16-0c29-4acd-b901-a056ed3ab123",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "d5c54c29-c7ef-470b-82ca-ececaac24de8",
+      "description": "Publish the Arabic Voice Dataset v2 on HuggingFace after security sign\u2011off",
+      "owner": "Khalid",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "55d4fb16-0c29-4acd-b901-a056ed3ab123",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "09111b11-2f28-4506-a097-8fa0d1d2b04b",
+      "description": "Conduct integration testing for the healthcare AI pilot with Al Noor Hospital",
+      "owner": "Yusuf",
+      "deadline": "Next week",
+      "status": "pending",
+      "meeting_id": "55d4fb16-0c29-4acd-b901-a056ed3ab123",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "e0b5e466-3ac4-45ef-af4c-f883a1a39648",
+      "description": "Lead the UNESCO AI Ethics grant application",
+      "owner": "Dr. Hana",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "55d4fb16-0c29-4acd-b901-a056ed3ab123",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "c4cb9221-ca9b-4401-988a-4d60e1c7a3b3",
+      "description": "Sign the MoU with TechCorp before the end of the month",
+      "owner": "Mohammed",
+      "deadline": "End of month",
+      "status": "pending",
+      "meeting_id": "55d4fb16-0c29-4acd-b901-a056ed3ab123",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "24b373ac-eb76-4ac9-9fe5-f78f79ad9aee",
+      "description": "Send a list of unpaid purchase orders from last year to Mohammad Abu Jafar for review.",
+      "owner": "Mark Juan",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "3c219957-0d7e-4171-81d6-a50a08f6506e",
+      "meeting_title": "financial services newsletter"
+    },
+    {
+      "id": "4a3bfd47-4e84-4dab-9375-a05eb37b1094",
+      "description": "Finalize the financial and accounting books in the new system this week.",
+      "owner": "Mohammad Abu Jafar",
+      "deadline": "This week",
+      "status": "pending",
+      "meeting_id": "3c219957-0d7e-4171-81d6-a50a08f6506e",
+      "meeting_title": "financial services newsletter"
+    },
+    {
+      "id": "8a8885f0-fc30-4550-bfa9-b22b3d370433",
+      "description": "Coordinate with the Budget Office and Grants Management Office to ensure all expense data is posted accurately and reflected in the system.",
+      "owner": "Mohammad Abu Jafar",
+      "deadline": "This week",
+      "status": "pending",
+      "meeting_id": "3c219957-0d7e-4171-81d6-a50a08f6506e",
+      "meeting_title": "financial services newsletter"
+    },
+    {
+      "id": "ad396e27-74c3-4478-826b-18546cfd1036",
+      "description": "Prepare and deliver budget owner reports with detailed expenses and budgets by 25 February.",
+      "owner": "Budget Office",
+      "deadline": "25 February",
+      "status": "pending",
+      "meeting_id": "3c219957-0d7e-4171-81d6-a50a08f6506e",
+      "meeting_title": "financial services newsletter"
+    },
+    {
+      "id": "80ee3c8d-1dbd-413b-bbdd-3113034b0108",
+      "description": "Investigate the unpaid invoices and verify supplier invoice accuracy for the listed POs.",
+      "owner": "Mohammad Abu Jafar",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "3c219957-0d7e-4171-81d6-a50a08f6506e",
+      "meeting_title": "financial services newsletter"
+    },
+    {
+      "id": "eeb75fd8-f81d-4bd2-9f91-ae11cdce6864",
+      "description": "Implement a monitoring capability within the new system for ongoing expenses.",
+      "owner": "Mohammad Abu Jafar",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "3c219957-0d7e-4171-81d6-a50a08f6506e",
+      "meeting_title": "financial services newsletter"
+    },
+    {
+      "id": "9e26807f-e010-4c3c-8c91-2c6beadd30e1",
+      "description": "Deploy the OCR-based expense capture and reimbursement system for duty travel by May/June.",
+      "owner": "Mohammad Abu Jafar",
+      "deadline": "May/June",
+      "status": "pending",
+      "meeting_id": "3c219957-0d7e-4171-81d6-a50a08f6506e",
+      "meeting_title": "financial services newsletter"
+    },
+    {
+      "id": "1786e607-42b3-4b8b-a842-09df0f5badc1",
+      "description": "Secure GPU access on the cluster to complete benchmark experiments for the Arabic NLP paper",
+      "owner": "Dr. Aisha",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "53ab383e-fb94-4f1b-b7c9-e4654698e3d6",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "f5cfeef8-0eb2-41f2-a7ab-b010ac602c07",
+      "description": "Follow up with legal to confirm signing date for the TechCorp MoU",
+      "owner": "Mohammed",
+      "deadline": "Tomorrow",
+      "status": "pending",
+      "meeting_id": "53ab383e-fb94-4f1b-b7c9-e4654698e3d6",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "9edd449b-3408-4653-af3a-4bf2be7d198f",
+      "description": "Write the technical proposal for the ADEK research grant",
+      "owner": "Nadia",
+      "deadline": "March 17th",
+      "status": "pending",
+      "meeting_id": "53ab383e-fb94-4f1b-b7c9-e4654698e3d6",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "c1ee01f2-399f-4a36-8478-9fbd3f81e7f4",
+      "description": "Prepare the financial section for the ADEK research grant",
+      "owner": "Sara",
+      "deadline": "March 17th",
+      "status": "pending",
+      "meeting_id": "53ab383e-fb94-4f1b-b7c9-e4654698e3d6",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "a170a236-94c6-4f51-8764-7079235976a5",
+      "description": "Merge and review the technical and financial proposals for the ADEK grant",
+      "owner": "Unassigned",
+      "deadline": "March 17th",
+      "status": "pending",
+      "meeting_id": "53ab383e-fb94-4f1b-b7c9-e4654698e3d6",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "237a4382-7692-4364-b204-d4d6781c5ba2",
+      "description": "Conduct IT security review for the Arabic Voice Dataset v2",
+      "owner": "Khalid",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "53ab383e-fb94-4f1b-b7c9-e4654698e3d6",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "a5b8b532-c7ef-4ff5-ac3e-33c2fc445ee6",
+      "description": "Perform integration testing for the healthcare AI pilot with Al Noor Hospital",
+      "owner": "Yusuf",
+      "deadline": "Next week",
+      "status": "pending",
+      "meeting_id": "53ab383e-fb94-4f1b-b7c9-e4654698e3d6",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "48ff3456-a179-4f6d-badb-2b3e8872fa3d",
+      "description": "Lead the UNESCO AI Ethics grant application",
+      "owner": "Dr. Hana",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "53ab383e-fb94-4f1b-b7c9-e4654698e3d6",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "500eaeda-e51a-4297-9211-7e02cfff295a",
+      "description": "Send a list of open purchase orders (issued last year and not paid) to Mohammad Abu Jafar.",
+      "owner": "Mark Juan",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "b3d1298f-4ae1-4662-a415-16013c46c4ce",
+      "meeting_title": "financial services newsletter"
+    },
+    {
+      "id": "55a37017-9d9e-48a1-a1b6-b622c5f6e36b",
+      "description": "Review the list of open purchase orders and investigate potential inaccurate invoices.",
+      "owner": "Mohammad Abu Jafar",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "b3d1298f-4ae1-4662-a415-16013c46c4ce",
+      "meeting_title": "financial services newsletter"
+    },
+    {
+      "id": "32bf71fc-8c2d-4a07-b8a7-c820b18a1dc5",
+      "description": "Provide support for finance, procurement, and logistics requests through Aline and Kaltham.",
+      "owner": "Aline and Kaltham",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "b3d1298f-4ae1-4662-a415-16013c46c4ce",
+      "meeting_title": "financial services newsletter"
+    },
+    {
+      "id": "bbf47c47-8915-4068-afad-4eeba185c1d1",
+      "description": "Share the Strategic Collaboration Agreement with the CTIO office for signature",
+      "owner": "Ramzi Ben Ouaghrem",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "97137270-5c66-4251-8c9d-46f4242d670a",
+      "meeting_title": "email chain adnoc"
+    },
+    {
+      "id": "6dc48378-5052-422e-9e7d-0c0dafd4ee86",
+      "description": "Share the NDA for signature with the CTIO office",
+      "owner": "Ramzi Ben Ouaghrem",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "97137270-5c66-4251-8c9d-46f4242d670a",
+      "meeting_title": "email chain adnoc"
+    },
+    {
+      "id": "189aea3c-096c-4090-8344-6947c4406b61",
+      "description": "Organize an AI Innovation Day at MBZUAI to showcase recent breakthroughs to ADNOC leadership",
+      "owner": "Ramzi Ben Ouaghrem",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "97137270-5c66-4251-8c9d-46f4242d670a",
+      "meeting_title": "email chain adnoc"
+    },
+    {
+      "id": "af59c4d4-96c2-41f1-9e55-68f7dabfa844",
+      "description": "Initiate the NDA from headquarters for the optimization and logistics use case (shutdown alignment tool)",
+      "owner": "Khalid Yousef Al Awadhi",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "97137270-5c66-4251-8c9d-46f4242d670a",
+      "meeting_title": "email chain adnoc"
+    },
+    {
+      "id": "19456604-6c7e-430e-a3a9-b6b486231510",
+      "description": "Schedule a brainstorming meeting on neuroadaptive AI approaches for Monday afternoon from 12:00 to 13:00",
+      "owner": "Khaled Al Blooshi",
+      "deadline": "2026-02-23",
+      "status": "pending",
+      "meeting_id": "97137270-5c66-4251-8c9d-46f4242d670a",
+      "meeting_title": "email chain adnoc"
+    },
+    {
+      "id": "c4bcd46e-a3c2-4cf3-8a00-b06caa5500f3",
+      "description": "Finish the API",
+      "owner": "John",
+      "deadline": "Friday",
+      "status": "pending",
+      "meeting_id": "6bd021a1-20a5-48d6-b44e-e7604d40ce10",
+      "meeting_title": "Test Meeting"
+    },
+    {
+      "id": "0b3f9429-b488-42bf-8689-3616da7740bd",
+      "description": "Work on the dashboard",
+      "owner": "Sarah",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "6bd021a1-20a5-48d6-b44e-e7604d40ce10",
+      "meeting_title": "Test Meeting"
+    },
+    {
+      "id": "7bb24a81-e771-49ac-af99-3a7fc4f06981",
+      "description": "Fix auth service memory leak affecting production (users getting logged out randomly)",
+      "owner": "Ahmed Hassan",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "30162198-c184-4cee-9759-4a6129398c14",
+      "meeting_title": "Engineering Sprint 14 Planning"
+    },
+    {
+      "id": "ef636b4c-9f22-4244-ba67-4b2f5eb30cd5",
+      "description": "Finish REST API refactoring",
+      "owner": "Ahmed Hassan",
+      "deadline": "Wednesday",
+      "status": "pending",
+      "meeting_id": "30162198-c184-4cee-9759-4a6129398c14",
+      "meeting_title": "Engineering Sprint 14 Planning"
+    },
+    {
+      "id": "650c2601-454e-46b7-8a2e-a7217015526a",
+      "description": "Implement dashboard redesign",
+      "owner": "Priya Sharma",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "30162198-c184-4cee-9759-4a6129398c14",
+      "meeting_title": "Engineering Sprint 14 Planning"
+    },
+    {
+      "id": "bd24e91e-7be8-40e7-9ce5-c30bad37296c",
+      "description": "Complete the API",
+      "owner": "John",
+      "deadline": "Friday",
+      "status": "pending",
+      "meeting_id": "262a91b5-8690-43ae-8cdb-a53a9aaec8a3",
+      "meeting_title": "Test Meeting"
+    },
+    {
+      "id": "954e5736-e125-490f-bf26-a188f3def08a",
+      "description": "Work on the dashboard",
+      "owner": "Sarah",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "262a91b5-8690-43ae-8cdb-a53a9aaec8a3",
+      "meeting_title": "Test Meeting"
+    },
+    {
+      "id": "cd171ef1-602b-4285-a450-6d32bebcf932",
+      "description": "Complete the API",
+      "owner": "John",
+      "deadline": "Friday",
+      "status": "pending",
+      "meeting_id": "3a30421c-7451-452a-9cc1-7ecd33427d26",
+      "meeting_title": "Quick Test"
+    },
+    {
+      "id": "7a74e469-0e79-44fa-87cc-c6d31dc1e894",
+      "description": "Work on the dashboard",
+      "owner": "Sarah",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "3a30421c-7451-452a-9cc1-7ecd33427d26",
+      "meeting_title": "Quick Test"
+    },
+    {
+      "id": "ab1a6775-bd31-4698-bf88-3d7da099a7f9",
+      "description": "Complete the API",
+      "owner": "John",
+      "deadline": "Friday",
+      "status": "pending",
+      "meeting_id": "3ca9563f-844c-47f1-8859-b30f4fc0f9cd",
+      "meeting_title": "Quick Test"
+    },
+    {
+      "id": "3ca59cd5-0ccf-4aab-bcb9-cad0568e407a",
+      "description": "Work on the dashboard",
+      "owner": "Sarah",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "3ca9563f-844c-47f1-8859-b30f4fc0f9cd",
+      "meeting_title": "Quick Test"
+    },
+    {
+      "id": "54849b4d-c2f0-4423-98c3-2c0a2c07aa59",
+      "description": "Fix auth service memory leak affecting production",
+      "owner": "Ahmed Hassan",
+      "deadline": "ASAP",
+      "status": "pending",
+      "meeting_id": "0e5e851e-6e44-4ac2-a133-e9c7a19cc3ef",
+      "meeting_title": "Sprint 14 Planning - Engineering Team"
+    },
+    {
+      "id": "cb109e54-0a99-474e-8b59-d738a16816ca",
+      "description": "Complete REST API refactoring",
+      "owner": "Ahmed Hassan",
+      "deadline": "by Wednesday",
+      "status": "pending",
+      "meeting_id": "0e5e851e-6e44-4ac2-a133-e9c7a19cc3ef",
+      "meeting_title": "Sprint 14 Planning - Engineering Team"
+    },
+    {
+      "id": "bc398861-4f40-4e94-984e-8f26e728bd1e",
+      "description": "Provide new API spec for dashboard redesign",
+      "owner": "Ahmed Hassan",
+      "deadline": "tomorrow",
+      "status": "pending",
+      "meeting_id": "0e5e851e-6e44-4ac2-a133-e9c7a19cc3ef",
+      "meeting_title": "Sprint 14 Planning - Engineering Team"
+    },
+    {
+      "id": "6415b0b2-8c93-4a90-8642-d0a5dcba1ed9",
+      "description": "Redesign dashboard",
+      "owner": "Priya Sharma",
+      "deadline": "by Friday",
+      "status": "pending",
+      "meeting_id": "0e5e851e-6e44-4ac2-a133-e9c7a19cc3ef",
+      "meeting_title": "Sprint 14 Planning - Engineering Team"
+    },
+    {
+      "id": "8feebb4f-2960-49ca-b44f-0054bf787772",
+      "description": "Set up staging environment for new microservice",
+      "owner": "Marcus Wilson",
+      "deadline": "by Friday",
+      "status": "pending",
+      "meeting_id": "0e5e851e-6e44-4ac2-a133-e9c7a19cc3ef",
+      "meeting_title": "Sprint 14 Planning - Engineering Team"
+    },
+    {
+      "id": "f6bc22e6-a842-4b7b-afa2-819f4cbcf632",
+      "description": "Scale up K8s cluster to handle capacity",
+      "owner": "Marcus Wilson",
+      "deadline": "before next deployment",
+      "status": "pending",
+      "meeting_id": "0e5e851e-6e44-4ac2-a133-e9c7a19cc3ef",
+      "meeting_title": "Sprint 14 Planning - Engineering Team"
+    },
+    {
+      "id": "471d410d-7da9-40b8-8cbd-a1b2e8d9ff41",
+      "description": "Ping IT to provision sandbox environment for QA",
+      "owner": "David Chen",
+      "deadline": "today",
+      "status": "pending",
+      "meeting_id": "0e5e851e-6e44-4ac2-a133-e9c7a19cc3ef",
+      "meeting_title": "Sprint 14 Planning - Engineering Team"
+    },
+    {
+      "id": "c428c2f6-cd18-4682-9979-a8b18ded76a1",
+      "description": "Implement test automation for payment flow",
+      "owner": "Lisa Park",
+      "deadline": "by Friday",
+      "status": "pending",
+      "meeting_id": "0e5e851e-6e44-4ac2-a133-e9c7a19cc3ef",
+      "meeting_title": "Sprint 14 Planning - Engineering Team"
+    },
+    {
+      "id": "141b536a-0822-4518-9d2e-0cdd18411910",
+      "description": "Assign security audit for payment module launch",
+      "owner": "David Chen",
+      "deadline": "next standup",
+      "status": "pending",
+      "meeting_id": "0e5e851e-6e44-4ac2-a133-e9c7a19cc3ef",
+      "meeting_title": "Sprint 14 Planning - Engineering Team"
+    },
+    {
+      "id": "34119e5c-2ccd-4d6c-b1c5-8cd884aea640",
+      "description": "Complete API",
+      "owner": "John",
+      "deadline": "Friday",
+      "status": "pending",
+      "meeting_id": "dfc789f2-3981-428b-87c2-79cb90e7fb99",
+      "meeting_title": "Quick Test"
+    },
+    {
+      "id": "fe41c54f-f480-4d01-bad5-0b07369966da",
+      "description": "Work on dashboard",
+      "owner": "Sarah",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "dfc789f2-3981-428b-87c2-79cb90e7fb99",
+      "meeting_title": "Quick Test"
+    },
+    {
+      "id": "26864298-f2d5-4601-bc16-b36ac7679fdb",
+      "description": "Fix auth service memory leak affecting production (users logged out randomly)",
+      "owner": "Ahmed Hassan",
+      "deadline": "by Wednesday",
+      "status": "pending",
+      "meeting_id": "1ece0c6d-8bea-47f7-bfc7-f1306b47b23f",
+      "meeting_title": "Sprint 14 Planning - Engineering Team"
+    },
+    {
+      "id": "50ddd1a8-08df-4a97-a889-2cda2f3f2559",
+      "description": "Complete REST API refactoring",
+      "owner": "Ahmed Hassan",
+      "deadline": "by Wednesday",
+      "status": "pending",
+      "meeting_id": "1ece0c6d-8bea-47f7-bfc7-f1306b47b23f",
+      "meeting_title": "Sprint 14 Planning - Engineering Team"
+    },
+    {
+      "id": "b699f663-2844-480a-a6f1-4c2b290fd575",
+      "description": "Provide new API spec to Priya for dashboard redesign",
+      "owner": "Ahmed Hassan",
+      "deadline": "by tomorrow",
+      "status": "pending",
+      "meeting_id": "1ece0c6d-8bea-47f7-bfc7-f1306b47b23f",
+      "meeting_title": "Sprint 14 Planning - Engineering Team"
+    },
+    {
+      "id": "1cbe72e9-a477-412d-a270-bb838466dd4c",
+      "description": "Redesign dashboard UI",
+      "owner": "Priya Sharma",
+      "deadline": "by Friday",
+      "status": "pending",
+      "meeting_id": "1ece0c6d-8bea-47f7-bfc7-f1306b47b23f",
+      "meeting_title": "Sprint 14 Planning - Engineering Team"
+    },
+    {
+      "id": "913caa2a-ec3e-4664-ba37-59118835815c",
+      "description": "Set up staging environment for new microservice",
+      "owner": "Marcus Wilson",
+      "deadline": "by Friday",
+      "status": "pending",
+      "meeting_id": "1ece0c6d-8bea-47f7-bfc7-f1306b47b23f",
+      "meeting_title": "Sprint 14 Planning - Engineering Team"
+    },
+    {
+      "id": "3afba842-326e-4e85-af26-2ba9cfe1c828",
+      "description": "Scale up K8s cluster to free capacity before next deployment",
+      "owner": "Marcus Wilson",
+      "deadline": "before next deployment",
+      "status": "pending",
+      "meeting_id": "1ece0c6d-8bea-47f7-bfc7-f1306b47b23f",
+      "meeting_title": "Sprint 14 Planning - Engineering Team"
+    },
+    {
+      "id": "1990a8a6-56b9-4cbb-aefb-f33e4327fafa",
+      "description": "Implement test automation for payment flow",
+      "owner": "Lisa Park",
+      "deadline": "TBD",
+      "status": "pending",
+      "meeting_id": "1ece0c6d-8bea-47f7-bfc7-f1306b47b23f",
+      "meeting_title": "Sprint 14 Planning - Engineering Team"
+    },
+    {
+      "id": "1e856098-4c8a-4f61-a16e-26d8426c79eb",
+      "description": "Provision sandbox environment for QA",
+      "owner": "David Chen",
+      "deadline": "today",
+      "status": "pending",
+      "meeting_id": "1ece0c6d-8bea-47f7-bfc7-f1306b47b23f",
+      "meeting_title": "Sprint 14 Planning - Engineering Team"
+    },
+    {
+      "id": "3b1d27ba-0046-4aa4-944a-dcecb2180e7b",
+      "description": "Assign security audit for payment module (due March 20)",
+      "owner": "David Chen",
+      "deadline": "by next standup",
+      "status": "pending",
+      "meeting_id": "1ece0c6d-8bea-47f7-bfc7-f1306b47b23f",
+      "meeting_title": "Sprint 14 Planning - Engineering Team"
+    },
+    {
+      "id": "214f4f4b-5b69-4e3b-a756-eb6f03b3e250",
+      "description": "Fix auth service memory leak",
+      "owner": "Ahmed Hassan",
+      "deadline": "Feb 19",
+      "status": "pending",
+      "meeting_id": "0816c371-56f9-425a-8af6-e6fe50fc6612",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "f94b0566-1585-4f4a-87dc-b1720a97383c",
+      "description": "Complete REST API refactoring",
+      "owner": "Ahmed Hassan",
+      "deadline": "Feb 19",
+      "status": "pending",
+      "meeting_id": "0816c371-56f9-425a-8af6-e6fe50fc6612",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "924c05f6-78db-4cde-b0a3-03652a2be1c3",
+      "description": "Provide new API spec to Priya",
+      "owner": "Ahmed Hassan",
+      "deadline": "Feb 16",
+      "status": "pending",
+      "meeting_id": "0816c371-56f9-425a-8af6-e6fe50fc6612",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "cf4f32d4-99d4-4de9-8f9a-173af1e0ade6",
+      "description": "Dashboard redesign",
+      "owner": "Priya Sharma",
+      "deadline": "Feb 18",
+      "status": "pending",
+      "meeting_id": "0816c371-56f9-425a-8af6-e6fe50fc6612",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "4587779e-9779-4ae6-8c3e-862c6961870e",
+      "description": "Set up staging environment for new microservice",
+      "owner": "Marcus Wilson",
+      "deadline": "Feb 21",
+      "status": "pending",
+      "meeting_id": "0816c371-56f9-425a-8af6-e6fe50fc6612",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "189d7024-f692-4e7d-90b6-ef803d2f3eb2",
+      "description": "Scale up K8s cluster before next deployment",
+      "owner": "Marcus Wilson",
+      "deadline": "Feb 21",
+      "status": "pending",
+      "meeting_id": "0816c371-56f9-425a-8af6-e6fe50fc6612",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "900e9a56-7f8d-493e-a3d9-2abd9ced0e31",
+      "description": "Test automation for payment flow",
+      "owner": "Lisa Park",
+      "deadline": "TBD",
+      "status": "pending",
+      "meeting_id": "0816c371-56f9-425a-8af6-e6fe50fc6612",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "426e0c93-23d2-4019-b4f0-2104cc8e4b31",
+      "description": "Ping IT to provision sandbox environment",
+      "owner": "David Chen",
+      "deadline": "Feb 15",
+      "status": "pending",
+      "meeting_id": "0816c371-56f9-425a-8af6-e6fe50fc6612",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "1724734a-beab-47c4-8659-b3657d5091a2",
+      "description": "Assign security audit to a team member",
+      "owner": "David Chen",
+      "deadline": "Feb 16",
+      "status": "pending",
+      "meeting_id": "0816c371-56f9-425a-8af6-e6fe50fc6612",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "96154de2-d2e0-4ff5-b731-9ca66c301723",
+      "description": "Prepare the Q1 budget report",
+      "owner": "Sarah",
+      "deadline": "Friday",
+      "status": "pending",
+      "meeting_id": "71680403-fc43-4a32-8c54-5a4fae1d7b86",
+      "meeting_title": "Q1 Budget Planning"
+    },
+    {
+      "id": "f953de3f-a924-4918-9e1a-aa895b2db4fa",
+      "description": "Review the expense tracking system",
+      "owner": "John",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "71680403-fc43-4a32-8c54-5a4fae1d7b86",
+      "meeting_title": "Q1 Budget Planning"
+    },
+    {
+      "id": "83690adc-4b74-4846-bd5a-2ebbabe16206",
+      "description": "Screen candidates for Senior ML Engineer position and schedule first round interviews",
+      "owner": "Khalid Ibrahim",
+      "deadline": "Next week",
+      "status": "pending",
+      "meeting_id": "806be3f1-4fa0-45de-aad6-895c0c42737f",
+      "meeting_title": "HR Monthly Sync"
+    },
+    {
+      "id": "505221bb-a10e-439b-b632-e41cb5fe5470",
+      "description": "Expedite approvals for recruitment positions if needed",
+      "owner": "Fatima Al-Hassan",
+      "deadline": "Immediately",
+      "status": "pending",
+      "meeting_id": "806be3f1-4fa0-45de-aad6-895c0c42737f",
+      "meeting_title": "HR Monthly Sync"
+    },
+    {
+      "id": "7340d7ab-848d-4b62-bff2-2bae62cb11c2",
+      "description": "Prepare onboarding pack and ensure system access for Omar Saeed",
+      "owner": "Sara Khalil",
+      "deadline": "Friday",
+      "status": "pending",
+      "meeting_id": "806be3f1-4fa0-45de-aad6-895c0c42737f",
+      "meeting_title": "HR Monthly Sync"
+    },
+    {
+      "id": "aa561d4a-6888-494c-a292-5604a5fbea47",
+      "description": "Follow up with IT on Omar Saeed's access request if no response by tomorrow",
+      "owner": "Sara Khalil",
+      "deadline": "Tomorrow",
+      "status": "pending",
+      "meeting_id": "806be3f1-4fa0-45de-aad6-895c0c42737f",
+      "meeting_title": "HR Monthly Sync"
+    },
+    {
+      "id": "2ab1f754-6aa6-4ecb-aa30-d7cf0c933453",
+      "description": "Send reminder emails to managers to start performance reviews",
+      "owner": "Rania Mustafa",
+      "deadline": "Today",
+      "status": "pending",
+      "meeting_id": "806be3f1-4fa0-45de-aad6-895c0c42737f",
+      "meeting_title": "HR Monthly Sync"
+    },
+    {
+      "id": "af0ad3a2-76e8-4970-ad34-46d597d7804e",
+      "description": "Send remote work policy announcement to all employees",
+      "owner": "Rania Mustafa",
+      "deadline": "Wednesday",
+      "status": "pending",
+      "meeting_id": "806be3f1-4fa0-45de-aad6-895c0c42737f",
+      "meeting_title": "HR Monthly Sync"
+    },
+    {
+      "id": "fc8aa714-08c9-4c52-bba1-0e6174601566",
+      "description": "Update employee handbook on portal with remote work policy changes",
+      "owner": "Rania Mustafa",
+      "deadline": "Wednesday",
+      "status": "pending",
+      "meeting_id": "806be3f1-4fa0-45de-aad6-895c0c42737f",
+      "meeting_title": "HR Monthly Sync"
+    },
+    {
+      "id": "eb7b8290-1a73-47f4-9aae-7566d3431ca7",
+      "description": "Organize mental health workshop series for March",
+      "owner": "Layla Hassan",
+      "deadline": "March",
+      "status": "pending",
+      "meeting_id": "806be3f1-4fa0-45de-aad6-895c0c42737f",
+      "meeting_title": "HR Monthly Sync"
+    },
+    {
+      "id": "8d53b412-a3fc-419a-b1b9-09da4a0b8f9b",
+      "description": "Lead technical setup for Greenhouse recruitment platform",
+      "owner": "Ahmed (IT)",
+      "deadline": "TBD",
+      "status": "pending",
+      "meeting_id": "806be3f1-4fa0-45de-aad6-895c0c42737f",
+      "meeting_title": "HR Monthly Sync"
+    }
+  ],
+  "last_updated": "2026-02-19T20:42:53.927338",
+  "total": 139
+}
