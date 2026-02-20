@@ -799,6 +799,16 @@ function setDepartmentTemplate(deptId) {
 
   document.getElementById('setup-mission').value = sampleMissions[deptId] || '';
   selectedSetupDept = deptId;
+
+  // Visual feedback - highlight selected template
+  document.querySelectorAll('.setup-step button').forEach(btn => {
+    btn.style.borderColor = 'var(--border)';
+    btn.style.background = 'transparent';
+  });
+  event?.target?.style && (event.target.style.borderColor = 'var(--accent)');
+  event?.target?.style && (event.target.style.background = 'rgba(108,99,255,0.1)');
+
+  toast(`Template loaded: ${dept.icon} ${dept.name}`, 'success');
 }
 
 // Team Registration Modal
@@ -1078,7 +1088,17 @@ function selectDept(id, reload = true) {
     loadDashboard();
     loadTasks();
     loadMeetings();
+
+    // Also reload the current active page
+    const activePage = document.querySelector('.page.active');
+    if (activePage) {
+      const pageId = activePage.id.replace('page-', '');
+      if (pageId === 'team') loadTeam();
+      if (pageId === 'openclaw') checkOpenClaw();
+    }
   }
+
+  toast(`Switched to ${dept.icon} ${dept.name}`, 'success');
 }
 
 // ── Navigation ──────────────────────────────────

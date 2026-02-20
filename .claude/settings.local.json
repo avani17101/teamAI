@@ -29,7 +29,9 @@
       "Bash(xargs kill:*)",
       "Bash(while read table)",
       "Bash(do echo '=== $table ===')",
-      "Bash(done)"
+      "Bash(done)",
+      "Bash(timeout 10 bash:*)",
+      "Bash(ps:*)"
     ]
   }
 }

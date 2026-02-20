@@ -29,8 +29,8 @@ from .agents.memory_store import (
 from .agents.query_agent import answer_question
 from .agents.openclaw_client import openclaw
 from .agents.notion_client import sync_tasks as notion_sync_tasks
-from .agents.telegram_client import send_due_reminders, check_bot_status, send_task_assigned
-from .agents.email_client import send_task_email
+from .agents.telegram_client import send_due_reminders as telegram_send_reminders, check_bot_status, send_task_assigned
+from .agents.email_client import send_task_email, send_due_reminders as email_send_reminders
 from .models.schemas import (
     MeetingUploadRequest, ChatRequest, ChatResponse,
     TaskUpdateRequest, NotionSyncRequest, TeamMemberRequest, OrgContextRequest,
@@ -142,12 +142,19 @@ async def startup():
                     notion_url = f"https://www.notion.so/{notion_db_id.replace('-', '')}"
 
                 # Send confirmation email
-                send_processing_confirmation(
-                    to_email=email_data['sender']['email'],
-                    original_subject=email_data['subject'],
-                    extraction_result=result,
-                    notion_database_url=notion_url
-                )
+                try:
+                    sent = send_processing_confirmation(
+                        to_email=email_data['sender']['email'],
+                        original_subject=email_data['subject'],
+                        extraction_result=result,
+                        notion_database_url=notion_url
+                    )
+                    if sent:
+                        print(f"[EmailForwarder] Sent confirmation to {email_data['sender']['email']}")
+                    else:
+                        print(f"[EmailForwarder] Failed to send confirmation to {email_data['sender']['email']}")
+                except Exception as reply_error:
+                    print(f"[EmailForwarder] Error sending confirmation: {reply_error}")
 
             except Exception as e:
                 print(f"[EmailForwarder] Failed to process email: {e}")
@@ -157,6 +164,47 @@ async def startup():
         print(f"[EmailForwarder] Started polling {TEAMAI_EMAIL} every 30 seconds")
     else:
         print("[EmailForwarder] Skipped - email credentials not configured")
+
+    # Start daily task reminder scheduler
+    async def daily_reminder_scheduler():
+        """Send task due reminders every day at 9 AM"""
+        import time
+        from datetime import datetime, timedelta
+
+        while True:
+            now = datetime.now()
+            # Calculate next 9 AM
+            next_run = now.replace(hour=9, minute=0, second=0, microsecond=0)
+            if now.hour >= 9:
+                next_run += timedelta(days=1)
+
+            # Wait until next 9 AM
+            sleep_seconds = (next_run - now).total_seconds()
+            print(f"[Reminders] Next daily reminder check at {next_run.strftime('%Y-%m-%d %I:%M %p')}")
+            await asyncio.sleep(sleep_seconds)
+
+            # Send reminders for tasks due today or tomorrow (1 day ahead)
+            try:
+                all_tasks = get_all_tasks()
+                all_members = get_team_members()
+
+                result = await email_send_reminders(
+                    tasks=all_tasks,
+                    team_members=all_members,
+                    days_ahead=1  # Tasks due today or tomorrow
+                )
+
+                if result.get("sent", 0) > 0:
+                    print(f"[Reminders] Sent {result['sent']} reminder emails for {result['tasks_mentioned']} tasks")
+                    print(f"[Reminders] Recipients: {', '.join(result.get('recipients', []))}")
+                else:
+                    print(f"[Reminders] No reminders sent: {result.get('reason', 'No tasks due')}")
+
+            except Exception as e:
+                print(f"[Reminders] Error sending daily reminders: {e}")
+
+    asyncio.create_task(daily_reminder_scheduler())
+    print("[Reminders] Daily reminder scheduler started (runs at 9 AM)")
 
 
 @app.get("/")
@@ -513,14 +561,14 @@ async def telegram_status():
     return await check_bot_status()
 
 
-@app.post("/api/reminders/send")
-async def send_reminders(days: int = 2, department: Optional[str] = None):
+@app.post("/api/telegram/reminders")
+async def send_telegram_reminders(days: int = 2, department: Optional[str] = None):
     """
     Send a Telegram message listing tasks due within the next `days` days.
     Optionally filter by department.
     """
     tasks = get_all_tasks(department=department)
-    result = await send_due_reminders(tasks, days_ahead=days)
+    result = await telegram_send_reminders(tasks, days_ahead=days)
     return result
 
 
@@ -627,4 +675,90 @@ async def preview_notifications(department: str, days_ahead: int = 3):
         "days_ahead": days_ahead,
         "tasks_count": len(tasks),
         "tasks": tasks
+    }
+
+
+@app.post("/api/reminders/send")
+async def send_task_reminders(department: Optional[str] = None, days_ahead: int = 1):
+    """
+    Send email reminders for tasks due within the next N days.
+    Manually trigger the reminder system (normally runs daily at 9 AM).
+
+    Args:
+        department: Optional filter by department
+        days_ahead: Send reminders for tasks due within this many days (default: 1)
+    """
+    all_tasks = get_all_tasks(department=department) if department else get_all_tasks()
+    all_members = get_team_members(department=department) if department else get_team_members()
+
+    result = await email_send_reminders(
+        tasks=all_tasks,
+        team_members=all_members,
+        days_ahead=days_ahead
+    )
+
+    return {
+        "ok": True,
+        "sent": result.get("sent", 0),
+        "failed": result.get("failed", 0),
+        "tasks_mentioned": result.get("tasks_mentioned", 0),
+        "recipients": result.get("recipients", []),
+        "reason": result.get("reason", "")
+    }
+
+
+@app.get("/api/reminders/preview")
+async def preview_task_reminders(department: Optional[str] = None, days_ahead: int = 1):
+    """
+    Preview tasks that would trigger reminders without sending emails.
+
+    Args:
+        department: Optional filter by department
+        days_ahead: Preview tasks due within this many days (default: 1)
+    """
+    from .agents.email_client import _parse_deadline
+    from datetime import datetime, timedelta
+
+    all_tasks = get_all_tasks(department=department) if department else get_all_tasks()
+    today = datetime.now().date()
+    cutoff = today + timedelta(days=days_ahead)
+
+    # Find tasks due soon
+    due_soon = []
+    for task in all_tasks:
+        if task.get("status") == "completed":
+            continue
+
+        deadline = _parse_deadline(task.get("deadline", ""))
+        if deadline and today <= deadline <= cutoff:
+            days_until = (deadline - today).days
+            due_label = "TODAY" if days_until == 0 else ("TOMORROW" if days_until == 1 else f"in {days_until} days")
+
+            due_soon.append({
+                "task_id": task.get("id"),
+                "description": task.get("description"),
+                "owner": task.get("owner"),
+                "deadline": task.get("deadline"),
+                "department": task.get("department"),
+                "days_until": days_until,
+                "due_label": due_label
+            })
+
+    # Group by owner
+    by_owner = {}
+    for task in due_soon:
+        owner = task["owner"]
+        if owner == "Unassigned":
+            continue
+        if owner not in by_owner:
+            by_owner[owner] = []
+        by_owner[owner].append(task)
+
+    return {
+        "ok": True,
+        "days_ahead": days_ahead,
+        "tasks_due_soon": len(due_soon),
+        "tasks": due_soon,
+        "by_owner": by_owner,
+        "recipients": list(by_owner.keys())
     }
