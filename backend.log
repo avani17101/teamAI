@@ -1185,3 +1185,68 @@ INFO:     127.0.0.1:51662 - "GET / HTTP/1.1" 200 OK
 INFO:     127.0.0.1:51662 - "GET /api/departments HTTP/1.1" 200 OK
 INFO:     127.0.0.1:51662 - "GET /api/state?department=engineering HTTP/1.1" 200 OK
 INFO:     127.0.0.1:51660 - "GET /api/openclaw/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64196 - "GET /api/departments HTTP/1.1" 200 OK
+Failed to send telemetry event ClientStartEvent: capture() takes 1 positional argument but 3 were given
+Failed to send telemetry event ClientCreateCollectionEvent: capture() takes 1 positional argument but 3 were given
+[Extraction] K2 API returned 481 characters
+[Extraction] First 500 chars: 
+{
+  "tasks": [
+    {
+      "description": "Finish documentation",
+      "owner": "Alice",
+      "deadline": "Friday",
+      "status": "pending"
+    }
+  ],
+  "decisions": [
+    {
+      "description": "Use React for the frontend"
+    }
+  ],
+  "risks": [
+    {
+      "description": "Bob is blocked on API access",
+      "severity": "high"
+    }
+  ],
+  "summary": "Alice will finish documentation by Friday; Bob is blocked on API access; team decided to use React for the frontend."
+}
+[Extraction] Successfully parsed JSON with 1 tasks
+INFO:     127.0.0.1:64485 - "POST /api/meetings/upload HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64609 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64610 - "GET /api/departments HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64609 - "GET /api/openclaw/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64610 - "GET /api/state?department=engineering HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64610 - "GET /api/team?department=engineering HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64610 - "GET /api/org/context?department=engineering HTTP/1.1" 200 OK
+Failed to send telemetry event ClientStartEvent: capture() takes 1 positional argument but 3 were given
+Failed to send telemetry event ClientCreateCollectionEvent: capture() takes 1 positional argument but 3 were given
+[Extraction] K2 API returned 3253 characters
+[Extraction] First 500 chars: 
+{
+  "tasks": [
+    {
+      "description": "Fix auth service memory leak causing random user logouts",
+      "owner": "Ahmed Hassan",
+      "deadline": "Feb 19",
+      "status": "pending"
+    },
+    {
+      "description": "Complete REST API refactoring",
+      "owner": "Ahmed Hassan",
+      "deadline": "Feb 19",
+      "status": "pending"
+    },
+    {
+      "description": "Provide new API spec to Priya for dashboard redesign",
+      "owner": "Ahmed Hassan",
+      "deadline": "Feb 16",
+      "stat
+[Extraction] Successfully parsed JSON with 10 tasks
+[Notion] Loaded 2 workspace members for Assignee matching
+[Notion] Sync complete: 10 created, 0 failed (dept=engineering)
+INFO:     127.0.0.1:64626 - "POST /api/meetings/upload HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64626 - "GET /api/state?department=engineering HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64991 - "GET /api/reminders/preview?days_ahead=7 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64993 - "GET /api/departments HTTP/1.1" 200 OK

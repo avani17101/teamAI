@@ -1862,8 +1862,107 @@
       "status": "pending",
       "meeting_id": "7cd9fe43-12fc-4bac-b039-b85dd28d4632",
       "meeting_title": "financial services newsletter"
+    },
+    {
+      "id": "bdb068dd-34c6-4ce3-8907-c2ac4bfacc04",
+      "description": "Finish documentation",
+      "owner": "Alice",
+      "deadline": "Friday",
+      "status": "pending",
+      "meeting_id": "6f40a110-69f5-4838-b8ce-46b5c5ae4c72",
+      "meeting_title": "Quick System Test"
+    },
+    {
+      "id": "545ee243-d847-44f3-83d0-6a4643581418",
+      "description": "Fix auth service memory leak causing random user logouts",
+      "owner": "Ahmed Hassan",
+      "deadline": "Feb 19",
+      "status": "pending",
+      "meeting_id": "4b8aeced-71c5-4800-8ad0-0176b60ee59e",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "59f98edf-87ec-44b1-a58b-c32821dbded3",
+      "description": "Complete REST API refactoring",
+      "owner": "Ahmed Hassan",
+      "deadline": "Feb 19",
+      "status": "pending",
+      "meeting_id": "4b8aeced-71c5-4800-8ad0-0176b60ee59e",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "a074448c-99ef-4912-ab8b-45a5dcaa006f",
+      "description": "Provide new API spec to Priya for dashboard redesign",
+      "owner": "Ahmed Hassan",
+      "deadline": "Feb 16",
+      "status": "pending",
+      "meeting_id": "4b8aeced-71c5-4800-8ad0-0176b60ee59e",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "848e11f2-509c-4490-aed9-1139d6390187",
+      "description": "Dashboard redesign (frontend)",
+      "owner": "Priya Sharma",
+      "deadline": "Feb 20",
+      "status": "pending",
+      "meeting_id": "4b8aeced-71c5-4800-8ad0-0176b60ee59e",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "708e75b8-7c5b-4880-8136-325b4c947ebd",
+      "description": "Set up staging environment for new microservice",
+      "owner": "Marcus Wilson",
+      "deadline": "Feb 21",
+      "status": "pending",
+      "meeting_id": "4b8aeced-71c5-4800-8ad0-0176b60ee59e",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "1a4826c3-275c-448f-8ad6-c7f1fc7f6940",
+      "description": "Scale up K8s cluster before next deployment",
+      "owner": "Marcus Wilson",
+      "deadline": "Feb 21",
+      "status": "pending",
+      "meeting_id": "4b8aeced-71c5-4800-8ad0-0176b60ee59e",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "907683f9-8e24-40d2-894e-3bec2b097ab8",
+      "description": "Ping IT to provision sandbox environment for QA",
+      "owner": "David Chen",
+      "deadline": "Feb 15",
+      "status": "pending",
+      "meeting_id": "4b8aeced-71c5-4800-8ad0-0176b60ee59e",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "8f176fc3-e90f-401e-90b3-e8bacb3369ca",
+      "description": "Test automation for payment flow",
+      "owner": "Lisa Park",
+      "deadline": "TBD",
+      "status": "pending",
+      "meeting_id": "4b8aeced-71c5-4800-8ad0-0176b60ee59e",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "7f73146b-e358-4ea3-afa0-97fa1ffba89a",
+      "description": "Assign security audit to a team member",
+      "owner": "David Chen",
+      "deadline": "Feb 18",
+      "status": "pending",
+      "meeting_id": "4b8aeced-71c5-4800-8ad0-0176b60ee59e",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "7fa6fcc7-49ea-4b3e-a742-bf5d0d859f50",
+      "description": "Conduct security audit for payment module",
+      "owner": "TBD",
+      "deadline": "March 20",
+      "status": "pending",
+      "meeting_id": "4b8aeced-71c5-4800-8ad0-0176b60ee59e",
+      "meeting_title": "Sprint Planning"
     }
   ],
-  "last_updated": "2026-02-20T06:46:42.101174",
-  "total": 207
+  "last_updated": "2026-02-20T10:15:42.035138",
+  "total": 218
 }
