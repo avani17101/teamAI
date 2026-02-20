@@ -216,6 +216,7 @@
     <div class="nav-item" onclick="nav('meetings');loadMeetings()"><span>📋</span> Meetings</div>
     <div class="nav-section">System</div>
     <div class="nav-item" onclick="nav('team');loadTeam()"><span>👥</span> Team Setup</div>
+    <div class="nav-item" onclick="nav('reminders')"><span>📬</span> Email Reminders</div>
     <div class="nav-item" onclick="nav('openclaw')"><span>⚙️</span> OpenClaw</div>
   </aside>
 
@@ -490,6 +491,74 @@
         <div class="card-title">Team Members <span id="team-count" style="font-weight:400;color:var(--text-muted)"></span></div>
         <div id="team-list">
           <div style="color:var(--text-muted);font-size:13px">No team members yet. Add your first member above.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Email Reminders -->
+    <div class="page" id="page-reminders">
+      <div class="page-title">📬 Email Task Reminders</div>
+      <div class="page-sub">Automatically sends email reminders to team members for tasks due soon. Runs daily at 9:00 AM or trigger manually below.</div>
+
+      <div class="card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <div class="card-title">Reminder Settings</div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <label style="font-size:13px;color:var(--text-muted)">Days ahead:</label>
+            <input type="number" id="days-ahead" value="1" min="1" max="7" style="width:60px;padding:6px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:13px" />
+          </div>
+        </div>
+        <div style="background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.3);border-radius:8px;padding:12px;margin-bottom:16px">
+          <div style="font-size:13px;line-height:1.8">
+            <div>📅 <strong>Automatic Schedule:</strong> Daily at 9:00 AM</div>
+            <div>📧 <strong>Email:</strong> teamaiassistant@gmail.com (SMTP configured)</div>
+            <div>🎯 <strong>Filters:</strong> Only pending tasks (skips completed)</div>
+            <div>👥 <strong>Recipients:</strong> One email per person with all their due tasks</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:12px">
+          <button class="btn btn-primary" onclick="previewReminders()" style="flex:1">
+            👁️ Preview Tasks Due Soon
+          </button>
+          <button class="btn btn-primary" onclick="sendRemindersNow()" style="flex:1;background:var(--green);border-color:var(--green)">
+            ✉️ Send Reminders Now (Demo)
+          </button>
+        </div>
+      </div>
+
+      <div class="card" id="reminder-preview" style="display:none">
+        <div class="card-title">Preview Results</div>
+        <div id="reminder-preview-content"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">How to Set Up Test Tasks for Demo</div>
+        <div style="font-size:13px;line-height:1.8;color:var(--text-muted)">
+          <p style="margin-bottom:12px">To demo the reminder system, upload a meeting with tasks that have deadlines set to "today" or "tomorrow":</p>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:12px">
+            <strong style="color:var(--text)">Example Meeting Transcript:</strong>
+            <pre style="margin-top:8px;font-size:12px;line-height:1.6;color:var(--text)">[Sprint Standup - Engineering]
+
+Sarah: I'll finish the API documentation by today.
+Owner: Sarah
+Deadline: today
+
+Tom: I need to review the PR by tomorrow.
+Owner: Tom
+Deadline: tomorrow
+
+Alice: Deploy to staging - blocked on DB migration.
+Owner: Alice
+Deadline: Friday
+Status: blocked</pre>
+          </div>
+          <p style="margin-bottom:8px"><strong style="color:var(--text)">Supported Deadline Formats:</strong></p>
+          <ul style="margin-left:20px;line-height:1.8">
+            <li><code>today</code>, <code>tomorrow</code></li>
+            <li>Day of week: <code>Friday</code>, <code>Monday</code></li>
+            <li>ISO date: <code>2026-02-21</code></li>
+            <li>Relative: <code>in 3 days</code></li>
+          </ul>
         </div>
       </div>
     </div>
@@ -938,7 +1007,10 @@ async function completeSetup() {
 
     hideWelcomeModal();
 
-    // If it's a predefined department, switch to it
+    // Reload departments to include the newly created one
+    await loadDepartments();
+
+    // Switch to the new department (now it exists in the departments object)
     if (departments[deptId]) {
       selectDept(deptId);
     }
@@ -998,6 +1070,10 @@ async function resetSetup() {
     document.getElementById('setup-mission').value = '';
     setupMembers = [];
     renderSetupMembers();
+    selectedSetupDept = null;
+
+    // Reload departments to update the sidebar
+    await loadDepartments();
 
     toast(`${deptName} data cleared! 🔄`, 'success');
   } catch(e) {
@@ -1200,20 +1276,30 @@ async function uploadMeeting() {
 
   const steps = ['step-1','step-2','step-3','step-4','step-5'];
   let si = 0;
+  let timeout = null;
   const iv = setInterval(() => {
     if (si > 0) document.getElementById(steps[si-1]).className = 'done';
     if (si < steps.length) document.getElementById(steps[si]).className = 'active';
     si++;
-    if (si >= steps.length) clearInterval(iv);
-  }, 1200);
+    // Loop back to step 4-5 to show continuous processing
+    if (si >= steps.length) {
+      si = 3; // Stay on steps 4-5 while waiting for K2 API
+    }
+  }, 2000);
 
   try {
     const autoNotion = document.getElementById('auto-notion-toggle').checked;
+    // K2 API can take 20-40 seconds, set timeout to 120 seconds
+    const controller = new AbortController();
+    timeout = setTimeout(() => controller.abort(), 120000);
+
     const r = await fetch(API + '/api/meetings/upload', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({title, transcript, department: activeDept || 'engineering', auto_sync_notion: autoNotion})
+      body: JSON.stringify({title, transcript, department: activeDept || 'engineering', auto_sync_notion: autoNotion}),
+      signal: controller.signal
     });
+    clearTimeout(timeout);
     clearInterval(iv);
     steps.forEach(s => document.getElementById(s).className = 'done');
     if (!r.ok) { const e = await r.json(); throw new Error(e.detail || 'Upload failed'); }
@@ -1223,9 +1309,14 @@ async function uploadMeeting() {
     loadDashboard();
   } catch(e) {
     clearInterval(iv);
+    if (timeout) clearTimeout(timeout);
     document.getElementById('upload-processing').style.display = 'none';
     document.getElementById('upload-form').style.display = 'block';
-    toast(e.message || 'Failed', 'error');
+    if (e.name === 'AbortError') {
+      toast('Request timed out after 2 minutes. Try a shorter transcript.', 'error');
+    } else {
+      toast(e.message || 'Extraction failed', 'error');
+    }
   }
 }
 
@@ -1322,9 +1413,13 @@ function showUploadResult(data) {
 
 function resetUpload() {
   document.getElementById('upload-form').style.display = 'block';
+  document.getElementById('upload-processing').style.display = 'none';
   document.getElementById('upload-result').style.display = 'none';
   document.getElementById('meeting-title').value = '';
   document.getElementById('meeting-transcript').value = '';
+  loadDashboard();
+  loadTasks();
+  loadMeetings();
 }
 
 // ── Chat ────────────────────────────────────────
@@ -1408,20 +1503,31 @@ async function cycleTask(id, cur) {
 // ── Meetings ─────────────────────────────────────
 async function loadMeetings() {
   const url = activeDept ? `${API}/api/meetings?department=${activeDept}` : `${API}/api/meetings`;
+  const el = document.getElementById('meetings-list');
+
   try {
     const r = await fetch(url);
     const data = await r.json();
-    const el = document.getElementById('meetings-list');
-    el.innerHTML = data.meetings?.length
-      ? data.meetings.map(m=>{
-          const dept = departments[m.department] || {};
-          return `<div class="meeting-item">
-            <div style="width:36px;height:36px;border-radius:8px;background:rgba(108,99,255,0.2);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">${dept.icon||'📋'}</div>
-            <div style="flex:1"><div style="font-size:14px;font-weight:600">${m.title}</div><div style="font-size:12px;color:var(--text-muted);margin-top:2px">${new Date(m.created_at).toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</div></div>
-            <span class="tag" style="color:${dept.color||'var(--text-muted)'};border-color:${dept.color||'var(--border)'}">${dept.name||m.department}</span>
-          </div>`;}).join('')
-      : '<div style="padding:20px;color:var(--text-muted);font-size:13px">No meetings yet.</div>';
-  } catch(e) {}
+
+    if (data.meetings?.length) {
+      el.innerHTML = data.meetings.map(m=>{
+        const dept = departments[m.department] || {};
+        return `<div class="meeting-item">
+          <div style="width:36px;height:36px;border-radius:8px;background:rgba(108,99,255,0.2);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">${dept.icon||'📋'}</div>
+          <div style="flex:1"><div style="font-size:14px;font-weight:600">${m.title}</div><div style="font-size:12px;color:var(--text-muted);margin-top:2px">${new Date(m.created_at).toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</div></div>
+          <span class="tag" style="color:${dept.color||'var(--text-muted)'};border-color:${dept.color||'var(--border)'}">${dept.name||m.department}</span>
+        </div>`;
+      }).join('');
+    } else {
+      const deptName = activeDept ? (departments[activeDept]?.name || activeDept) : '';
+      const msg = activeDept
+        ? `No meetings for ${deptName} yet. Upload a meeting to get started.`
+        : 'No meetings yet. Upload a meeting to get started.';
+      el.innerHTML = `<div style="padding:20px;color:var(--text-muted);font-size:13px;text-align:center">${msg}</div>`;
+    }
+  } catch(e) {
+    el.innerHTML = '<div style="padding:20px;color:var(--red);font-size:13px">Failed to load meetings</div>';
+  }
 }
 
 // ── Team Setup ────────────────────────────────────
@@ -1597,9 +1703,21 @@ async function syncSelectedToNotion(meetingId, department, meetingTitle) {
       body: JSON.stringify({meeting_id: meetingId, task_ids: taskIds, department, meeting_title: meetingTitle})
     });
     const data = await r.json();
+
+    // Check for API key configuration error
+    if (!data.ok && data.error) {
+      throw new Error(data.error);
+    }
+
     if (!r.ok) throw new Error(data.detail || 'Sync failed');
 
-    toast(`${data.created} task${data.created !== 1 ? 's' : ''} synced to Notion ✓`);
+    if (data.created > 0) {
+      toast(`✅ ${data.created} task${data.created !== 1 ? 's' : ''} synced to Notion!`);
+    } else {
+      toast('No tasks were created in Notion', 'error');
+      if (btn) { btn.disabled = false; btn.textContent = '📋 Sync selected tasks to Notion'; }
+      return;
+    }
 
     // Update task rows with Notion links and uncheck + disable checkboxes
     (data.pages || []).forEach(p => {
@@ -1648,6 +1766,110 @@ async function checkOpenClaw() {
       ? `<div style="display:flex;align-items:center;gap:12px"><div style="width:40px;height:40px;border-radius:10px;background:rgba(34,197,94,0.2);display:flex;align-items:center;justify-content:center;font-size:20px">⚙️</div><div><div style="font-weight:700;color:var(--green)">OpenClaw Connected</div><div style="font-size:13px;color:var(--text-muted)">${d.base_url} • Agent: ${d.agent_id}</div></div></div>`
       : `<div style="display:flex;align-items:center;gap:12px"><div style="width:40px;height:40px;border-radius:10px;background:rgba(245,158,11,0.2);display:flex;align-items:center;justify-content:center;font-size:20px">⚠️</div><div><div style="font-weight:700;color:var(--yellow)">Not Running</div><div style="font-size:13px;color:var(--text-muted)">Fallback mode active. See setup below.</div></div></div>`;
   } catch(e) {}
+}
+
+// ── Email Reminders ───────────────────────────────
+async function previewReminders() {
+  try {
+    const daysAhead = parseInt(document.getElementById('days-ahead').value) || 1;
+    const dept = activeDept;
+    const url = dept
+      ? `${API}/api/reminders/preview?department=${dept}&days_ahead=${daysAhead}`
+      : `${API}/api/reminders/preview?days_ahead=${daysAhead}`;
+
+    const r = await fetch(url);
+    const d = await r.json();
+
+    const preview = document.getElementById('reminder-preview');
+    const content = document.getElementById('reminder-preview-content');
+
+    if (d.tasks_due_soon === 0) {
+      content.innerHTML = `
+        <div style="text-align:center;padding:20px;color:var(--text-muted)">
+          <div style="font-size:32px;margin-bottom:8px">✅</div>
+          <div>No tasks due in the next ${daysAhead} day(s)</div>
+        </div>
+      `;
+    } else {
+      let html = `
+        <div style="display:flex;gap:16px;margin-bottom:16px;padding:12px;background:var(--surface2);border-radius:8px">
+          <div style="flex:1">
+            <div style="font-size:24px;font-weight:700;color:var(--accent)">${d.tasks_due_soon}</div>
+            <div style="font-size:12px;color:var(--text-muted)">Tasks Due Soon</div>
+          </div>
+          <div style="flex:1">
+            <div style="font-size:24px;font-weight:700;color:var(--green)">${d.recipients.length}</div>
+            <div style="font-size:12px;color:var(--text-muted)">Recipients</div>
+          </div>
+        </div>
+      `;
+
+      for (const owner in d.by_owner) {
+        const tasks = d.by_owner[owner];
+        html += `
+          <div style="margin-bottom:16px;border:1px solid var(--border);border-radius:8px;overflow:hidden">
+            <div style="background:var(--surface2);padding:10px 14px;font-weight:600;border-bottom:1px solid var(--border)">
+              👤 ${owner} <span style="color:var(--text-muted);font-weight:400;font-size:12px">(${tasks.length} task${tasks.length > 1 ? 's' : ''})</span>
+            </div>
+            <div style="padding:8px">
+        `;
+
+        tasks.forEach(task => {
+          const labelColor = task.days_until === 0 ? 'var(--red)' : 'var(--yellow)';
+          html += `
+            <div style="padding:8px;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:flex-start">
+              <div style="background:${labelColor}22;color:${labelColor};padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;white-space:nowrap">
+                ${task.due_label}
+              </div>
+              <div style="flex:1;font-size:13px">${task.description}</div>
+            </div>
+          `;
+        });
+
+        html += `</div></div>`;
+      }
+
+      content.innerHTML = html;
+    }
+
+    preview.style.display = 'block';
+    preview.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  } catch(e) {
+    console.error('Preview error:', e);
+    toast('Failed to load preview', 'error');
+  }
+}
+
+async function sendRemindersNow() {
+  if (!confirm('Send email reminders to all team members with tasks due soon?')) {
+    return;
+  }
+
+  try {
+    const daysAhead = parseInt(document.getElementById('days-ahead').value) || 1;
+    const dept = activeDept;
+
+    const url = dept
+      ? `${API}/api/reminders/send?department=${dept}&days_ahead=${daysAhead}`
+      : `${API}/api/reminders/send?days_ahead=${daysAhead}`;
+
+    const r = await fetch(url, { method: 'POST' });
+    const d = await r.json();
+
+    if (d.sent > 0) {
+      toast(`✉️ Sent ${d.sent} email(s) to ${d.recipients.join(', ')}`, 'success');
+    } else {
+      toast(d.reason || 'No reminders sent - no tasks due soon', 'error');
+    }
+
+    // Refresh preview
+    previewReminders();
+
+  } catch(e) {
+    console.error('Send error:', e);
+    toast('Failed to send reminders', 'error');
+  }
 }
 
 init();

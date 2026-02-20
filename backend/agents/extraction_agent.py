@@ -49,9 +49,20 @@ def _parse_k2_response(content: str) -> dict:
     # Find JSON object
     match = re.search(r"\{.*\}", content, re.DOTALL)
     if match:
-        return json.loads(match.group())
+        try:
+            return json.loads(match.group())
+        except json.JSONDecodeError as e:
+            print(f"[Parse] JSON decode failed on matched content")
+            print(f"[Parse] Matched JSON (first 500 chars): {match.group()[:500]}")
+            raise
 
-    return json.loads(content.strip())
+    # Try parsing the stripped content directly
+    try:
+        return json.loads(content.strip())
+    except json.JSONDecodeError as e:
+        print(f"[Parse] No valid JSON object found in K2 response")
+        print(f"[Parse] Content after stripping (first 500 chars): {content.strip()[:500]}")
+        raise ValueError(f"Could not extract valid JSON from K2 response: {e}")
 
 
 async def extract_meeting(transcript: str, title: str = "", department: str = "engineering") -> tuple[ExtractionResult, str]:
@@ -99,7 +110,7 @@ async def extract_meeting(transcript: str, title: str = "", department: str = "e
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": prompt},
                 ],
-                "max_tokens": 4000,
+                "max_tokens": 8000,  # Increased from 4000 to handle long meetings
                 "temperature": 0.1,
             },
         )
@@ -121,11 +132,18 @@ async def extract_meeting(transcript: str, title: str = "", department: str = "e
     raw_content = message.get("content") or message.get("reasoning_content") or message.get("reasoning")
 
     if not raw_content:
+        print(f"[Extraction] K2 API returned empty content. Full message: {message}")
         raise ValueError(f"K2 API returned empty content. Message: {message}")
+
+    print(f"[Extraction] K2 API returned {len(raw_content)} characters")
+    print(f"[Extraction] First 500 chars: {raw_content[:500]}")
 
     try:
         parsed = _parse_k2_response(raw_content)
+        print(f"[Extraction] Successfully parsed JSON with {len(parsed.get('tasks', []))} tasks")
     except (json.JSONDecodeError, KeyError, ValueError) as e:
+        print(f"[Extraction] Parse error: {e}")
+        print(f"[Extraction] Full raw content:\n{raw_content}")
         raise ValueError(f"Failed to parse K2-Think-V2 response: {e}\nRaw: {raw_content[:500] if raw_content else 'None'}")
 
     # Parse tasks, handling both object and string formats

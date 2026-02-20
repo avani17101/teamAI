@@ -1502,8 +1502,368 @@
       "status": "pending",
       "meeting_id": "1a5f27e0-8d2e-482d-b564-cddf6c03cb93",
       "meeting_title": "Performance Test"
+    },
+    {
+      "id": "cca59f27-212b-4eaf-a1ae-0946d1ae24b4",
+      "description": "Finish the report",
+      "owner": "Alice",
+      "deadline": "today",
+      "status": "pending",
+      "meeting_id": "eda8da84-c8f4-4868-829f-7e160cff463d",
+      "meeting_title": "Test Meeting"
+    },
+    {
+      "id": "0967048b-9e48-436f-bb74-3508f20828c7",
+      "description": "Complete the user profile page",
+      "owner": "Sarah",
+      "deadline": "2026-02-20",
+      "status": "pending",
+      "meeting_id": "c21cd70e-fd2a-44e1-8b27-afecab1996a2",
+      "meeting_title": "Sprint Standup - Engineering Team"
+    },
+    {
+      "id": "93c8d62d-6675-4cc0-b943-e10ea7d7471b",
+      "description": "Complete the security audit",
+      "owner": "Tom",
+      "deadline": "2026-02-21",
+      "status": "pending",
+      "meeting_id": "c21cd70e-fd2a-44e1-8b27-afecab1996a2",
+      "meeting_title": "Sprint Standup - Engineering Team"
+    },
+    {
+      "id": "a42897d0-3a43-4ff5-acb4-5f5df7f723d8",
+      "description": "Review the database migration pull request",
+      "owner": "Tom",
+      "deadline": "2026-02-20",
+      "status": "pending",
+      "meeting_id": "c21cd70e-fd2a-44e1-8b27-afecab1996a2",
+      "meeting_title": "Sprint Standup - Engineering Team"
+    },
+    {
+      "id": "0620c686-3540-49c1-9dbd-9dd02052c949",
+      "description": "Resolve AWS credentials admin access issue",
+      "owner": "Alice",
+      "deadline": "2026-02-21",
+      "status": "pending",
+      "meeting_id": "c21cd70e-fd2a-44e1-8b27-afecab1996a2",
+      "meeting_title": "Sprint Standup - Engineering Team"
+    },
+    {
+      "id": "af9e7b82-07b5-48af-8d95-b4b789f77f3b",
+      "description": "Complete benchmark experiments for ACL paper",
+      "owner": "Ramzi Ben Ouaghrem",
+      "deadline": "2025-03-15",
+      "status": "pending",
+      "meeting_id": "9a46a64e-7bb8-4cc3-afd7-b59e9ecc416e",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "0f98496f-99d6-4381-ab4d-0db3169c875e",
+      "description": "Secure priority GPU access on the cluster for benchmark experiments",
+      "owner": "Ramzi Ben Ouaghrem",
+      "deadline": "2025-03-10",
+      "status": "pending",
+      "meeting_id": "9a46a64e-7bb8-4cc3-afd7-b59e9ecc416e",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "40886b2d-4fe7-4295-883b-9fb81c6f2148",
+      "description": "Follow up with legal to finalize TechCorp MoU signing date",
+      "owner": "Ramzi Ben Ouaghrem",
+      "deadline": "2025-03-31",
+      "status": "pending",
+      "meeting_id": "9a46a64e-7bb8-4cc3-afd7-b59e9ecc416e",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "7a40a260-f2c4-4e6f-83b6-ae9c4225bec8",
+      "description": "Draft technical proposal for ADEK grant",
+      "owner": "Ramzi Ben Ouaghrem",
+      "deadline": "2025-03-20",
+      "status": "pending",
+      "meeting_id": "9a46a64e-7bb8-4cc3-afd7-b59e9ecc416e",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "858b6b3d-b289-449c-abbf-bc7ec87e7c9a",
+      "description": "Prepare financial section for ADEK grant",
+      "owner": "Ramzi Ben Ouaghrem",
+      "deadline": "2025-03-20",
+      "status": "pending",
+      "meeting_id": "9a46a64e-7bb8-4cc3-afd7-b59e9ecc416e",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "2b95cc0c-a45d-4304-84c3-dcb3c17b42b2",
+      "description": "Merge and review ADEK grant application",
+      "owner": "Ramzi Ben Ouaghrem",
+      "deadline": "2025-03-17",
+      "status": "pending",
+      "meeting_id": "9a46a64e-7bb8-4cc3-afd7-b59e9ecc416e",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "82c0a25d-fc7d-44ff-bd6f-6a4739187ee6",
+      "description": "Release Arabic Voice Dataset v2 on HuggingFace after IT security sign\u2011off",
+      "owner": "Avani Gupta",
+      "deadline": "2025-03-20",
+      "status": "pending",
+      "meeting_id": "9a46a64e-7bb8-4cc3-afd7-b59e9ecc416e",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "ea880be0-8104-4d61-92ff-e6e7b048444e",
+      "description": "Conduct integration testing for Al Noor Hospital pilot",
+      "owner": "Avani Gupta",
+      "deadline": "2025-03-24",
+      "status": "pending",
+      "meeting_id": "9a46a64e-7bb8-4cc3-afd7-b59e9ecc416e",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "68d936b5-81e4-4f5d-afae-3bbfc486a2b0",
+      "description": "Lead UNESCO AI Ethics grant application",
+      "owner": "Ramzi Ben Ouaghrem",
+      "deadline": "2025-04-30",
+      "status": "pending",
+      "meeting_id": "9a46a64e-7bb8-4cc3-afd7-b59e9ecc416e",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "3df2e175-0a21-4f93-8c34-f6aff3b1f334",
+      "description": "Address GPU bottleneck across projects",
+      "owner": "Ramzi Ben Ouaghrem",
+      "deadline": "2025-03-10",
+      "status": "pending",
+      "meeting_id": "9a46a64e-7bb8-4cc3-afd7-b59e9ecc416e",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "8f2db9df-6aa1-4f52-b64e-360ad8071d40",
+      "description": "Finish the report",
+      "owner": "Sarah",
+      "deadline": "today",
+      "status": "pending",
+      "meeting_id": "84a92ad4-fe59-401b-8017-2809a970ce67",
+      "meeting_title": "Quick Test"
+    },
+    {
+      "id": "55358906-3032-4cec-9596-03bb6d270afd",
+      "description": "Fix auth service memory leak causing random user logouts",
+      "owner": "Ahmed Hassan",
+      "deadline": "Tomorrow (Feb 16)",
+      "status": "pending",
+      "meeting_id": "28635eaa-2af5-4d62-a8c7-3f28fac6b438",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "7b0b2b7c-a672-4dec-8547-08e3ed082235",
+      "description": "Provide new API spec to Priya for dashboard redesign",
+      "owner": "Ahmed Hassan",
+      "deadline": "Tomorrow (Feb 16)",
+      "status": "pending",
+      "meeting_id": "28635eaa-2af5-4d62-a8c7-3f28fac6b438",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "f431ac42-0e4e-42ea-a835-dc23b74acd2f",
+      "description": "Complete REST API refactoring",
+      "owner": "Ahmed Hassan",
+      "deadline": "Wednesday (Feb 19)",
+      "status": "pending",
+      "meeting_id": "28635eaa-2af5-4d62-a8c7-3f28fac6b438",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "3568e8e9-983c-47d4-a559-ae1c8df61936",
+      "description": "Implement dashboard redesign (frontend)",
+      "owner": "Priya Sharma",
+      "deadline": "End of sprint (Feb 21)",
+      "status": "pending",
+      "meeting_id": "28635eaa-2af5-4d62-a8c7-3f28fac6b438",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "115db629-3c36-4a5d-987a-7ad268bd52ac",
+      "description": "Set up staging environment for new microservice",
+      "owner": "Marcus Wilson",
+      "deadline": "Friday (Feb 21)",
+      "status": "pending",
+      "meeting_id": "28635eaa-2af5-4d62-a8c7-3f28fac6b438",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "383018f5-e02b-4832-948b-029857bf5360",
+      "description": "Scale up K8s cluster to free capacity before next deployment",
+      "owner": "Marcus Wilson",
+      "deadline": "Before next deployment (by Friday)",
+      "status": "pending",
+      "meeting_id": "28635eaa-2af5-4d62-a8c7-3f28fac6b438",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "70bc1023-69be-4357-9a51-da32fcaa0303",
+      "description": "Ping IT to provision sandbox environment for QA",
+      "owner": "David Chen",
+      "deadline": "Today (Feb 15)",
+      "status": "pending",
+      "meeting_id": "28635eaa-2af5-4d62-a8c7-3f28fac6b438",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "1ac4f4b1-206a-42f3-9598-e0f3f8e3537b",
+      "description": "Develop test automation for payment flow",
+      "owner": "Lisa Park",
+      "deadline": "After sandbox provision",
+      "status": "pending",
+      "meeting_id": "28635eaa-2af5-4d62-a8c7-3f28fac6b438",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "d54f958a-c772-4b33-bcb7-f31cd011e05d",
+      "description": "Assign security audit for payment module (due March 20)",
+      "owner": "David Chen",
+      "deadline": "Next standup (Feb 16)",
+      "status": "pending",
+      "meeting_id": "28635eaa-2af5-4d62-a8c7-3f28fac6b438",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "6c1db9f2-27c5-4b70-b3cb-eb95a8c8e158",
+      "description": "Fix auth service memory leak causing random user logouts in production",
+      "owner": "Ahmed",
+      "deadline": "Wednesday",
+      "status": "pending",
+      "meeting_id": "55c2f738-579e-41a5-af35-1327c21e9c45",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "64be9044-b41f-4a77-903f-51700fb1c285",
+      "description": "Refactor REST API",
+      "owner": "Ahmed",
+      "deadline": "Wednesday",
+      "status": "pending",
+      "meeting_id": "55c2f738-579e-41a5-af35-1327c21e9c45",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "24679d7b-e58c-4d2a-95ff-76111adb5254",
+      "description": "Provide new API spec to Priya for dashboard redesign",
+      "owner": "Ahmed",
+      "deadline": "tomorrow",
+      "status": "pending",
+      "meeting_id": "55c2f738-579e-41a5-af35-1327c21e9c45",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "adbf0d0a-16c1-4644-b06b-9cb21a29c335",
+      "description": "Dashboard redesign (blocked until API spec is available)",
+      "owner": "Priya",
+      "deadline": "Friday",
+      "status": "pending",
+      "meeting_id": "55c2f738-579e-41a5-af35-1327c21e9c45",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "99eaa499-df84-4364-813e-973e4cc041fe",
+      "description": "Set up staging environment for new microservice",
+      "owner": "Marcus",
+      "deadline": "Friday",
+      "status": "pending",
+      "meeting_id": "55c2f738-579e-41a5-af35-1327c21e9c45",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "6a83ea29-e58f-49a9-802a-562b856c0cc3",
+      "description": "Scale up K8s cluster before next deployment",
+      "owner": "Marcus",
+      "deadline": "before next deployment (Friday)",
+      "status": "pending",
+      "meeting_id": "55c2f738-579e-41a5-af35-1327c21e9c45",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "cccd45ec-98ed-4719-a84d-a519ec5027b4",
+      "description": "Request sandbox environment provisioning from IT for QA",
+      "owner": "David",
+      "deadline": "today",
+      "status": "pending",
+      "meeting_id": "55c2f738-579e-41a5-af35-1327c21e9c45",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "1391c7d5-f584-4310-b841-9328cf986109",
+      "description": "Assign security audit for payment module",
+      "owner": "David",
+      "deadline": "next standup (tomorrow)",
+      "status": "pending",
+      "meeting_id": "55c2f738-579e-41a5-af35-1327c21e9c45",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "16929778-95df-4bcb-83ab-c51bf910c554",
+      "description": "Perform test automation for payment flow (blocked until sandbox environment is provisioned)",
+      "owner": "Lisa",
+      "deadline": "Friday",
+      "status": "pending",
+      "meeting_id": "55c2f738-579e-41a5-af35-1327c21e9c45",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "eac1f0d5-5885-4dac-b114-b13c9150a5aa",
+      "description": "All staff to send procurement, finance, and logistics requests to finance@mbzuai.ac.ae.",
+      "owner": "All staff",
+      "deadline": "TBD",
+      "status": "pending",
+      "meeting_id": "7cd9fe43-12fc-4bac-b039-b85dd28d4632",
+      "meeting_title": "financial services newsletter"
+    },
+    {
+      "id": "4197b200-7516-4a63-ad33-cd652072e262",
+      "description": "Finance team to maintain and update the Services Catalog for staff reference.",
+      "owner": "Finance team",
+      "deadline": "TBD",
+      "status": "pending",
+      "meeting_id": "7cd9fe43-12fc-4bac-b039-b85dd28d4632",
+      "meeting_title": "financial services newsletter"
+    },
+    {
+      "id": "c738b41a-d6a1-47b4-87e5-1df08d61366b",
+      "description": "Finance team to conduct training sessions on the new request process and Services Catalog.",
+      "owner": "Finance team",
+      "deadline": "TBD",
+      "status": "pending",
+      "meeting_id": "7cd9fe43-12fc-4bac-b039-b85dd28d4632",
+      "meeting_title": "financial services newsletter"
+    },
+    {
+      "id": "9430cd4e-755b-47c8-a66b-34f9bb0ef0f0",
+      "description": "Aline and Kaltham to act as primary points of contact for all finance, procurement, and logistics requests.",
+      "owner": "Aline, Kaltham",
+      "deadline": "TBD",
+      "status": "pending",
+      "meeting_id": "7cd9fe43-12fc-4bac-b039-b85dd28d4632",
+      "meeting_title": "financial services newsletter"
+    },
+    {
+      "id": "d7360c0c-b47b-4b1b-9807-f2270c94b0a1",
+      "description": "Finance team to monitor and reduce informal email follow-ups and ensure proper documentation.",
+      "owner": "Finance team",
+      "deadline": "TBD",
+      "status": "pending",
+      "meeting_id": "7cd9fe43-12fc-4bac-b039-b85dd28d4632",
+      "meeting_title": "financial services newsletter"
+    },
+    {
+      "id": "ebb06a10-ac72-415d-8f16-54a728219270",
+      "description": "Finance team to communicate the new finance email address and process to all staff.",
+      "owner": "Finance team",
+      "deadline": "TBD",
+      "status": "pending",
+      "meeting_id": "7cd9fe43-12fc-4bac-b039-b85dd28d4632",
+      "meeting_title": "financial services newsletter"
     }
   ],
-  "last_updated": "2026-02-20T05:45:10.855735",
-  "total": 167
+  "last_updated": "2026-02-20T06:46:42.101174",
+  "total": 207
 }
