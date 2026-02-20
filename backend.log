@@ -1250,3 +1250,149 @@ INFO:     127.0.0.1:64626 - "POST /api/meetings/upload HTTP/1.1" 200 OK
 INFO:     127.0.0.1:64626 - "GET /api/state?department=engineering HTTP/1.1" 200 OK
 INFO:     127.0.0.1:64991 - "GET /api/reminders/preview?days_ahead=7 HTTP/1.1" 200 OK
 INFO:     127.0.0.1:64993 - "GET /api/departments HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65127 - "GET /api/meetings?department=marcom HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65128 - "GET /api/state?department=marcom HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65130 - "GET /api/tasks?department=marcom HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65130 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65128 - "GET /api/departments HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65130 - "GET /api/openclaw/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65128 - "GET /api/state?department=engineering HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65128 - "GET /api/state?department=marcom HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65130 - "GET /api/tasks?department=marcom HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65136 - "GET /api/meetings?department=marcom HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65136 - "GET /api/state?department=product HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65130 - "GET /api/tasks?department=product HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65128 - "GET /api/meetings?department=product HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65128 - "GET /api/tasks?department=innovation HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65130 - "GET /api/meetings?department=innovation HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65136 - "GET /api/state?department=innovation HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65136 - "GET /api/state?department=marcom HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65128 - "GET /api/tasks?department=marcom HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65130 - "GET /api/meetings?department=marcom HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65128 - "GET /api/state?department=engineering HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65130 - "GET /api/meetings?department=engineering HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65136 - "GET /api/tasks?department=engineering HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65178 - "GET /api/state?department=engineering HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65196 - "GET /api/state?department=provost HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65198 - "GET /api/tasks?department=provost HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65199 - "GET /api/meetings?department=provost HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65198 - "GET /api/state?department=iec HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65199 - "GET /api/tasks?department=iec HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65196 - "GET /api/meetings?department=iec HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65199 - "GET /api/state?department=sales HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65196 - "GET /api/tasks?department=sales HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65198 - "GET /api/meetings?department=sales HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65248 - "GET /api/state?department=engineering HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65249 - "GET /api/tasks?department=engineering HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65250 - "GET /api/meetings?department=engineering HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65250 - "GET /api/state?department=innovation HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65249 - "GET /api/tasks?department=innovation HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65248 - "GET /api/meetings?department=innovation HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65270 - "GET /api/state?department=provost HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65272 - "GET /api/tasks?department=provost HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65273 - "GET /api/meetings?department=provost HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65273 - "GET /api/state?department=product HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65272 - "GET /api/tasks?department=product HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65270 - "GET /api/meetings?department=product HTTP/1.1" 200 OK
+Failed to send telemetry event ClientStartEvent: capture() takes 1 positional argument but 3 were given
+Failed to send telemetry event ClientCreateCollectionEvent: capture() takes 1 positional argument but 3 were given
+[Extraction] K2 API returned 2350 characters
+[Extraction] First 500 chars: 
+{
+  "tasks": [
+    {
+      "description": "Write PRD for analytics dashboard",
+      "owner": "Emily Zhang",
+      "deadline": "2025-02-19",
+      "status": "pending"
+    },
+    {
+      "description": "Deliver PRD to engineering for estimation",
+      "owner": "Emily Zhang",
+      "deadline": "2025-02-21",
+      "status": "pending"
+    },
+    {
+      "description": "Conduct 10 user interviews for mobile app redesign",
+      "owner": "Rachel Thompson",
+      "deadline": "2025-02-26",
+      "stat
+[Extraction] Successfully parsed JSON with 10 tasks
+[Notion] Loaded 2 workspace members for Assignee matching
+[Notion] Sync complete: 10 created, 0 failed (dept=product)
+INFO:     127.0.0.1:65286 - "POST /api/meetings/upload HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65286 - "GET /api/state?department=product HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65448 - "GET /api/team?department=product HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65448 - "GET /api/org/context?department=product HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65517 - "GET /api/state?department=product HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65517 - "GET /api/state?department=provost HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65529 - "GET /api/tasks?department=provost HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65530 - "GET /api/meetings?department=provost HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49154 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49155 - "GET /api/departments HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49154 - "GET /api/openclaw/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49155 - "GET /api/state?department=engineering HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49155 - "GET /api/state?department=product HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49154 - "GET /api/tasks?department=product HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49163 - "GET /api/meetings?department=product HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49163 - "GET /api/state?department=provost HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49154 - "GET /api/tasks?department=provost HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49155 - "GET /api/meetings?department=provost HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49180 - "GET /api/state?department=product HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49181 - "GET /api/tasks?department=product HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49182 - "GET /api/meetings?department=product HTTP/1.1" 200 OK
+Failed to send telemetry event ClientStartEvent: capture() takes 1 positional argument but 3 were given
+Failed to send telemetry event ClientCreateCollectionEvent: capture() takes 1 positional argument but 3 were given
+INFO:     127.0.0.1:49199 - "POST /api/chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49244 - "GET /api/state?department=innovation HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49245 - "GET /api/tasks?department=innovation HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49246 - "GET /api/meetings?department=innovation HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49252 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49253 - "GET /api/departments HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49252 - "GET /api/openclaw/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49253 - "GET /api/state?department=engineering HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49253 - "GET /api/state?department=innovation HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49252 - "GET /api/tasks?department=innovation HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49267 - "GET /api/meetings?department=innovation HTTP/1.1" 200 OK
+Failed to send telemetry event ClientStartEvent: capture() takes 1 positional argument but 3 were given
+Failed to send telemetry event ClientCreateCollectionEvent: capture() takes 1 positional argument but 3 were given
+INFO:     127.0.0.1:49313 - "POST /api/chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49379 - "GET /api/meetings?department=innovation HTTP/1.1" 200 OK
+[EmailForwarder] New email: Fw: List of stakeholders
+[EmailForwarder] Routing avani.gupta@mbzuai.ac.ae → innovation department
+[EmailForwarder] Processing email: Fw: List of stakeholders
+INFO:     127.0.0.1:49703 - "GET /api/reminders/preview?department=innovation&days_ahead=1 HTTP/1.1" 200 OK
+Failed to send telemetry event ClientStartEvent: capture() takes 1 positional argument but 3 were given
+Failed to send telemetry event ClientCreateCollectionEvent: capture() takes 1 positional argument but 3 were given
+[Extraction] K2 API returned 1567 characters
+[Extraction] First 500 chars: 
+{
+  "tasks": [
+    {
+      "description": "Add the two new stakeholders (Department of Energy and AtkinsRealis) to the stakeholder list.",
+      "owner": "Avani Gupta",
+      "deadline": "",
+      "status": "pending"
+    },
+    {
+      "description": "Draft a note to stakeholders after receiving the EOI template from Najid Mohammed.",
+      "owner": "Ramzi Ben Ouaghrem",
+      "deadline": "",
+      "status": "pending"
+    }
+  ],
+  "decisions": [
+    "Approve inclusion of Department of Energy (A
+[Extraction] Successfully parsed JSON with 2 tasks
+[EmailForwarder] Saved meeting 199051ae-c21a-4bdd-ab4a-6dd7dc5bcf9a with 2 tasks
+[Notion] Loaded 2 workspace members for Assignee matching
+[Notion] Sync complete: 2 created, 0 failed (dept=innovation)
+[EmailForwarder] Processed email 'Fw: List of stakeholders' → Meeting ID: 199051ae-c21a-4bdd-ab4a-6dd7dc5bcf9a
+[EmailForwarder] Sent confirmation to Avani.Gupta@mbzuai.ac.ae
+[EmailForwarder] Sent confirmation to Avani.Gupta@mbzuai.ac.ae
+[Email] Sent reminder to Avani Gupta (avani.gupta@mbzuai.ac.ae) for 29 tasks
+[Email] Sent reminder to Ramzi Ben Ouaghrem (Ramzi.BenOuaghrem@mbzuai.ac.ae) for 3 tasks
+[Email] No email found for All participants, skipping reminder
+[Email] No email found for Mohammed, skipping reminder
+INFO:     127.0.0.1:49710 - "POST /api/reminders/send?department=innovation&days_ahead=1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49710 - "GET /api/reminders/preview?department=innovation&days_ahead=1 HTTP/1.1" 200 OK

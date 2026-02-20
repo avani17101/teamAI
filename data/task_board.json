@@ -1961,8 +1961,98 @@
       "status": "pending",
       "meeting_id": "4b8aeced-71c5-4800-8ad0-0176b60ee59e",
       "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "7512c098-39b9-4318-a335-d08a339745f8",
+      "description": "Write PRD for analytics dashboard",
+      "owner": "Emily Zhang",
+      "deadline": "2025-02-19",
+      "status": "pending",
+      "meeting_id": "b3cffe9f-be90-4d2a-95de-66c79c3f3329",
+      "meeting_title": "Team Meeting"
+    },
+    {
+      "id": "9c07bbe4-cbd4-40d4-9a92-a774c4309359",
+      "description": "Deliver PRD to engineering for estimation",
+      "owner": "Emily Zhang",
+      "deadline": "2025-02-21",
+      "status": "pending",
+      "meeting_id": "b3cffe9f-be90-4d2a-95de-66c79c3f3329",
+      "meeting_title": "Team Meeting"
+    },
+    {
+      "id": "e49cbb93-428c-4c90-923a-271947257608",
+      "description": "Conduct 10 user interviews for mobile app redesign",
+      "owner": "Rachel Thompson",
+      "deadline": "2025-02-26",
+      "status": "pending",
+      "meeting_id": "b3cffe9f-be90-4d2a-95de-66c79c3f3329",
+      "meeting_title": "Team Meeting"
+    },
+    {
+      "id": "fcc13d09-442c-474a-acc9-baca35468407",
+      "description": "Share user interview insights with design team",
+      "owner": "Rachel Thompson",
+      "deadline": "2025-03-10",
+      "status": "pending",
+      "meeting_id": "b3cffe9f-be90-4d2a-95de-66c79c3f3329",
+      "meeting_title": "Team Meeting"
+    },
+    {
+      "id": "785d4bf4-7912-4685-8806-a2fe7f719e8e",
+      "description": "Update roadmap presentation deck for execs",
+      "owner": "Marcus Kim",
+      "deadline": "2025-02-28",
+      "status": "pending",
+      "meeting_id": "b3cffe9f-be90-4d2a-95de-66c79c3f3329",
+      "meeting_title": "Team Meeting"
+    },
+    {
+      "id": "209a678b-c06c-463e-ba95-6f42a2311b5f",
+      "description": "Coordinate rollout of onboarding flow to 100% of users",
+      "owner": "James Liu",
+      "deadline": "2025-02-27",
+      "status": "pending",
+      "meeting_id": "b3cffe9f-be90-4d2a-95de-66c79c3f3329",
+      "meeting_title": "Team Meeting"
+    },
+    {
+      "id": "af08392a-a10d-4051-8159-b5f4e5c804b0",
+      "description": "Analyze funnel data and present findings",
+      "owner": "Sarah Patel",
+      "deadline": "2025-02-21",
+      "status": "pending",
+      "meeting_id": "b3cffe9f-be90-4d2a-95de-66c79c3f3329",
+      "meeting_title": "Team Meeting"
+    },
+    {
+      "id": "39c2cdb7-5fd0-4b26-9658-56111d6c3102",
+      "description": "Prepare final screenshots for marketing",
+      "owner": "Alex Chen",
+      "deadline": "2025-03-08",
+      "status": "pending",
+      "meeting_id": "b3cffe9f-be90-4d2a-95de-66c79c3f3329",
+      "meeting_title": "Team Meeting"
+    },
+    {
+      "id": "d202321b-1e69-4af7-acd0-c9a3c08a0836",
+      "description": "Prepare for go/no-go meeting for payment feature launch",
+      "owner": "Alex Chen",
+      "deadline": "2025-03-12",
+      "status": "pending",
+      "meeting_id": "b3cffe9f-be90-4d2a-95de-66c79c3f3329",
+      "meeting_title": "Team Meeting"
+    },
+    {
+      "id": "c969096c-ae46-45d9-aa8e-98d296bd18cf",
+      "description": "Monitor design team capacity to avoid delays",
+      "owner": "Marcus Kim",
+      "deadline": "2025-02-28",
+      "status": "pending",
+      "meeting_id": "b3cffe9f-be90-4d2a-95de-66c79c3f3329",
+      "meeting_title": "Team Meeting"
     }
   ],
-  "last_updated": "2026-02-20T10:15:42.035138",
-  "total": 218
+  "last_updated": "2026-02-20T10:21:07.702334",
+  "total": 228
 }
