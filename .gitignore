@@ -1,7 +1,16 @@
 
-# Python venv
+# Environment variables
+.env
+.env.*
+*.env
+
+# Python virtual env
 venv/
 .venv/
+
+# Python cache
 __pycache__/
 *.pyc
+
+# Mac
 .DS_Store
