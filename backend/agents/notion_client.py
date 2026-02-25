@@ -183,8 +183,9 @@ async def sync_tasks(tasks: list[dict], meeting_title: str = "", department: str
 
     created = []
     failed = []
-    # task_id → notion_url mapping for storing back in SQLite
+    # task_id → notion_url and notion_page_id mappings for storing back in SQLite
     url_map = {}
+    page_id_map = {}
 
     # Load workspace members once for Assignee matching
     members = []
@@ -217,6 +218,7 @@ async def sync_tasks(tasks: list[dict], meeting_title: str = "", department: str
             })
             if tid:
                 url_map[tid] = result["notion_url"]
+                page_id_map[tid] = result["notion_page_id"]
         except Exception as e:
             err = str(e)
             print(f"[Notion] FAILED to create task '{task.get('description','')}': {err}")
@@ -229,12 +231,16 @@ async def sync_tasks(tasks: list[dict], meeting_title: str = "", department: str
         "failed": len(failed),
         "pages": created,
         "url_map": url_map,
+        "page_id_map": page_id_map,
         "database_url": f"https://www.notion.so/{db_id.replace('-', '')}",
     }
 
 
 async def update_task_status(notion_page_id: str, status: str) -> dict:
     """Update the status of an existing Notion task page."""
+    if not notion_page_id:
+        return {"ok": False, "error": "No Notion page ID provided"}
+
     async with httpx.AsyncClient(timeout=15.0) as client:
         response = await client.patch(
             f"{NOTION_BASE}/pages/{notion_page_id}",
@@ -249,6 +255,60 @@ async def update_task_status(notion_page_id: str, status: str) -> dict:
         )
         response.raise_for_status()
         return {"ok": True}
+
+
+async def update_task(
+    notion_page_id: str,
+    description: str = None,
+    owner: str = None,
+    deadline: str = None,
+    status: str = None,
+    priority: str = None,
+    department: str = None,
+) -> dict:
+    """Update an existing Notion task page with any changed fields."""
+    if not notion_page_id:
+        return {"ok": False, "error": "No Notion page ID provided"}
+
+    properties = {}
+
+    if description is not None:
+        dept_label = DEPT_TAG.get(department, department.title() if department else "")
+        task_name = f"[{dept_label}] {description}" if dept_label else description
+        properties["Task name"] = {"title": [{"text": {"content": task_name}}]}
+
+    if status is not None:
+        properties["Status"] = {"status": {"name": STATUS_MAP.get(status, "Not started")}}
+
+    if priority is not None:
+        properties["Priority"] = {"select": {"name": priority}}
+
+    if department is not None:
+        properties["Department"] = {"multi_select": [{"name": DEPT_SELECT.get(department, department.title())}]}
+
+    if deadline is not None and deadline not in ("Not specified", "not specified", ""):
+        iso_date = _try_parse_date(deadline)
+        if iso_date:
+            properties["Due date"] = {"date": {"start": iso_date}}
+
+    if owner is not None:
+        # Update description field with new owner info
+        members = await _load_workspace_members()
+        user_id = _match_owner_to_user_id(owner, members)
+        if user_id:
+            properties["Assignee"] = {"people": [{"id": user_id}]}
+
+    if not properties:
+        return {"ok": True, "message": "No fields to update"}
+
+    async with httpx.AsyncClient(timeout=15.0) as client:
+        response = await client.patch(
+            f"{NOTION_BASE}/pages/{notion_page_id}",
+            headers=_headers(),
+            json={"properties": properties},
+        )
+        response.raise_for_status()
+        return {"ok": True, "updated_properties": list(properties.keys())}
 
 
 def _try_parse_date(deadline: str):

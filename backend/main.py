@@ -25,16 +25,21 @@ from .agents.memory_store import (
     get_department_state, search_memory,
     save_team_member, get_team_members, delete_team_member,
     get_org_context, save_org_context,
+    get_task_by_id, update_task as db_update_task,
 )
 from .agents.query_agent import answer_question
 from .agents.openclaw_client import openclaw
-from .agents.notion_client import sync_tasks as notion_sync_tasks
+from .agents.notion_client import (
+    sync_tasks as notion_sync_tasks,
+    update_task_status as notion_update_status,
+    update_task as notion_update_task,
+)
 from .agents.telegram_client import send_due_reminders as telegram_send_reminders, check_bot_status, send_task_assigned
 from .agents.email_client import send_task_email, send_due_reminders as email_send_reminders
 from .models.schemas import (
     MeetingUploadRequest, ChatRequest, ChatResponse,
-    TaskUpdateRequest, NotionSyncRequest, TeamMemberRequest, OrgContextRequest,
-    NotificationRequest
+    TaskUpdateRequest, FullTaskUpdateRequest, NotionSyncRequest,
+    TeamMemberRequest, OrgContextRequest, NotificationRequest
 )
 
 app = FastAPI(
@@ -43,9 +48,12 @@ app = FastAPI(
     version="1.0.0",
 )
 
+from .config import CORS_ORIGINS, ENV
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=CORS_ORIGINS,
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -232,13 +240,42 @@ async def upload_meeting(request: MeetingUploadRequest):
 
     # Extract structured data with K2-Think-V2
     try:
-        extraction, summary = await extract_meeting(
+        extraction, summary, task_updates = await extract_meeting(
             transcript=request.transcript,
             title=request.title,
             department=request.department,
+            detect_updates=True,
         )
     except Exception as e:
         raise HTTPException(500, f"Extraction failed: {str(e)}")
+
+    # Process task updates detected from transcript
+    updated_tasks = []
+    for update_info in task_updates:
+        task_id = update_info["task_id"]
+        updates = update_info["updates"]
+        try:
+            # Update in local DB
+            db_update_task(task_id, updates)
+
+            # Get the task to sync to Notion
+            task = get_task_by_id(task_id)
+            if task and task.get("notion_page_id"):
+                await notion_update_task(
+                    notion_page_id=task["notion_page_id"],
+                    description=updates.get("description"),
+                    owner=updates.get("owner"),
+                    deadline=updates.get("deadline"),
+                    status=updates.get("status"),
+                    department=request.department,
+                )
+            updated_tasks.append({
+                "task_id": task_id,
+                "updates": updates,
+                "notion_synced": bool(task and task.get("notion_page_id"))
+            })
+        except Exception as e:
+            print(f"[TaskUpdate] Failed to update task {task_id}: {e}")
 
     # Assign IDs to extracted items
     meeting_id = str(uuid.uuid4())
@@ -295,9 +332,12 @@ async def upload_meeting(request: MeetingUploadRequest):
             meeting_title=request.title,
             department=request.department,
         )
-        # Persist Notion page URLs back to SQLite
+        # Persist Notion page URLs and IDs back to SQLite
         if notion_result.get("ok") and notion_result.get("url_map"):
-            update_task_notion_urls(notion_result["url_map"])
+            update_task_notion_urls(
+                notion_result["url_map"],
+                notion_result.get("page_id_map", {})
+            )
     else:
         notion_result = {"ok": False, "skipped": True, "message": "HITL review mode — select tasks to sync"}
 
@@ -371,6 +411,7 @@ async def upload_meeting(request: MeetingUploadRequest):
             "decisions": [d.dict() for d in extraction.decisions],
             "risks": [r.dict() for r in extraction.risks],
         },
+        "task_updates": updated_tasks,  # Tasks updated from transcript mentions
         "cross_meeting_insights": insights,
         "task_board": board_result,
         "notion": notion_result,
@@ -415,16 +456,95 @@ async def list_tasks(status: Optional[str] = None, department: Optional[str] = N
 
 
 @app.patch("/api/tasks/{task_id}")
-async def update_task(task_id: str, request: TaskUpdateRequest):
-    """Update task status and sync to OpenClaw task board."""
+async def update_task_endpoint(task_id: str, request: TaskUpdateRequest):
+    """Update task status and sync to OpenClaw task board and Notion."""
+    # Get the task first to check if it has a Notion page
+    task = get_task_by_id(task_id)
+    if not task:
+        raise HTTPException(404, "Task not found")
+
+    # Update in SQLite
     success = update_task_status(task_id, request.status)
     if not success:
-        raise HTTPException(404, "Task not found")
+        raise HTTPException(500, "Failed to update task")
 
     # Sync update to OpenClaw board
     await openclaw.update_task_status_on_board(task_id, request.status)
 
-    return {"ok": True, "task_id": task_id, "status": request.status}
+    # Sync update to Notion if task has a Notion page
+    notion_result = {"synced": False}
+    if task.get("notion_page_id"):
+        try:
+            notion_result = await notion_update_status(task["notion_page_id"], request.status)
+            notion_result["synced"] = notion_result.get("ok", False)
+        except Exception as e:
+            notion_result = {"synced": False, "error": str(e)}
+
+    return {
+        "ok": True,
+        "task_id": task_id,
+        "status": request.status,
+        "notion": notion_result
+    }
+
+
+@app.put("/api/tasks/{task_id}")
+async def full_update_task(task_id: str, request: FullTaskUpdateRequest):
+    """
+    Full task update - update any task fields and sync changes to Notion.
+    This enables updating tasks based on meeting transcript mentions.
+    """
+    # Get the task first
+    task = get_task_by_id(task_id)
+    if not task:
+        raise HTTPException(404, "Task not found")
+
+    # Build updates dict from non-None fields
+    updates = {}
+    if request.description is not None:
+        updates["description"] = request.description
+    if request.owner is not None:
+        updates["owner"] = request.owner
+    if request.deadline is not None:
+        updates["deadline"] = request.deadline
+    if request.status is not None:
+        updates["status"] = request.status
+
+    if not updates:
+        return {"ok": True, "task_id": task_id, "message": "No updates provided"}
+
+    # Update in SQLite
+    success = db_update_task(task_id, updates)
+    if not success:
+        raise HTTPException(500, "Failed to update task")
+
+    # Sync update to OpenClaw board if status changed
+    if request.status is not None:
+        await openclaw.update_task_status_on_board(task_id, request.status)
+
+    # Sync update to Notion if task has a Notion page
+    notion_result = {"synced": False}
+    if task.get("notion_page_id"):
+        try:
+            notion_result = await notion_update_task(
+                notion_page_id=task["notion_page_id"],
+                description=request.description,
+                owner=request.owner,
+                deadline=request.deadline,
+                status=request.status,
+                priority=request.priority,
+                department=task.get("department"),
+            )
+            notion_result["synced"] = notion_result.get("ok", False)
+        except Exception as e:
+            notion_result = {"synced": False, "error": str(e)}
+
+    return {
+        "ok": True,
+        "task_id": task_id,
+        "updated_fields": list(updates.keys()),
+        "notion": notion_result
+    }
 
 
 @app.post("/api/meetings/sync-notion")
@@ -445,7 +565,10 @@ async def sync_selected_to_notion(request: NotionSyncRequest):
         department=request.department,
     )
     if notion_result.get("ok") and notion_result.get("url_map"):
-        update_task_notion_urls(notion_result["url_map"])
+        update_task_notion_urls(
+            notion_result["url_map"],
+            notion_result.get("page_id_map", {})
+        )
     return notion_result
 
 

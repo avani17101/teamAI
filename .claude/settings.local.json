@@ -31,7 +31,17 @@
       "Bash(do echo '=== $table ===')",
       "Bash(done)",
       "Bash(timeout 10 bash:*)",
-      "Bash(ps:*)"
+      "Bash(ps:*)",
+      "Bash(git checkout:*)",
+      "Bash(grep:*)",
+      "Bash(du -sh:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(echo:*)",
+      "Bash(docker:*)",
+      "Bash(docker-compose up:*)",
+      "Bash(timeout 5 curl:*)",
+      "Bash(ping:*)",
+      "Bash(docker-compose down:*)"
     ]
   }
 }

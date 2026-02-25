@@ -78,8 +78,16 @@ class ExecuteActionRequest(BaseModel):
 
 
 class TaskUpdateRequest(BaseModel):
-    task_id: str
     status: str
+
+
+class FullTaskUpdateRequest(BaseModel):
+    """Full task update - all fields optional, only provided fields are updated."""
+    description: Optional[str] = None
+    owner: Optional[str] = None
+    deadline: Optional[str] = None
+    status: Optional[str] = None
+    priority: Optional[str] = None
 
 
 class TeamMemberRequest(BaseModel):

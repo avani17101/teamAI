@@ -102,6 +102,7 @@ def init_db():
     for migration in [
         "ALTER TABLE meetings ADD COLUMN department TEXT DEFAULT 'engineering'",
         "ALTER TABLE tasks ADD COLUMN notion_url TEXT",
+        "ALTER TABLE tasks ADD COLUMN notion_page_id TEXT",
         "ALTER TABLE org_context ADD COLUMN notion_database_id TEXT DEFAULT ''",
         "ALTER TABLE org_context ADD COLUMN notion_page_id TEXT DEFAULT ''",
     ]:
@@ -324,17 +325,96 @@ def update_task_status(task_id: str, status: str) -> bool:
     return result.rowcount > 0
 
 
-def update_task_notion_urls(url_map: dict) -> None:
-    """Persist notion_url for each task. url_map = {task_id: notion_url}."""
-    if not url_map:
+def update_task_notion_urls(url_map: dict, page_id_map: dict = None) -> None:
+    """Persist notion_url and notion_page_id for each task.
+    url_map = {task_id: notion_url}
+    page_id_map = {task_id: notion_page_id}
+    """
+    if not url_map and not page_id_map:
         return
     conn = _get_db()
-    for task_id, notion_url in url_map.items():
+    for task_id, notion_url in (url_map or {}).items():
         conn.execute(
             "UPDATE tasks SET notion_url = ? WHERE id = ?", (notion_url, task_id)
         )
+    for task_id, page_id in (page_id_map or {}).items():
+        conn.execute(
+            "UPDATE tasks SET notion_page_id = ? WHERE id = ?", (page_id, task_id)
+        )
     conn.commit()
     conn.close()
+
+
+def get_task_by_id(task_id: str) -> Optional[dict]:
+    """Get a single task by ID."""
+    conn = _get_db()
+    row = conn.execute(
+        "SELECT t.*, m.title as meeting_title, m.department FROM tasks t "
+        "JOIN meetings m ON t.meeting_id = m.id WHERE t.id = ?",
+        (task_id,)
+    ).fetchone()
+    conn.close()
+    return dict(row) if row else None
+
+
+def update_task(task_id: str, updates: dict) -> bool:
+    """Update task fields. Returns True if updated."""
+    if not updates:
+        return False
+
+    allowed_fields = {"description", "owner", "deadline", "status", "notion_url", "notion_page_id"}
+    filtered = {k: v for k, v in updates.items() if k in allowed_fields}
+    if not filtered:
+        return False
+
+    set_clause = ", ".join(f"{k} = ?" for k in filtered.keys())
+    values = list(filtered.values()) + [task_id]
+
+    conn = _get_db()
+    result = conn.execute(
+        f"UPDATE tasks SET {set_clause} WHERE id = ?", values
+    )
+    conn.commit()
+    conn.close()
+    return result.rowcount > 0
+
+
+def find_matching_task(description: str, department: str = None, threshold: float = 0.7) -> Optional[dict]:
+    """
+    Find an existing task that matches the given description.
+    Uses simple word overlap similarity. Returns the best match if above threshold.
+    """
+    tasks = get_all_tasks(department=department)
+    if not tasks:
+        return None
+
+    def word_overlap_score(text1: str, text2: str) -> float:
+        """Calculate Jaccard similarity based on word overlap."""
+        words1 = set(text1.lower().split())
+        words2 = set(text2.lower().split())
+        if not words1 or not words2:
+            return 0.0
+        intersection = words1 & words2
+        union = words1 | words2
+        return len(intersection) / len(union)
+
+    best_match = None
+    best_score = 0.0
+
+    for task in tasks:
+        # Skip completed tasks - they shouldn't be updated
+        if task.get("status") == "done":
+            continue
+
+        score = word_overlap_score(description, task.get("description", ""))
+        if score > best_score and score >= threshold:
+            best_score = score
+            best_match = task
+
+    if best_match:
+        best_match["_match_score"] = best_score
+
+    return best_match
 
 
 def get_department_state(department: Optional[str] = None) -> dict:

@@ -20,11 +20,41 @@ EXTRACTION_USER_PROMPT = """Extract tasks, decisions, and risks from this meetin
 
 Output ONLY this JSON (no thinking, no explanation):
 {{
-  "tasks": [{{ "description": "...", "owner": "...", "deadline": "...", "status": "pending" }}],
+  "tasks": [{{ "description": "...", "owner": "...", "deadline": "...", "status": "pending", "is_update": false }}],
   "decisions": [{{ "description": "..." }}],
   "risks": [{{ "description": "...", "severity": "high|medium|low" }}],
   "summary": "..."
 }}
+
+For tasks:
+- Set "is_update": true if the transcript mentions updating, completing, or changing status of an existing task
+- Set "is_update": false for new tasks being assigned
+- If a task status is mentioned (e.g., "completed", "done", "in progress"), set the appropriate status
+
+Transcript:
+{transcript}"""
+
+
+EXTRACTION_WITH_EXISTING_TASKS_PROMPT = """Extract tasks, decisions, and risks from this meeting transcript.
+
+EXISTING TASKS (check if any are mentioned/updated in this meeting):
+{existing_tasks}
+
+Output ONLY this JSON (no thinking, no explanation):
+{{
+  "tasks": [{{ "description": "...", "owner": "...", "deadline": "...", "status": "pending", "is_update": false, "updates_task_id": null }}],
+  "decisions": [{{ "description": "..." }}],
+  "risks": [{{ "description": "...", "severity": "high|medium|low" }}],
+  "summary": "..."
+}}
+
+For tasks:
+- If the transcript mentions updating, completing, or referencing an existing task from the list above:
+  - Set "is_update": true
+  - Set "updates_task_id" to the ID of the existing task being updated
+  - Include any new status, deadline, or owner changes
+- For completely new tasks, set "is_update": false and "updates_task_id": null
+- If a task status is mentioned (e.g., "completed", "done", "in progress"), set the appropriate status
 
 Transcript:
 {transcript}"""
@@ -65,16 +95,17 @@ def _parse_k2_response(content: str) -> dict:
         raise ValueError(f"Could not extract valid JSON from K2 response: {e}")
 
 
-async def extract_meeting(transcript: str, title: str = "", department: str = "engineering") -> tuple[ExtractionResult, str]:
+async def extract_meeting(transcript: str, title: str = "", department: str = "engineering", detect_updates: bool = True) -> tuple[ExtractionResult, str, list]:
     """
     Call K2-Think-V2 to extract structured data from a meeting transcript.
-    Returns (ExtractionResult, summary_string).
+    Returns (ExtractionResult, summary_string, task_updates).
+    task_updates contains info about which tasks were detected as updates to existing tasks.
     """
     dept = get_department(department)
     dept_context = dept.get("extraction_context", "")
 
     # Inject department mission/priorities and team members
-    from .memory_store import get_org_context, get_team_members
+    from .memory_store import get_org_context, get_team_members, get_all_tasks
     org_ctx = get_org_context(department)
     mission = org_ctx.get("mission", "").strip()
     if mission:
@@ -94,24 +125,46 @@ async def extract_meeting(transcript: str, title: str = "", department: str = "e
         dept_context += "\n\nWhen extracting tasks, assign to the most appropriate team member based on their responsibilities."
 
     system_prompt = EXTRACTION_SYSTEM_PROMPT + f"\n\nDepartment: {dept['name']}\n{dept_context}"
-    prompt = EXTRACTION_USER_PROMPT.format(transcript=transcript)
 
-    # Use K2-V2-Instruct for extraction (direct output, no reasoning loops)
+    # Check for existing tasks to enable update detection
+    existing_tasks = []
+    if detect_updates:
+        all_tasks = get_all_tasks(department=department)
+        # Get pending/in_progress tasks for context (limit to recent 20)
+        existing_tasks = [
+            {"id": t["id"], "description": t["description"], "owner": t["owner"], "status": t["status"]}
+            for t in all_tasks
+            if t.get("status") in ("pending", "in_progress")
+        ][:20]
+
+    if existing_tasks:
+        existing_tasks_text = "\n".join([
+            f"- ID: {t['id'][:8]}... | {t['description']} (Owner: {t['owner']}, Status: {t['status']})"
+            for t in existing_tasks
+        ])
+        prompt = EXTRACTION_WITH_EXISTING_TASKS_PROMPT.format(
+            existing_tasks=existing_tasks_text,
+            transcript=transcript
+        )
+    else:
+        prompt = EXTRACTION_USER_PROMPT.format(transcript=transcript)
+
+    # Use K2-Think-V2 for extraction (better reasoning for complex extraction tasks)
     async with httpx.AsyncClient(timeout=120.0) as client:
         response = await client.post(
-            f"{K2_INSTRUCT_BASE_URL}/v1/chat/completions",
+            f"{K2_THINK_BASE_URL}/v1/chat/completions",
             headers={
                 "Authorization": f"Bearer {K2_API_KEY}",
                 "Content-Type": "application/json",
             },
             json={
-                "model": K2_INSTRUCT_MODEL,
+                "model": K2_THINK_MODEL,
                 "messages": [
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": prompt},
                 ],
-                "max_tokens": 8000,  # Increased from 4000 to handle long meetings
-                "temperature": 0.1,
+                "max_tokens": 8000,
+                "temperature": 0.0,  # Deterministic for reliable JSON output
             },
         )
         response.raise_for_status()
@@ -127,8 +180,8 @@ async def extract_meeting(transcript: str, title: str = "", department: str = "e
 
     message = data["choices"][0]["message"]
 
-    # K2-V2-Instruct returns content in 'content' field
-    # K2-Think-V2 may return in 'reasoning_content' or 'reasoning' fields
+    # K2-Think-V2 returns JSON in 'content' field (reasoning is separate)
+    # Fallback to reasoning_content/reasoning for compatibility
     raw_content = message.get("content") or message.get("reasoning_content") or message.get("reasoning")
 
     if not raw_content:
@@ -147,11 +200,18 @@ async def extract_meeting(transcript: str, title: str = "", department: str = "e
         raise ValueError(f"Failed to parse K2-Think-V2 response: {e}\nRaw: {raw_content[:500] if raw_content else 'None'}")
 
     # Parse tasks, handling both object and string formats
+    # Also track task updates
     tasks = []
+    task_updates = []
+
     for t in parsed.get("tasks", []):
         if isinstance(t, str):
             tasks.append(Task(description=t, owner="Unassigned", deadline="Not specified", status="pending"))
         else:
+            # Check if this is an update to an existing task
+            is_update = t.get("is_update", False)
+            updates_task_id = t.get("updates_task_id")
+
             # Ensure required fields have default values
             task_data = {
                 "description": t.get("description", ""),
@@ -159,6 +219,23 @@ async def extract_meeting(transcript: str, title: str = "", department: str = "e
                 "deadline": t.get("deadline") or "Not specified",
                 "status": t.get("status", "pending")
             }
+
+            if is_update and updates_task_id:
+                # This is an update - find the full task ID
+                full_task_id = None
+                for existing in existing_tasks:
+                    if existing["id"].startswith(updates_task_id):
+                        full_task_id = existing["id"]
+                        break
+
+                if full_task_id:
+                    task_updates.append({
+                        "task_id": full_task_id,
+                        "updates": task_data,
+                        "detected_from": "transcript"
+                    })
+                    continue  # Don't add as new task
+
             tasks.append(Task(**task_data))
 
     # Parse decisions, handling both object and string formats
@@ -184,7 +261,7 @@ async def extract_meeting(transcript: str, title: str = "", department: str = "e
 
     summary = parsed.get("summary", "")
 
-    return ExtractionResult(tasks=tasks, decisions=decisions, risks=risks), summary
+    return ExtractionResult(tasks=tasks, decisions=decisions, risks=risks), summary, task_updates
 
 
 async def detect_cross_meeting_insights(

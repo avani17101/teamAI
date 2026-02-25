@@ -11,12 +11,14 @@ TeamAI is an AI that attends your meetings, extracts actionable intelligence, an
 | Capability | Description |
 |---|---|
 | **Meeting Ingestion** | Paste any meeting transcript → AI extracts tasks, decisions, risks |
+| **Email Forwarding** | Forward emails to teamaiassistant@gmail.com → auto-processed as meetings |
+| **Task Email Notifications** | Auto-send task assignments to team members with Notion links |
+| **Daily Reminders** | Email reminders for tasks due soon (scheduled at 9 AM daily) |
 | **Department Memory** | Every meeting is stored in SQLite + ChromaDB; queryable semantically |
 | **Ask AI** | Natural language Q&A over your team's full meeting history |
 | **Notion Sync** | All extracted tasks auto-sync to a Notion board, tagged by department |
 | **Cross-Meeting Insights** | K2-Think-V2 reasons across multiple meetings to surface patterns |
-| **Multi-Department** | Engineering, HR, MarCom, Innovation — isolated memory per team |
-| **OpenClaw Orchestration** | Autonomous tool execution via OpenClaw gateway (fallback mode if not running) |
+| **Multi-Department** | Engineering, HR, MarCom, Innovation, Product, Provost — isolated memory per team |
 
 ---
 
@@ -108,22 +110,23 @@ User (Browser)
 ## Agents & Models
 
 ### K2-Think-V2 — Reasoning Agent
-**Endpoint:** `https://build-api.k2think.ai`
+**Endpoint:** `http://build-api-2.ifmapp.net:8000/v1`
 **Model:** `LLM360/K2-Think-V2`
 **Used for:**
-- Meeting transcript extraction — identifies tasks (with owner + deadline), decisions, risks (with severity)
+- **Meeting transcript extraction** — identifies tasks (with owner + deadline), decisions, risks (with severity)
 - Department-specific extraction context (e.g. Engineering focuses on sprints/tech debt; HR on hiring/onboarding)
 - Cross-meeting insight detection — reasons over the last 5 meetings to flag recurring risks, overloaded owners, unresolved blockers, decision conflicts
+- Processes email content forwarded to teamaiassistant@gmail.com
 - Strips its own `</think_fast>` reasoning tokens before JSON parsing
 
 ### K2-V2-Instruct — Q&A Agent
-**Endpoint:** `https://instruct-api.k2think.ai`
+**Endpoint:** `http://instruct-api-3.ifmapp.net:8000/v1`
 **Model:** `LLM360/K2-V2-Instruct`
 **Used for:**
-- Answering questions about team state ("What are our open risks?", "Who owns the deployment task?")
+- **Answering questions** about team state ("What are our open risks?", "Who owns the deployment task?")
 - Receives a built context window: semantic search results + current pending tasks + recent decisions + open risks
 - Department-specific system prompts ("You are the Engineering Department AI...")
-- Also serves as the LLM behind the OpenClaw agent when it's running
+- Temperature 0.3 for consistent, factual responses
 
 ### OpenClaw — Orchestration / Execution Layer
 **Gateway:** `http://localhost:18789` (self-hosted, optional)
@@ -320,6 +323,38 @@ Tasks are synced to Notion after every meeting upload:
 
 ---
 
+## Email Integration
+
+TeamAI provides three email-powered features to streamline task management:
+
+### 1. Email Forwarding (IMAP)
+Forward any email to `teamaiassistant@gmail.com` and it will be automatically processed as a meeting:
+- **Subject line routing**: Tag with `[Department]` to route to specific teams (e.g., `[Innovation]`, `[Engineering]`)
+- **Sender routing**: Configured email addresses are automatically routed to their departments
+- **Auto-confirmation**: Sender receives an email with summary, tasks extracted, and Notion link
+- **Polling**: Inbox checked every 30 seconds for new emails
+
+### 2. Task Assignment Notifications (SMTP)
+When tasks are extracted from meetings:
+- Team members receive beautiful HTML emails with task details
+- Includes: Task description, deadline, department, direct Notion link
+- Only sends if team member has email configured in database
+
+### 3. Daily Task Reminders
+Automated daily reminders at 9 AM:
+- Lists all tasks due within next day
+- Groups tasks by owner (one email per person)
+- Shows deadline urgency (DUE TODAY, DUE TOMORROW)
+- Includes Notion links for quick access
+
+**Email Configuration:**
+- Uses Gmail SMTP (`smtp.gmail.com:587`) for sending
+- Uses Gmail IMAP (`imap.gmail.com`) for receiving
+- Requires Gmail App Password (not regular password)
+- Generate at: https://myaccount.google.com/apppasswords
+
+---
+
 ## Setup
 
 ```bash
@@ -341,15 +376,31 @@ cp openclaw/openclaw.json ~/.openclaw/openclaw.json
 openclaw dashboard        # starts on port 18789
 ```
 
-**Required environment variables:**
-```
-K2_API_KEY=<your-k2-api-key>
-NOTION_API_KEY=<your-notion-integration-token>
-NOTION_DATABASE_ID=<your-notion-database-id>
+**Required environment variables (.env file):**
+```bash
+# K2 API (required)
+K2_API_KEY=sk-your-k2-api-key
 
-# Optional (system works without these)
+# Notion Integration (required for task sync)
+NOTION_API_KEY=ntn_your-notion-integration-token
+NOTION_DATABASE_ID=your-notion-database-id
+
+# Email (required for forwarding + notifications)
+# Gmail: Generate app password at https://myaccount.google.com/apppasswords
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=teamaiassistant@gmail.com
+SMTP_PASS=your-gmail-app-password
+
+TEAMAI_EMAIL=teamaiassistant@gmail.com
+TEAMAI_EMAIL_PASSWORD=your-gmail-app-password
+IMAP_SERVER=imap.gmail.com
+EMAIL_POLLING_INTERVAL=30
+
+# OpenClaw (optional - disabled by default)
+USE_OPENCLAW=false
 OPENCLAW_BASE_URL=http://localhost:18789
-OPENCLAW_TOKEN=teamai-local-token
+OPENCLAW_TOKEN=
 ```
 
 ---
