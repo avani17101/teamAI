@@ -12,10 +12,10 @@ from ..config import NOTION_API_KEY, NOTION_DATABASE_ID
 _workspace_members: list = []
 
 
-async def _load_workspace_members() -> list:
+async def _load_workspace_members(force_refresh: bool = False) -> list:
     """Fetch and cache Notion workspace members (persons only)."""
     global _workspace_members
-    if _workspace_members:
+    if _workspace_members and not force_refresh:
         return _workspace_members
     async with httpx.AsyncClient(timeout=10.0) as client:
         r = await client.get(
@@ -26,30 +26,66 @@ async def _load_workspace_members() -> list:
             },
         )
         if r.status_code == 200:
-            _workspace_members = [
-                {"id": u["id"], "name": u.get("name", "").lower()}
-                for u in r.json().get("results", [])
-                if u.get("type") == "person"
-            ]
+            _workspace_members = []
+            for u in r.json().get("results", []):
+                if u.get("type") == "person":
+                    # Get email from person object if available
+                    email = u.get("person", {}).get("email", "").lower()
+                    _workspace_members.append({
+                        "id": u["id"],
+                        "name": u.get("name", "").lower(),
+                        "email": email,
+                    })
+            # Log workspace members for debugging
+            member_info = [(m["name"], m["email"]) for m in _workspace_members]
+            print(f"[Notion] Workspace members found: {member_info}")
     return _workspace_members
 
 
 def _match_owner_to_user_id(owner: str, members: list) -> str | None:
     """Fuzzy-match an owner name string to a Notion user ID.
-    Matches on first name, last name, or full name (case-insensitive).
+    Matches on first name, last name, full name, or email (case-insensitive).
     Returns user ID string or None if no match.
     """
     if not owner or not members:
         return None
     owner_lower = owner.lower().strip()
-    # Exact match first
+
+    # 1. Exact name match
     for m in members:
         if m["name"] == owner_lower:
+            print(f"[Notion] Matched owner '{owner}' -> '{m['name']}' (exact name)")
             return m["id"]
-    # Partial: owner is substring of member name or vice versa
+
+    # 2. Email match (if owner looks like an email or contains it)
     for m in members:
-        if owner_lower in m["name"] or m["name"].split()[0] in owner_lower:
+        member_email = m.get("email", "")
+        if member_email:
+            # Match full email or email username (before @)
+            email_user = member_email.split("@")[0]
+            if owner_lower == member_email or owner_lower == email_user:
+                print(f"[Notion] Matched owner '{owner}' -> '{m['name']}' (email)")
+                return m["id"]
+            # Match if owner name appears in email
+            if owner_lower.replace(" ", ".") in member_email or owner_lower.replace(" ", "") in member_email:
+                print(f"[Notion] Matched owner '{owner}' -> '{m['name']}' (email contains name)")
+                return m["id"]
+
+    # 3. First name match
+    for m in members:
+        member_first = m["name"].split()[0] if m["name"] else ""
+        owner_first = owner_lower.split()[0] if owner_lower else ""
+        if member_first and owner_first and (member_first == owner_first or owner_first == member_first):
+            print(f"[Notion] Matched owner '{owner}' -> '{m['name']}' (first name)")
             return m["id"]
+
+    # 4. Partial name match: owner is substring of member name or vice versa
+    for m in members:
+        if owner_lower in m["name"] or m["name"] in owner_lower:
+            print(f"[Notion] Matched owner '{owner}' -> '{m['name']}' (partial)")
+            return m["id"]
+
+    print(f"[Notion] No match found for owner '{owner}' in {[(m['name'], m.get('email', '')) for m in members]}")
     return None
 
 NOTION_VERSION = "2022-06-28"
@@ -107,32 +143,35 @@ async def create_task(
     dept_label = DEPT_TAG.get(department, department.title())
     task_name = f"[{dept_label}] {description}"
 
-    # Build properties payload matching the existing database schema
+    # Build properties payload matching the database schema
     properties = {
-        "Task name": {
+        "Name": {
             "title": [{"text": {"content": task_name}}]
         },
-        "Status": {
-            "status": {"name": STATUS_MAP.get(status, "Not started")}
+        "Task Status": {
+            "select": {"name": STATUS_MAP.get(status, "Not started")}
         },
         "Priority": {
             "select": {"name": priority}
         },
         "Department": {
-            "multi_select": [{"name": DEPT_SELECT.get(department, department.title())}]
+            "select": {"name": DEPT_SELECT.get(department, department.title())}
+        },
+        "Owner": {
+            "rich_text": [{"text": {"content": owner or "Unassigned"}}]
         },
         "Description": {
             "rich_text": [
                 {
                     "text": {
-                        "content": f"Owner: {owner} | Meeting: {meeting_title} | ID: {task_id}"
+                        "content": f"Meeting: {meeting_title} | ID: {task_id}"
                     }
                 }
             ]
         },
     }
 
-    # Assignee: fuzzy-match owner name to a Notion workspace user
+    # Assignee: fuzzy-match owner name to a Notion workspace user (if workspace has members)
     if members:
         user_id = _match_owner_to_user_id(owner, members)
         if user_id:
@@ -154,7 +193,28 @@ async def create_task(
                 "properties": properties,
             },
         )
-        response.raise_for_status()
+        # Handle missing property errors gracefully
+        if response.status_code == 400:
+            error_detail = response.json() if response.headers.get("content-type", "").startswith("application/json") else {}
+            error_msg = error_detail.get("message", "")
+
+            # If Assignee property doesn't exist, retry without it
+            if "Assignee is not a property" in error_msg and "Assignee" in properties:
+                print(f"[Notion] Assignee property not found in database, retrying without it")
+                del properties["Assignee"]
+                response = await client.post(
+                    f"{NOTION_BASE}/pages",
+                    headers=_headers(),
+                    json={
+                        "parent": {"database_id": db_id},
+                        "properties": properties,
+                    },
+                )
+
+        if response.status_code >= 400:
+            error_detail = response.json() if response.headers.get("content-type", "").startswith("application/json") else response.text
+            print(f"[Notion] API Error {response.status_code}: {error_detail}")
+            response.raise_for_status()
         data = response.json()
         return {
             "ok": True,
@@ -247,8 +307,8 @@ async def update_task_status(notion_page_id: str, status: str) -> dict:
             headers=_headers(),
             json={
                 "properties": {
-                    "Status": {
-                        "status": {"name": STATUS_MAP.get(status, "Not started")}
+                    "Task Status": {
+                        "select": {"name": STATUS_MAP.get(status, "Not started")}
                     }
                 }
             },
@@ -275,16 +335,16 @@ async def update_task(
     if description is not None:
         dept_label = DEPT_TAG.get(department, department.title() if department else "")
         task_name = f"[{dept_label}] {description}" if dept_label else description
-        properties["Task name"] = {"title": [{"text": {"content": task_name}}]}
+        properties["Name"] = {"title": [{"text": {"content": task_name}}]}
 
     if status is not None:
-        properties["Status"] = {"status": {"name": STATUS_MAP.get(status, "Not started")}}
+        properties["Task Status"] = {"select": {"name": STATUS_MAP.get(status, "Not started")}}
 
     if priority is not None:
         properties["Priority"] = {"select": {"name": priority}}
 
     if department is not None:
-        properties["Department"] = {"multi_select": [{"name": DEPT_SELECT.get(department, department.title())}]}
+        properties["Department"] = {"select": {"name": DEPT_SELECT.get(department, department.title())}}
 
     if deadline is not None and deadline not in ("Not specified", "not specified", ""):
         iso_date = _try_parse_date(deadline)

@@ -13,7 +13,10 @@ from .departments import get_department
 
 EXTRACTION_SYSTEM_PROMPT = """You are a meeting intelligence agent for a department AI system.
 Your job is to analyze meeting transcripts and extract structured information.
-Always respond with valid JSON only - no markdown, no explanation outside the JSON.
+
+CRITICAL: Output ONLY valid JSON. No explanations, no reasoning, no thinking - just the JSON object.
+Do NOT explain what you are doing. Do NOT write "We need to..." or "Let me...".
+Start your response with { and end with }.
 """
 
 EXTRACTION_USER_PROMPT = """Extract tasks, decisions, and risks from this meeting transcript.
@@ -61,7 +64,7 @@ Transcript:
 
 
 def _parse_k2_response(content: str) -> dict:
-    """Extract JSON from K2-Think-V2 response (strips <think_fast> reasoning tags)."""
+    """Extract JSON from K2-Think-V2 response (strips reasoning/thinking)."""
     # Handle None or empty content
     if not content:
         raise ValueError("K2 API returned empty response")
@@ -76,7 +79,35 @@ def _parse_k2_response(content: str) -> dict:
     content = re.sub(r"```json\s*", "", content)
     content = re.sub(r"```\s*", "", content)
 
-    # Find JSON object
+    # Find ALL JSON objects and try to parse them (prefer the last complete one)
+    # This handles cases where the model outputs reasoning with JSON examples before the actual answer
+    json_candidates = []
+    brace_count = 0
+    start_idx = None
+
+    for i, char in enumerate(content):
+        if char == '{':
+            if brace_count == 0:
+                start_idx = i
+            brace_count += 1
+        elif char == '}':
+            brace_count -= 1
+            if brace_count == 0 and start_idx is not None:
+                json_candidates.append(content[start_idx:i+1])
+                start_idx = None
+
+    # Try candidates from last to first (actual answer is usually last)
+    for candidate in reversed(json_candidates):
+        try:
+            parsed = json.loads(candidate)
+            # Verify it has expected structure
+            if isinstance(parsed, dict) and ("tasks" in parsed or "summary" in parsed):
+                print(f"[Parse] Found valid JSON with keys: {list(parsed.keys())}")
+                return parsed
+        except json.JSONDecodeError:
+            continue
+
+    # Fallback: try the first match with greedy regex
     match = re.search(r"\{.*\}", content, re.DOTALL)
     if match:
         try:
@@ -84,7 +115,7 @@ def _parse_k2_response(content: str) -> dict:
         except json.JSONDecodeError as e:
             print(f"[Parse] JSON decode failed on matched content")
             print(f"[Parse] Matched JSON (first 500 chars): {match.group()[:500]}")
-            raise
+            print(f"[Parse] Parse error: {e}")
 
     # Try parsing the stripped content directly
     try:
@@ -126,16 +157,17 @@ async def extract_meeting(transcript: str, title: str = "", department: str = "e
 
     system_prompt = EXTRACTION_SYSTEM_PROMPT + f"\n\nDepartment: {dept['name']}\n{dept_context}"
 
-    # Check for existing tasks to enable update detection
+    # Disable existing tasks context for now - K2-Think reasons too much about each one
+    # This causes the model to output massive reasoning chains that get truncated
     existing_tasks = []
-    if detect_updates:
-        all_tasks = get_all_tasks(department=department)
-        # Get pending/in_progress tasks for context (limit to recent 20)
-        existing_tasks = [
-            {"id": t["id"], "description": t["description"], "owner": t["owner"], "status": t["status"]}
-            for t in all_tasks
-            if t.get("status") in ("pending", "in_progress")
-        ][:20]
+    # TODO: Re-enable when using a model that doesn't over-reason
+    # if detect_updates:
+    #     all_tasks = get_all_tasks(department=department)
+    #     existing_tasks = [
+    #         {"id": t["id"], "description": t["description"], "owner": t["owner"], "status": t["status"]}
+    #         for t in all_tasks
+    #         if t.get("status") in ("pending", "in_progress")
+    #     ][:8]
 
     if existing_tasks:
         existing_tasks_text = "\n".join([
@@ -149,44 +181,94 @@ async def extract_meeting(transcript: str, title: str = "", department: str = "e
     else:
         prompt = EXTRACTION_USER_PROMPT.format(transcript=transcript)
 
-    # Use K2-Think-V2 for extraction (better reasoning for complex extraction tasks)
+    # Helper to detect looping/repetitive text
+    def _is_looping_text(text: str, threshold: int = 3) -> bool:
+        """Detect if text contains repetitive patterns (looping)."""
+        if len(text) < 500:
+            return False
+        # Check for repeated phrases (100+ chars appearing 3+ times)
+        for phrase_len in [100, 200, 300]:
+            chunks = [text[i:i+phrase_len] for i in range(0, len(text)-phrase_len, phrase_len)]
+            from collections import Counter
+            counts = Counter(chunks)
+            if counts.most_common(1)[0][1] >= threshold:
+                print(f"[Extraction] Detected looping text (phrase repeated {counts.most_common(1)[0][1]} times)")
+                return True
+        return False
+
+    # Try K2-Think first, fallback to K2-Instruct if it fails or loops
+    raw_content = None
+    use_instruct_fallback = False
+
     async with httpx.AsyncClient(timeout=120.0) as client:
-        response = await client.post(
-            f"{K2_THINK_BASE_URL}/v1/chat/completions",
-            headers={
-                "Authorization": f"Bearer {K2_API_KEY}",
-                "Content-Type": "application/json",
-            },
-            json={
-                "model": K2_THINK_MODEL,
-                "messages": [
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": prompt},
-                ],
-                "max_tokens": 8000,
-                "temperature": 0.0,  # Deterministic for reliable JSON output
-            },
-        )
-        response.raise_for_status()
+        # First attempt with K2-Think
+        try:
+            response = await client.post(
+                f"{K2_THINK_BASE_URL}/v1/chat/completions",
+                headers={
+                    "Authorization": f"Bearer {K2_API_KEY}",
+                    "Content-Type": "application/json",
+                },
+                json={
+                    "model": K2_THINK_MODEL,
+                    "messages": [
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": prompt},
+                    ],
+                    "max_tokens": 16000,  # Large enough for reasoning + JSON output
+                    "temperature": 0.1,
+                    "repetition_penalty": 1.15,
+                },
+            )
+            response.raise_for_status()
+            data = response.json()
 
-    data = response.json()
+            if "choices" in data and data["choices"] and "message" in data["choices"][0]:
+                message = data["choices"][0]["message"]
+                raw_content = message.get("content") or message.get("reasoning_content") or message.get("reasoning")
 
-    # Better error handling for API response
-    if "choices" not in data or not data["choices"]:
-        raise ValueError(f"K2 API returned invalid response: {data}")
+                # Check for looping text
+                if raw_content and _is_looping_text(raw_content):
+                    print(f"[Extraction] K2-Think produced looping text, falling back to K2-Instruct")
+                    use_instruct_fallback = True
+                    raw_content = None
 
-    if "message" not in data["choices"][0]:
-        raise ValueError(f"K2 API response missing message: {data['choices'][0]}")
+        except Exception as e:
+            print(f"[Extraction] K2-Think failed: {e}, falling back to K2-Instruct")
+            use_instruct_fallback = True
 
-    message = data["choices"][0]["message"]
+        # Fallback to K2-Instruct if Think failed or looped
+        if use_instruct_fallback or not raw_content:
+            print(f"[Extraction] Using K2-Instruct fallback")
+            try:
+                response = await client.post(
+                    f"{K2_INSTRUCT_BASE_URL}/v1/chat/completions",
+                    headers={
+                        "Authorization": f"Bearer {K2_API_KEY}",
+                        "Content-Type": "application/json",
+                    },
+                    json={
+                        "model": K2_INSTRUCT_MODEL,
+                        "messages": [
+                            {"role": "system", "content": system_prompt},
+                            {"role": "user", "content": prompt},
+                        ],
+                        "max_tokens": 4000,
+                        "temperature": 0.1,
+                        "repetition_penalty": 1.15,
+                    },
+                )
+                response.raise_for_status()
+                data = response.json()
 
-    # K2-Think-V2 returns JSON in 'content' field (reasoning is separate)
-    # Fallback to reasoning_content/reasoning for compatibility
-    raw_content = message.get("content") or message.get("reasoning_content") or message.get("reasoning")
+                if "choices" in data and data["choices"] and "message" in data["choices"][0]:
+                    message = data["choices"][0]["message"]
+                    raw_content = message.get("content") or message.get("reasoning_content") or message.get("reasoning")
+            except Exception as e:
+                print(f"[Extraction] K2-Instruct also failed: {e}")
 
     if not raw_content:
-        print(f"[Extraction] K2 API returned empty content. Full message: {message}")
-        raise ValueError(f"K2 API returned empty content. Message: {message}")
+        raise ValueError(f"Both K2-Think and K2-Instruct failed to return content")
 
     print(f"[Extraction] K2 API returned {len(raw_content)} characters")
     print(f"[Extraction] First 500 chars: {raw_content[:500]}")

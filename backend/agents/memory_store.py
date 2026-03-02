@@ -134,9 +134,9 @@ def save_meeting(
         (meeting_id, title, transcript, summary, department, now),
     )
 
-    # Save tasks
+    # Save tasks - use existing ID if set, otherwise generate new one
     for task in extraction.tasks:
-        task_id = str(uuid.uuid4())
+        task_id = task.id if task.id else str(uuid.uuid4())
         conn.execute(
             "INSERT INTO tasks (id, description, owner, deadline, status, meeting_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
             (task_id, task.description, task.owner, task.deadline, task.status, meeting_id, now),

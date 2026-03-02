@@ -2537,8 +2537,386 @@
       "status": "pending",
       "meeting_id": "f7880e38-8725-433d-aea9-84f20a75ff83",
       "meeting_title": "financial services newsletter"
+    },
+    {
+      "id": "73bf8cfc-08c6-41c7-a2a2-8066a315c312",
+      "description": "Add the stakeholder list (Department of Energy and AtkinsRealis) to the stakeholder list.",
+      "owner": "Avani Gupta",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "d427e5f2-711b-4694-9a25-0dc188ffc6d0",
+      "meeting_title": "list of stakeholders"
+    },
+    {
+      "id": "9eb71724-a19c-423f-b7c2-dc7410609e84",
+      "description": "Draft a note for the EOI based on the template provided by Najid Mohammed.",
+      "owner": "Eliza Mic",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "d427e5f2-711b-4694-9a25-0dc188ffc6d0",
+      "meeting_title": "list of stakeholders"
+    },
+    {
+      "id": "3aca5580-36a4-4124-98ef-59415dc70a16",
+      "description": "Post the completed EOI information for AtkinsRealis and Department of Energy to the intranet page.",
+      "owner": "Eliza Mic",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "d427e5f2-711b-4694-9a25-0dc188ffc6d0",
+      "meeting_title": "list of stakeholders"
+    },
+    {
+      "id": "d4751b92-bd2a-4b0c-b29a-d9cb94d163bd",
+      "description": "Share Strategic Collaboration Agreement and NDA for CTIO office",
+      "owner": "Ramzi Ben Ouaghrem",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "6c4ace84-a5bd-4ab8-9bc1-fee5244bea3a",
+      "meeting_title": "email chain adnoc"
+    },
+    {
+      "id": "3b1a2386-b473-4b6a-ad83-607fc563eaf1",
+      "description": "Initiate NDA from headquarters for Optimization and logistics use case",
+      "owner": "Khalid Yousef Al Awadhi",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "6c4ace84-a5bd-4ab8-9bc1-fee5244bea3a",
+      "meeting_title": "email chain adnoc"
+    },
+    {
+      "id": "62c3bb20-5a27-4e49-93f2-daa128fd3515",
+      "description": "Organize AI Innovation Day at MBZUAI for ADNOC leadership",
+      "owner": "Ramzi Ben Ouaghrem",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "6c4ace84-a5bd-4ab8-9bc1-fee5244bea3a",
+      "meeting_title": "email chain adnoc"
+    },
+    {
+      "id": "2fd605e5-e671-46f7-a49e-9e04cd9819bf",
+      "description": "Conduct technical dive on modular certification challenges for explosion-proof hardware and neuroadaptive AI approaches for safety in control rooms and training simulations",
+      "owner": "MBZUAI team",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "6c4ace84-a5bd-4ab8-9bc1-fee5244bea3a",
+      "meeting_title": "email chain adnoc"
+    },
+    {
+      "id": "2c8233ba-4849-4868-9b1d-3b1d41f48acf",
+      "description": "Schedule brainstorming meeting on Monday afternoon 12:00-13:00 for neuroadaptive AI approaches",
+      "owner": "Khalid Yousef Al Awadhi",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "6c4ace84-a5bd-4ab8-9bc1-fee5244bea3a",
+      "meeting_title": "email chain adnoc"
+    },
+    {
+      "id": "a142ce9a-fde0-4ec0-8bd3-416a35cf6768",
+      "description": "Share Strategic Collaboration Agreement and NDA for CTIO office signature",
+      "owner": "Ramzi Ben Ouaghrem",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "350562a4-4a01-4536-bdd2-3b41ca789d8b",
+      "meeting_title": "email chain adnoc"
+    },
+    {
+      "id": "ae47d2f3-48a2-4685-94a1-8b472f73f55b",
+      "description": "Initiate NDA from headquarters for Optimization and logistics use case",
+      "owner": "Anna Kalakutskaya",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "350562a4-4a01-4536-bdd2-3b41ca789d8b",
+      "meeting_title": "email chain adnoc"
+    },
+    {
+      "id": "9907515a-16f6-4457-8ee9-556b02e82172",
+      "description": "Schedule brainstorming meeting on Monday afternoon 12:00-13:00 for neuroadaptive AI approaches",
+      "owner": "Anna Kalakutskaya",
+      "deadline": "2026-02-23 12:00",
+      "status": "pending",
+      "meeting_id": "350562a4-4a01-4536-bdd2-3b41ca789d8b",
+      "meeting_title": "email chain adnoc"
+    },
+    {
+      "id": "75a5a82c-4d0e-48c1-aab8-1d29a6c099a0",
+      "description": "Organize AI Innovation Day at MBZUAI for CTIO and ADNOC leadership",
+      "owner": "Eliza Mic",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "350562a4-4a01-4536-bdd2-3b41ca789d8b",
+      "meeting_title": "email chain adnoc"
+    },
+    {
+      "id": "8500827f-26b8-4075-b616-7089f2b4fdb9",
+      "description": "...",
+      "owner": "...",
+      "deadline": "...",
+      "status": "pending",
+      "meeting_id": "d60ade81-d2fa-4120-a8cb-34f76b6f87a4",
+      "meeting_title": "email chain adnoc"
+    },
+    {
+      "id": "89466886-8056-40a3-a904-14f1e03991ce",
+      "description": "Confirm NDA with ADNOC Refining has been signed.",
+      "owner": "Ramzi Ben Ouaghrem",
+      "deadline": "Not specified",
+      "status": "completed",
+      "meeting_id": "d135c751-219a-4a5f-9581-d8b507ad0896",
+      "meeting_title": "email chain adnoc"
+    },
+    {
+      "id": "91cf0992-b2a0-4b21-a82c-9ff93a512e39",
+      "description": "Share Strategic Collaboration Agreement and NDA for CTIO office signature.",
+      "owner": "Anna Kalakutskaya",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "d135c751-219a-4a5f-9581-d8b507ad0896",
+      "meeting_title": "email chain adnoc"
+    },
+    {
+      "id": "c7f9f621-197c-4b62-847e-c788bb0dc4bb",
+      "description": "Initiate NDA for optimization and logistics use case (shutdown alignment tool).",
+      "owner": "Anna Kalakutskaya",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "d135c751-219a-4a5f-9581-d8b507ad0896",
+      "meeting_title": "email chain adnoc"
+    },
+    {
+      "id": "4f989f74-3154-4739-9ad5-67fb76ae0550",
+      "description": "Prepare technical deep\u2011dive material on modular certification challenges for explosion\u2011proof hardware.",
+      "owner": "Avani Gupta",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "d135c751-219a-4a5f-9581-d8b507ad0896",
+      "meeting_title": "email chain adnoc"
+    },
+    {
+      "id": "9b0b2f17-a2fb-4726-b73b-e64c443f5c94",
+      "description": "Organize AI Innovation Day at MBZUAI to showcase recent breakthroughs to ADNOC leadership.",
+      "owner": "Eliza Mic",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "d135c751-219a-4a5f-9581-d8b507ad0896",
+      "meeting_title": "email chain adnoc"
+    },
+    {
+      "id": "9130b30d-3109-4a0b-a41c-761751b39e01",
+      "description": "Schedule brainstorming meeting on neuroadaptive AI approaches for safety enhancement.",
+      "owner": "Anna Kalakutskaya",
+      "deadline": "2026-02-23 12:00",
+      "status": "pending",
+      "meeting_id": "d135c751-219a-4a5f-9581-d8b507ad0896",
+      "meeting_title": "email chain adnoc"
+    },
+    {
+      "id": "6ed8406f-74bf-4f7b-97d9-344afbe280f2",
+      "description": "Share Strategic Collaboration Agreement and NDA for signature with the CTIO office.",
+      "owner": "Ramzi Ben Ouaghrem",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "3476f51a-8549-40e6-a27b-c3d27fca3445",
+      "meeting_title": "email chain adnoc"
+    },
+    {
+      "id": "26c7f0f5-48ae-479e-b2de-2f10597ea68f",
+      "description": "Initiate NDA from headquarters for the Optimization and logistics use case (shutdown alignment tool).",
+      "owner": "Khalid Yousef Al Awadhi",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "3476f51a-8549-40e6-a27b-c3d27fca3445",
+      "meeting_title": "email chain adnoc"
+    },
+    {
+      "id": "301115e1-a4ba-42b9-a381-f6cc6148888b",
+      "description": "Schedule a brainstorming meeting on Monday afternoon from 12:00 to 13:00 to discuss neuroadaptive AI approaches.",
+      "owner": "Khaled Al Blooshi",
+      "deadline": "2026-02-23",
+      "status": "pending",
+      "meeting_id": "3476f51a-8549-40e6-a27b-c3d27fca3445",
+      "meeting_title": "email chain adnoc"
+    },
+    {
+      "id": "5737756c-ca41-43b8-8b44-7751b06d8c0f",
+      "description": "Distribute the Strategic Collaboration Agreement and the NDA for signature with the CTIO office.",
+      "owner": "Ramzi Ben Ouaghrem",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "5309989d-889a-4fc5-a72c-27af6bdde4b6",
+      "meeting_title": "email chain adnoc"
+    },
+    {
+      "id": "6eb12d69-7cf9-4f51-9524-3956795c641b",
+      "description": "Prepare technical briefing material on modular certification challenges for explosion\u2011proof hardware for upcoming discussions.",
+      "owner": "Avani Gupta",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "5309989d-889a-4fc5-a72c-27af6bdde4b6",
+      "meeting_title": "email chain adnoc"
+    },
+    {
+      "id": "ab81d303-fdb7-42cc-9630-416b77635d3e",
+      "description": "Prepare technical briefing material on neuroadaptive AI approaches to enhance safety in control rooms and training simulations.",
+      "owner": "Avani Gupta",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "5309989d-889a-4fc5-a72c-27af6bdde4b6",
+      "meeting_title": "email chain adnoc"
+    },
+    {
+      "id": "60d8c0ca-0398-41e6-a87e-2e3713482af0",
+      "description": "Organize AI Innovation Day at MBZUAI, including agenda, invitations, demos, and logistical arrangements.",
+      "owner": "Eliza Mic",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "5309989d-889a-4fc5-a72c-27af6bdde4b6",
+      "meeting_title": "email chain adnoc"
+    },
+    {
+      "id": "5eaa36cd-b8f4-4b11-9693-3a529490b2dc",
+      "description": "Schedule the brainstorming meeting on neuroadaptive AI approaches for Monday afternoon 12:00\u201313:00.",
+      "owner": "Anna Kalakutskaya",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "5309989d-889a-4fc5-a72c-27af6bdde4b6",
+      "meeting_title": "email chain adnoc"
+    },
+    {
+      "id": "e295c49d-a854-40f7-b7d3-94398c8b31b0",
+      "description": "Follow up with Khalid Yousef Al Awadhi to ensure initiation of the NDA for the Optimization and logistics use case.",
+      "owner": "Ramzi Ben Ouaghrem",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "5309989d-889a-4fc5-a72c-27af6bdde4b6",
+      "meeting_title": "email chain adnoc"
+    },
+    {
+      "id": "8aba4edf-7745-4a05-a904-58c24badbf61",
+      "description": "Prepare agenda and presentation material for upcoming call with Disney regarding AI-driven theme park concepts",
+      "owner": "Marta Canchal",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "0101507a-49f6-4bf8-ad4d-cf3389cee84e",
+      "meeting_title": "innovation meeting 26th Feb"
+    },
+    {
+      "id": "052ad8ae-ffa9-47d4-af4e-03ed325a75de",
+      "description": "Arrange and attend joint meeting with Miral to discuss VIP partnership and AI integration opportunities",
+      "owner": "Marta Canchal",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "0101507a-49f6-4bf8-ad4d-cf3389cee84e",
+      "meeting_title": "innovation meeting 26th Feb"
+    },
+    {
+      "id": "55a81a30-bdc4-426a-94d8-b54b6b30b891",
+      "description": "Gather requirements and design initial architecture for the Robotics Transition Center under the DRO program",
+      "owner": "Robotics Lead / Engineering Team",
+      "deadline": "Not specified",
+      "status": "planning",
+      "meeting_id": "0101507a-49f6-4bf8-ad4d-cf3389cee84e",
+      "meeting_title": "innovation meeting 26th Feb"
+    },
+    {
+      "id": "4fd8b7e8-daeb-4c4f-9dbb-dad57d7f1578",
+      "description": "Advance development of AI-powered digital Qur'an translation platform with interactive chatbot functionality",
+      "owner": "AI Development Squad",
+      "deadline": "Not specified",
+      "status": "in progress",
+      "meeting_id": "0101507a-49f6-4bf8-ad4d-cf3389cee84e",
+      "meeting_title": "innovation meeting 26th Feb"
+    },
+    {
+      "id": "132300b5-7e3b-4aa5-91e9-ce2d3f46dc9c",
+      "description": "Distribute the major collaboration agreement to relevant parties.",
+      "owner": "Anna Kalakutskaya",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "32b309e0-c8aa-445e-a87a-6554770a3ec3",
+      "meeting_title": "innovation meeting 26th Feb"
+    },
+    {
+      "id": "9befd4ae-14a6-4988-a03a-3a5bca920864",
+      "description": "Prepare technical reading material supporting the collaboration agreement.",
+      "owner": "Avani Gupta",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "32b309e0-c8aa-445e-a87a-6554770a3ec3",
+      "meeting_title": "innovation meeting 26th Feb"
+    },
+    {
+      "id": "e4b9c004-bdf9-41b5-9bec-12d46fd4ed72",
+      "description": "Prepare a technical briefing for stakeholders on the collaboration agreement.",
+      "owner": "Avani Gupta",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "32b309e0-c8aa-445e-a87a-6554770a3ec3",
+      "meeting_title": "innovation meeting 26th Feb"
+    },
+    {
+      "id": "6537134e-5f3d-495e-8f4f-9cff6830f6ad",
+      "description": "Organize AI Innovation Day event.",
+      "owner": "Ramzi Ben Ouaghrem",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "32b309e0-c8aa-445e-a87a-6554770a3ec3",
+      "meeting_title": "innovation meeting 26th Feb"
+    },
+    {
+      "id": "d610273d-e29d-412a-a688-3942db30a485",
+      "description": "Schedule a meeting with Nora to discuss next steps.",
+      "owner": "Anna Kalakutskaya",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "32b309e0-c8aa-445e-a87a-6554770a3ec3",
+      "meeting_title": "innovation meeting 26th Feb"
+    },
+    {
+      "id": "3829485a-f904-4e66-a7e0-1cbe37e709e3",
+      "description": "Adjust Anna Kalakutskaya\u2019s role assignments related to the collaboration agreement tasks.",
+      "owner": "Ramzi Ben Ouaghrem",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "32b309e0-c8aa-445e-a87a-6554770a3ec3",
+      "meeting_title": "innovation meeting 26th Feb"
+    },
+    {
+      "id": "428abaa5-4968-4d0d-b754-23a5b79b9174",
+      "description": "Follow up with Khaled regarding his input on the collaboration agreement.",
+      "owner": "Elias Benlaieb",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "32b309e0-c8aa-445e-a87a-6554770a3ec3",
+      "meeting_title": "innovation meeting 26th Feb"
+    },
+    {
+      "id": "a4054a09-6b64-4064-ad4a-54676b93dd1a",
+      "description": "Create and route tasks to appropriate workflows for the collaboration agreement.",
+      "owner": "Ramzi Ben Ouaghrem",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "32b309e0-c8aa-445e-a87a-6554770a3ec3",
+      "meeting_title": "innovation meeting 26th Feb"
+    },
+    {
+      "id": "3744cebd-639a-4fd7-8475-543d0e73d254",
+      "description": "Review and improve the first version of the collaboration agreement document.",
+      "owner": "Avani Gupta",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "32b309e0-c8aa-445e-a87a-6554770a3ec3",
+      "meeting_title": "innovation meeting 26th Feb"
+    },
+    {
+      "id": "89f7ed9c-cf2a-4d67-b00e-9c0f5798055d",
+      "description": "Capture meeting notes and assess need for third\u2011party support.",
+      "owner": "Marta Canchal",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "32b309e0-c8aa-445e-a87a-6554770a3ec3",
+      "meeting_title": "innovation meeting 26th Feb"
     }
   ],
-  "last_updated": "2026-02-20T15:15:42.813065",
-  "total": 282
+  "last_updated": "2026-02-26T09:29:56.669176",
+  "total": 324
 }

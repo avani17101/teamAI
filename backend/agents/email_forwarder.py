@@ -228,7 +228,7 @@ Subject: {email_data['subject']}
     """.strip()
 
     # Extract tasks/decisions/risks
-    extraction, summary = await extract_meeting(
+    extraction, summary, task_updates = await extract_meeting(
         transcript=transcript,
         title=title,
         department=department
@@ -265,7 +265,10 @@ Subject: {email_data['subject']}
 
         # Save Notion URLs back to database
         if notion_result.get("ok") and notion_result.get("url_map"):
-            update_task_notion_urls(notion_result["url_map"])
+            update_task_notion_urls(
+                notion_result["url_map"],
+                notion_result.get("page_id_map")
+            )
             print(f"[EmailForwarder] Synced {notion_result['created']} tasks to Notion")
 
     except Exception as e:

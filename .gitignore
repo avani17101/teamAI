@@ -1,22 +1,40 @@
-
 # Environment variables
 .env
 .env.*
-*.env
+!.env.example
+!.env.production.example
 
-# Python virtual env
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+*.so
 venv/
 .venv/
+env/
+.pytest_cache/
 
-# Python cache
-__pycache__/
-*.pyc
+# Logs
+*.log
+logs/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
 
 # Mac
 .DS_Store
 
-venv/
-.venv/
-.env
-.env.*
-*.env
+# Data (optional - uncomment to exclude)
+# data/
+
+# Docker
+.docker/
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
