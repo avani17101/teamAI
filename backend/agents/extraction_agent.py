@@ -2,12 +2,16 @@ from __future__ import annotations
 """
 Extraction Agent - uses K2-Think-V2 to extract structured data from meeting transcripts.
 K2-Think-V2 is the reasoning model: it thinks through the transcript and outputs clean JSON.
+Falls back to OpenAI if K2 is unavailable.
 """
 import json
 import re
 import httpx
 from typing import Optional
-from ..config import K2_THINK_BASE_URL, K2_INSTRUCT_BASE_URL, K2_API_KEY, K2_THINK_MODEL, K2_INSTRUCT_MODEL
+from ..config import (
+    K2_THINK_BASE_URL, K2_INSTRUCT_BASE_URL, K2_API_KEY, K2_THINK_MODEL, K2_INSTRUCT_MODEL,
+    OPENAI_API_KEY, OPENAI_MODEL
+)
 from ..models.schemas import ExtractionResult, Task, Decision, Risk
 from .departments import get_department
 
@@ -267,10 +271,39 @@ async def extract_meeting(transcript: str, title: str = "", department: str = "e
             except Exception as e:
                 print(f"[Extraction] K2-Instruct also failed: {e}")
 
-    if not raw_content:
-        raise ValueError(f"Both K2-Think and K2-Instruct failed to return content")
+        # Fallback to OpenAI if K2 completely failed and OpenAI is configured
+        if not raw_content and OPENAI_API_KEY:
+            print(f"[Extraction] Using OpenAI fallback ({OPENAI_MODEL})")
+            try:
+                response = await client.post(
+                    "https://api.openai.com/v1/chat/completions",
+                    headers={
+                        "Authorization": f"Bearer {OPENAI_API_KEY}",
+                        "Content-Type": "application/json",
+                    },
+                    json={
+                        "model": OPENAI_MODEL,
+                        "messages": [
+                            {"role": "system", "content": system_prompt},
+                            {"role": "user", "content": prompt},
+                        ],
+                        "max_tokens": 4000,
+                        "temperature": 0.1,
+                    },
+                )
+                response.raise_for_status()
+                data = response.json()
 
-    print(f"[Extraction] K2 API returned {len(raw_content)} characters")
+                if "choices" in data and data["choices"] and "message" in data["choices"][0]:
+                    raw_content = data["choices"][0]["message"].get("content")
+                    print(f"[Extraction] OpenAI returned {len(raw_content) if raw_content else 0} characters")
+            except Exception as e:
+                print(f"[Extraction] OpenAI also failed: {e}")
+
+    if not raw_content:
+        raise ValueError(f"All LLM providers (K2-Think, K2-Instruct, OpenAI) failed to return content")
+
+    print(f"[Extraction] LLM returned {len(raw_content)} characters")
     print(f"[Extraction] First 500 chars: {raw_content[:500]}")
 
     try:

@@ -7,12 +7,16 @@ load_dotenv()
 ENV = os.getenv("ENV", "development")  # development | production
 DEBUG = os.getenv("DEBUG", "true").lower() == "true" if ENV == "development" else False
 
-# K2 API - using build-api-1 which is currently working
-K2_THINK_BASE_URL = os.getenv("K2_THINK_BASE_URL", "http://build-api-1.ifmapp.net:8000")
-K2_INSTRUCT_BASE_URL = os.getenv("K2_INSTRUCT_BASE_URL", "http://build-api-1.ifmapp.net:8000")  # Fallback to Think endpoint since Instruct is down
+# K2 API - using api.k2think.ai production endpoint
+K2_THINK_BASE_URL = os.getenv("K2_THINK_BASE_URL", "https://api.k2think.ai/v1")
+K2_INSTRUCT_BASE_URL = os.getenv("K2_INSTRUCT_BASE_URL", "https://api.k2think.ai/v1")
 K2_API_KEY = os.getenv("K2_API_KEY", "")
-K2_THINK_MODEL = os.getenv("K2_THINK_MODEL", "LLM360/K2-Think-V2")
-K2_INSTRUCT_MODEL = os.getenv("K2_INSTRUCT_MODEL", "LLM360/K2-Think-V2")  # Using Think model as fallback
+K2_THINK_MODEL = os.getenv("K2_THINK_MODEL", "MBZUAI-IFM/K2-Think-v2")
+K2_INSTRUCT_MODEL = os.getenv("K2_INSTRUCT_MODEL", "MBZUAI-IFM/K2-Think-v2")
+
+# OpenAI API - fallback if K2 is unavailable
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")  # Cost-effective default
 
 # OpenClaw
 USE_OPENCLAW = os.getenv("USE_OPENCLAW", "false").lower() == "true"

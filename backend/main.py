@@ -36,6 +36,10 @@ from .agents.notion_client import (
 )
 from .agents.telegram_client import send_due_reminders as telegram_send_reminders, check_bot_status, send_task_assigned
 from .agents.email_client import send_task_email, send_due_reminders as email_send_reminders
+from .agents.opportunity_extractor import (
+    is_opportunity_email, process_opportunity_email,
+    get_all_opportunities, update_opportunity_status, export_to_excel as export_opportunities_excel
+)
 from .models.schemas import (
     MeetingUploadRequest, ChatRequest, ChatResponse,
     TaskUpdateRequest, FullTaskUpdateRequest, NotionSyncRequest,
@@ -103,6 +107,37 @@ async def startup():
             """Process forwarded emails - route to department based on sender and subject"""
             sender_email = email_data['sender']['email'].lower()
             subject = email_data['subject'].lower()
+
+            # First check if this is an opportunity email (Call for Interest, CFP, etc.)
+            if is_opportunity_email(email_data['subject'], email_data.get('body', '')):
+                print(f"[EmailForwarder] Detected OPPORTUNITY email: {email_data['subject']}")
+                try:
+                    opp_result = await process_opportunity_email(email_data, department="innovation")
+                    if opp_result.get("is_opportunity"):
+                        print(f"[EmailForwarder] Saved opportunity {opp_result['opportunity_id']}")
+                        print(f"[EmailForwarder] Extracted: {opp_result['extraction'].get('title')}")
+                        print(f"[EmailForwarder] Deadline: {opp_result['extraction'].get('deadline')}")
+                        # Send confirmation email for opportunity
+                        from .agents.email_forwarder import send_processing_confirmation
+                        try:
+                            extraction_for_reply = {
+                                "tasks_count": 1,
+                                "decisions_count": 0,
+                                "risks_count": 0,
+                                "summary": f"Opportunity detected: {opp_result['extraction'].get('title')}\n\nDeadline: {opp_result['extraction'].get('deadline')}\nOrganization: {opp_result['extraction'].get('organization')}\n\nThis has been added to the opportunities tracker.",
+                                "extraction": None,
+                            }
+                            send_processing_confirmation(
+                                to_email=email_data['sender']['email'],
+                                original_subject=email_data['subject'],
+                                extraction_result=extraction_for_reply,
+                            )
+                        except Exception as reply_err:
+                            print(f"[EmailForwarder] Opportunity confirmation failed: {reply_err}")
+                        return  # Don't process as regular meeting
+                except Exception as opp_err:
+                    print(f"[EmailForwarder] Opportunity processing failed: {opp_err}")
+                    # Fall through to regular processing
 
             # Check subject for department tags: [Innovation], [MarCom], etc.
             dept_from_subject = None
@@ -884,4 +919,123 @@ async def preview_task_reminders(department: Optional[str] = None, days_ahead: i
         "tasks": due_soon,
         "by_owner": by_owner,
         "recipients": list(by_owner.keys())
+    }
+
+
+# ──────────────────────────────────────────────────────
+# OPPORTUNITIES (Call for Interest, CFP, etc.)
+# ──────────────────────────────────────────────────────
+
+@app.get("/api/opportunities")
+async def list_opportunities(department: Optional[str] = None, status: Optional[str] = None):
+    """
+    List all extracted opportunities from emails.
+    Filter by department or status (new, reviewing, applied, rejected, won).
+    """
+    opportunities = get_all_opportunities(department=department, status=status)
+    return {
+        "opportunities": opportunities,
+        "total": len(opportunities)
+    }
+
+
+@app.patch("/api/opportunities/{opp_id}")
+async def update_opportunity(opp_id: str, status: str):
+    """Update opportunity status (new, reviewing, applied, rejected, won)."""
+    valid_statuses = ["new", "reviewing", "applied", "rejected", "won"]
+    if status not in valid_statuses:
+        raise HTTPException(400, f"Invalid status. Must be one of: {valid_statuses}")
+
+    success = update_opportunity_status(opp_id, status)
+    if not success:
+        raise HTTPException(404, "Opportunity not found")
+
+    return {"ok": True, "id": opp_id, "status": status}
+
+
+@app.get("/api/opportunities/export")
+async def export_opportunities_to_excel(department: Optional[str] = None):
+    """
+    Export all opportunities to Excel file.
+    Returns the file path and download info.
+    """
+    from pathlib import Path
+
+    opportunities = get_all_opportunities(department=department)
+    if not opportunities:
+        return {"ok": False, "message": "No opportunities to export"}
+
+    try:
+        output_path = export_opportunities_excel(opportunities)
+        return {
+            "ok": True,
+            "file_path": output_path,
+            "total_exported": len(opportunities),
+            "message": f"Exported {len(opportunities)} opportunities to {output_path}"
+        }
+    except ImportError as e:
+        raise HTTPException(500, "Excel export requires openpyxl. Install with: pip install openpyxl")
+    except Exception as e:
+        raise HTTPException(500, f"Export failed: {str(e)}")
+
+
+@app.get("/api/opportunities/download")
+async def download_opportunities_excel(department: Optional[str] = None):
+    """Download opportunities as Excel file."""
+    from pathlib import Path
+
+    opportunities = get_all_opportunities(department=department)
+    if not opportunities:
+        raise HTTPException(404, "No opportunities to export")
+
+    try:
+        output_path = export_opportunities_excel(opportunities)
+        return FileResponse(
+            path=output_path,
+            filename="opportunities.xlsx",
+            media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+    except ImportError:
+        raise HTTPException(500, "Excel export requires openpyxl")
+    except Exception as e:
+        raise HTTPException(500, f"Export failed: {str(e)}")
+
+
+class OpportunityEmailRequest(BaseModel):
+    subject: str
+    body: str
+    sender_email: str = ""
+    department: str = "innovation"
+
+
+@app.post("/api/opportunities/extract")
+async def extract_opportunity_from_email(request: OpportunityEmailRequest):
+    """
+    Manually submit an email to extract opportunity information.
+    Detects patterns like 'Call for Interest', 'CFP', etc. and extracts fields.
+    Returns extracted data and saves to database + Excel.
+    """
+    email_data = {
+        "subject": request.subject,
+        "body": request.body,
+        "sender": {"email": request.sender_email},
+    }
+
+    # Check if it matches opportunity patterns
+    if not is_opportunity_email(request.subject, request.body):
+        return {
+            "is_opportunity": False,
+            "message": "Email does not match opportunity patterns (Call for Interest, CFP, RFP, etc.)",
+            "detected_patterns": []
+        }
+
+    # Process as opportunity
+    result = await process_opportunity_email(email_data, department=request.department)
+
+    return {
+        "is_opportunity": True,
+        "opportunity_id": result.get("opportunity_id"),
+        "extraction": result.get("extraction"),
+        "excel_exported": True,
+        "message": "Opportunity extracted and saved to database + Excel"
     }

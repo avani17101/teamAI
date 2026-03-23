@@ -14,12 +14,12 @@ services:
       # Mount frontend for development (optional - remove in production)
       # - ./frontend:/app/frontend:ro
     environment:
-      # K2 API Configuration (required) - using build-api-1 which is currently working
+      # K2 API Configuration (required) - using api.k2think.ai
       - K2_API_KEY=${K2_API_KEY}
-      - K2_THINK_BASE_URL=${K2_THINK_BASE_URL:-http://build-api-1.ifmapp.net:8000}
-      - K2_INSTRUCT_BASE_URL=${K2_INSTRUCT_BASE_URL:-http://build-api-1.ifmapp.net:8000}
-      - K2_THINK_MODEL=${K2_THINK_MODEL:-LLM360/K2-Think-V2}
-      - K2_INSTRUCT_MODEL=${K2_INSTRUCT_MODEL:-LLM360/K2-Think-V2}
+      - K2_THINK_BASE_URL=${K2_THINK_BASE_URL:-https://api.k2think.ai/v1}
+      - K2_INSTRUCT_BASE_URL=${K2_INSTRUCT_BASE_URL:-https://api.k2think.ai/v1}
+      - K2_THINK_MODEL=${K2_THINK_MODEL:-MBZUAI-IFM/K2-Think-v2}
+      - K2_INSTRUCT_MODEL=${K2_INSTRUCT_MODEL:-MBZUAI-IFM/K2-Think-v2}
 
       # Notion Integration (required for task sync)
       - NOTION_API_KEY=${NOTION_API_KEY}
