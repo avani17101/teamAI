@@ -208,7 +208,7 @@ async def extract_meeting(transcript: str, title: str = "", department: str = "e
         # First attempt with K2-Think
         try:
             response = await client.post(
-                f"{K2_THINK_BASE_URL}/v1/chat/completions",
+                f"{K2_THINK_BASE_URL}/chat/completions",
                 headers={
                     "Authorization": f"Bearer {K2_API_KEY}",
                     "Content-Type": "application/json",
@@ -246,7 +246,7 @@ async def extract_meeting(transcript: str, title: str = "", department: str = "e
             print(f"[Extraction] Using K2-Instruct fallback")
             try:
                 response = await client.post(
-                    f"{K2_INSTRUCT_BASE_URL}/v1/chat/completions",
+                    f"{K2_INSTRUCT_BASE_URL}/chat/completions",
                     headers={
                         "Authorization": f"Bearer {K2_API_KEY}",
                         "Content-Type": "application/json",
@@ -417,7 +417,7 @@ Meeting data:
 
     async with httpx.AsyncClient(timeout=120.0) as client:
         response = await client.post(
-            f"{K2_THINK_BASE_URL}/v1/chat/completions",
+            f"{K2_THINK_BASE_URL}/chat/completions",
             headers={
                 "Authorization": f"Bearer {K2_API_KEY}",
                 "Content-Type": "application/json",

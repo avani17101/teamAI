@@ -2915,8 +2915,80 @@
       "status": "pending",
       "meeting_id": "32b309e0-c8aa-445e-a87a-6554770a3ec3",
       "meeting_title": "innovation meeting 26th Feb"
+    },
+    {
+      "id": "b8096952-46a1-4b9a-bc1b-876ef4f5bf5f",
+      "description": "Fix auth service memory leak affecting production (users logged out randomly)",
+      "owner": "Ahmed",
+      "deadline": "ASAP",
+      "status": "pending",
+      "meeting_id": "c8d33b12-c20e-478d-93ac-5190eba7a683",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "3c9e301d-3d68-448b-880c-83a2cdd32698",
+      "description": "Finish REST API refactoring",
+      "owner": "Ahmed",
+      "deadline": "Wednesday",
+      "status": "pending",
+      "meeting_id": "c8d33b12-c20e-478d-93ac-5190eba7a683",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "6656fbac-6ba4-4ed6-9f73-ac04e8f26163",
+      "description": "Dashboard redesign",
+      "owner": "Priya",
+      "deadline": "TBD",
+      "status": "blocked",
+      "meeting_id": "c8d33b12-c20e-478d-93ac-5190eba7a683",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "4c0d78d8-c0cc-461e-9e14-b52cb31e2521",
+      "description": "Set up staging environment for new microservice",
+      "owner": "Marcus",
+      "deadline": "Friday",
+      "status": "pending",
+      "meeting_id": "c8d33b12-c20e-478d-93ac-5190eba7a683",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "9647c127-6e1d-48a8-a791-2d99dfaed064",
+      "description": "Ping IT to provision sandbox environment for test automation",
+      "owner": "David",
+      "deadline": "today",
+      "status": "pending",
+      "meeting_id": "c8d33b12-c20e-478d-93ac-5190eba7a683",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "4c828b20-1b77-432a-ad47-5ad268c29419",
+      "description": "Test automation for payment flow",
+      "owner": "Lisa",
+      "deadline": "TBD",
+      "status": "blocked",
+      "meeting_id": "c8d33b12-c20e-478d-93ac-5190eba7a683",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "3ae4636e-2c1d-4a1a-b789-d14b50e075ba",
+      "description": "Assign security audit to a team member",
+      "owner": "David",
+      "deadline": "next standup",
+      "status": "pending",
+      "meeting_id": "c8d33b12-c20e-478d-93ac-5190eba7a683",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "ca188675-aaf2-45c8-b327-85cd3d2be2d0",
+      "description": "Perform security audit for payment module (due March 20)",
+      "owner": "TBD",
+      "deadline": "March 20",
+      "status": "pending",
+      "meeting_id": "c8d33b12-c20e-478d-93ac-5190eba7a683",
+      "meeting_title": "Sprint Planning"
     }
   ],
-  "last_updated": "2026-02-26T09:29:56.669176",
-  "total": 324
+  "last_updated": "2026-03-24T09:27:37.673653",
+  "total": 332
 }
