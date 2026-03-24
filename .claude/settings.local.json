@@ -56,7 +56,10 @@
       "Bash(expect -c '\nset timeout 45\nspawn ssh avani@10.127.143.5\nexpect \"\"password:\"\"\nsend \"\"M%dn^3bs#@23\\\\r\"\"\nexpect \"\"$ \"\"\nsend \"\"echo M%dn^3bs#@23 | sudo -S docker ps\\\\r\"\"\nexpect \"\"$ \"\"\nsend \"\"curl -s localhost:8001/api/openclaw/status\\\\r\"\"\nexpect \"\"$ \"\"\nsend \"\"exit\\\\r\"\"\nexpect eof\n')",
       "Bash(__NEW_LINE_2d90d674036ed401__ sleep 30)",
       "Bash(__NEW_LINE_2d90d674036ed401__ python3 -c \"\nimport paramiko\n\nssh = paramiko.SSHClient\\(\\)\nssh.set_missing_host_key_policy\\(paramiko.AutoAddPolicy\\(\\)\\)\nssh.connect\\(''10.127.143.5'', username=''avani'', password=''M%dn^3bs#@23'', timeout=60, allow_agent=False, look_for_keys=False\\)\n\nstdin, stdout, stderr = ssh.exec_command\\(''cat /tmp/restart.log 2>/dev/null; ss -tlnp | grep 8001'', timeout=15\\)\nprint\\(''Result:'', stdout.read\\(\\).decode\\(\\)\\)\nssh.close\\(\\)\n\")",
-      "Bash(sshpass:*)"
+      "Bash(sshpass:*)",
+      "Bash(sudo systemctl status:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ]
   }
 }

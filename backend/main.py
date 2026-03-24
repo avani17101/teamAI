@@ -117,20 +117,23 @@ async def startup():
                         print(f"[EmailForwarder] Saved opportunity {opp_result['opportunity_id']}")
                         print(f"[EmailForwarder] Extracted: {opp_result['extraction'].get('title')}")
                         print(f"[EmailForwarder] Deadline: {opp_result['extraction'].get('deadline')}")
-                        # Send confirmation email for opportunity
+                        # Send confirmation email for opportunity with Excel attachment
                         from .agents.email_forwarder import send_processing_confirmation
                         try:
                             extraction_for_reply = {
                                 "tasks_count": 1,
                                 "decisions_count": 0,
                                 "risks_count": 0,
-                                "summary": f"Opportunity detected: {opp_result['extraction'].get('title')}\n\nDeadline: {opp_result['extraction'].get('deadline')}\nOrganization: {opp_result['extraction'].get('organization')}\n\nThis has been added to the opportunities tracker.",
+                                "summary": f"Opportunity detected: {opp_result['extraction'].get('title')}\n\nDeadline: {opp_result['extraction'].get('deadline')}\nOrganization: {opp_result['extraction'].get('organization')}\n\nThis has been added to the opportunities tracker. See attached Excel for all opportunities.",
                                 "extraction": None,
                             }
+                            # Attach the opportunities Excel file
+                            excel_path = Path(__file__).parent.parent / "data" / "opportunities.xlsx"
                             send_processing_confirmation(
                                 to_email=email_data['sender']['email'],
                                 original_subject=email_data['subject'],
                                 extraction_result=extraction_for_reply,
+                                attachment_path=str(excel_path) if excel_path.exists() else None,
                             )
                         except Exception as reply_err:
                             print(f"[EmailForwarder] Opportunity confirmation failed: {reply_err}")

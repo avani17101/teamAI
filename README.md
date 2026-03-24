@@ -347,6 +347,26 @@ Automated daily reminders at 9 AM:
 - Shows deadline urgency (DUE TODAY, DUE TOMORROW)
 - Includes Notion links for quick access
 
+### 4. Opportunity Detection (EOI/CFP/RFP)
+Emails containing funding opportunities, calls for proposals, or expressions of interest are automatically detected and tracked:
+
+**Auto-detected patterns:**
+- Expression of Interest (EOI)
+- Call for Interest / Call for Proposals (CFP)
+- Request for Proposals (RFP)
+- Grant announcements
+- Funding opportunities
+
+**What gets extracted:**
+- Title, organization, deadline
+- Eligibility criteria, funding amount
+- Contact information, submission URL
+
+**Output:**
+- Saved to database and `data/opportunities.xlsx`
+- Excel file attached to confirmation email
+- API access: `GET /api/opportunities`, `GET /api/opportunities/download`
+
 **Email Configuration:**
 - Uses Gmail SMTP (`smtp.gmail.com:587`) for sending
 - Uses Gmail IMAP (`imap.gmail.com`) for receiving

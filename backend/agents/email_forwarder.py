@@ -289,7 +289,8 @@ def send_processing_confirmation(
     to_email: str,
     original_subject: str,
     extraction_result: dict,
-    notion_database_url: str = None
+    notion_database_url: str = None,
+    attachment_path: str = None
 ) -> bool:
     """
     Send an auto-reply to the email sender with processing summary.
@@ -299,11 +300,15 @@ def send_processing_confirmation(
         original_subject: Original email subject
         extraction_result: Results from process_forwarded_email
         notion_database_url: URL to Notion database (if configured)
+        attachment_path: Optional path to file to attach (e.g., Excel)
     """
     from ..config import SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS
     import smtplib
     from email.mime.text import MIMEText
     from email.mime.multipart import MIMEMultipart
+    from email.mime.base import MIMEBase
+    from email import encoders
+    import os
 
     if not SMTP_USER or not SMTP_PASS:
         print("[EmailForwarder] Cannot send reply - SMTP not configured")
@@ -442,6 +447,20 @@ Your AI-powered team intelligence system
         html_part = MIMEText(html_body, "html")
         msg.attach(text_part)
         msg.attach(html_part)
+
+        # Attach file if provided (e.g., opportunities.xlsx)
+        if attachment_path and os.path.exists(attachment_path):
+            try:
+                with open(attachment_path, "rb") as f:
+                    part = MIMEBase("application", "octet-stream")
+                    part.set_payload(f.read())
+                encoders.encode_base64(part)
+                filename = os.path.basename(attachment_path)
+                part.add_header("Content-Disposition", f"attachment; filename={filename}")
+                msg.attach(part)
+                print(f"[EmailForwarder] Attached {filename}")
+            except Exception as attach_err:
+                print(f"[EmailForwarder] Failed to attach file: {attach_err}")
 
         # Send via SMTP
         with smtplib.SMTP(SMTP_HOST, int(SMTP_PORT)) as server:
