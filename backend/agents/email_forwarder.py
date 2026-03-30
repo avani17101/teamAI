@@ -290,7 +290,8 @@ def send_processing_confirmation(
     original_subject: str,
     extraction_result: dict,
     notion_database_url: str = None,
-    attachment_path: str = None
+    attachment_path: str = None,
+    excel_download_url: str = None
 ) -> bool:
     """
     Send an auto-reply to the email sender with processing summary.
@@ -301,8 +302,9 @@ def send_processing_confirmation(
         extraction_result: Results from process_forwarded_email
         notion_database_url: URL to Notion database (if configured)
         attachment_path: Optional path to file to attach (e.g., Excel)
+        excel_download_url: URL to download updated Excel file
     """
-    from ..config import SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS
+    from ..config import SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SERVER_URL
     import smtplib
     from email.mime.text import MIMEText
     from email.mime.multipart import MIMEMultipart
@@ -358,6 +360,23 @@ I've processed your email and extracted the following:
         body += f"""
 🔗 VIEW IN NOTION
 {notion_database_url}
+"""
+
+    if attachment_path and os.path.exists(attachment_path):
+        filename = os.path.basename(attachment_path)
+        body += f"""
+📊 EXCEL ATTACHMENT
+{filename} is attached to this email with all opportunities data.
+"""
+
+    # Add download link if not provided, generate from SERVER_URL
+    if not excel_download_url:
+        excel_download_url = f"{SERVER_URL}/api/opportunities/download"
+
+    body += f"""
+📥 DOWNLOAD UPDATED EXCEL
+{excel_download_url}
+(Always get the latest opportunities data)
 """
 
     body += """
@@ -421,6 +440,29 @@ Your AI-powered team intelligence system
             <a href="{notion_database_url}" style="display: inline-block; background: #667eea; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600;">
                 🔗 View All Tasks in Notion
             </a>
+        </div>
+"""
+
+        # Add Excel attachment notice if attachment is provided
+        if attachment_path and os.path.exists(attachment_path):
+            filename = os.path.basename(attachment_path)
+            html_body += f"""
+        <div style="background: #ecfdf5; padding: 16px; border-radius: 6px; margin: 16px 0; border-left: 4px solid #10b981;">
+            <h3 style="margin-top: 0; color: #065f46;">📊 Excel Attachment</h3>
+            <p style="margin-bottom: 0; color: #047857;">
+                <strong>{filename}</strong> is attached to this email with all opportunities data.
+                Download and open it to view the complete opportunities tracker.
+            </p>
+        </div>
+"""
+
+        # Add Excel download link button
+        html_body += f"""
+        <div style="text-align: center; margin: 24px 0;">
+            <a href="{excel_download_url}" style="display: inline-block; background: #10b981; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600;">
+                📥 Download Updated Excel
+            </a>
+            <p style="font-size: 12px; color: #6b7280; margin-top: 8px;">Always get the latest opportunities data</p>
         </div>
 """
 

@@ -55,3 +55,4 @@ CORS_ORIGINS = os.getenv("CORS_ORIGINS", "*").split(",")  # Comma-separated list
 # App
 APP_TITLE = "TeamAI - Department Intelligence System"
 PORT = int(os.getenv("PORT", "8001"))
+SERVER_URL = os.getenv("SERVER_URL", "http://localhost:8001")  # Public URL for download links
