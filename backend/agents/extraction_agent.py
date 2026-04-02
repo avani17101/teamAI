@@ -363,13 +363,49 @@ async def _extract_single_chunk(transcript_chunk: str, system_prompt: str, chunk
 
     print(f"[Extraction] Chunk {chunk_num}: LLM returned {len(raw_content)} characters")
 
+    # Try to parse the response
     try:
         parsed = _parse_k2_response(raw_content)
         print(f"[Extraction] Chunk {chunk_num}: Parsed {len(parsed.get('tasks', []))} tasks")
         return parsed
     except Exception as e:
-        print(f"[Extraction] Chunk {chunk_num}: Parse error: {e}")
-        raise
+        print(f"[Extraction] Chunk {chunk_num}: K2 parse failed: {e}")
+
+        # Fallback to OpenAI if K2 returned unparseable content
+        if OPENAI_API_KEY:
+            print(f"[Extraction] Chunk {chunk_num}: K2 output not parseable, trying OpenAI fallback")
+            try:
+                async with httpx.AsyncClient(timeout=120.0) as client:
+                    response = await client.post(
+                        "https://api.openai.com/v1/chat/completions",
+                        headers={
+                            "Authorization": f"Bearer {OPENAI_API_KEY}",
+                            "Content-Type": "application/json",
+                        },
+                        json={
+                            "model": OPENAI_MODEL,
+                            "messages": [
+                                {"role": "system", "content": system_prompt},
+                                {"role": "user", "content": prompt},
+                            ],
+                            "max_tokens": 4000,
+                            "temperature": 0.1,
+                        },
+                    )
+                    response.raise_for_status()
+                    data = response.json()
+
+                    if "choices" in data and data["choices"] and "message" in data["choices"][0]:
+                        openai_content = data["choices"][0]["message"].get("content")
+                        if openai_content:
+                            print(f"[Extraction] Chunk {chunk_num}: OpenAI returned {len(openai_content)} characters")
+                            parsed = _parse_k2_response(openai_content)
+                            print(f"[Extraction] Chunk {chunk_num}: OpenAI parsed {len(parsed.get('tasks', []))} tasks")
+                            return parsed
+            except Exception as openai_e:
+                print(f"[Extraction] Chunk {chunk_num}: OpenAI fallback also failed: {openai_e}")
+
+        raise ValueError(f"Failed to parse response for chunk {chunk_num}: {e}")
 
 
 async def extract_meeting(transcript: str, title: str = "", department: str = "engineering", detect_updates: bool = True) -> tuple[ExtractionResult, str, list]:
