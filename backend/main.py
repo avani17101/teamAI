@@ -397,6 +397,7 @@ async def upload_meeting(request: MeetingUploadRequest):
             insights = []
 
     # Personalized task dispatch + stakeholder detection
+    # In HITL mode (auto_sync_notion=false): skip emails/notifications, just track owners
     team = get_team_members(department=request.department)
     dispatch_log = []
     unknown_stakeholders = []
@@ -412,22 +413,27 @@ async def upload_meeting(request: MeetingUploadRequest):
             sent_email = False
             task_dict = task.dict()
             task_dict["department"] = request.department
-            if member.get("telegram_handle"):
-                try:
-                    sent_telegram = await send_task_assigned(member, task_dict, request.title)
-                except Exception:
-                    sent_telegram = False
-            if member.get("email"):
-                try:
-                    sent_email = await send_task_email(member, task_dict, request.title)
-                except Exception:
-                    sent_email = False
+
+            # Only send notifications in auto mode, skip in HITL review mode
+            if request.auto_sync_notion:
+                if member.get("telegram_handle"):
+                    try:
+                        sent_telegram = await send_task_assigned(member, task_dict, request.title)
+                    except Exception:
+                        sent_telegram = False
+                if member.get("email"):
+                    try:
+                        sent_email = await send_task_email(member, task_dict, request.title)
+                    except Exception:
+                        sent_email = False
+
             dispatch_log.append({
                 "task": task.description,
                 "owner": owner,
                 "member_found": True,
                 "telegram": sent_telegram,
                 "email": sent_email,
+                "skipped_hitl": not request.auto_sync_notion,
             })
         else:
             dispatch_log.append({"task": task.description, "owner": owner, "member_found": False})
@@ -590,6 +596,7 @@ async def sync_selected_to_notion(request: NotionSyncRequest):
     """
     HITL: Sync only the user-approved task IDs to Notion.
     Called from the frontend after the user reviews and checks tasks.
+    Now also sends email notifications for approved tasks.
     """
     all_tasks = get_all_tasks()
     # Filter to only the approved task IDs
@@ -597,16 +604,43 @@ async def sync_selected_to_notion(request: NotionSyncRequest):
     if not tasks_to_sync:
         raise HTTPException(400, "No matching tasks found for provided task_ids")
 
+    # Sync to Notion with people tagging enabled
     notion_result = await notion_sync_tasks(
         tasks=tasks_to_sync,
         meeting_title=request.meeting_title,
         department=request.department,
+        skip_tagging=False,  # Tag people when manually approved
     )
     if notion_result.get("ok") and notion_result.get("url_map"):
         update_task_notion_urls(
             notion_result["url_map"],
             notion_result.get("page_id_map", {})
         )
+
+    # Send email notifications for approved tasks (was skipped in HITL extraction)
+    team = get_team_members(department=request.department)
+    dispatch_log = []
+    for task in tasks_to_sync:
+        owner = (task.get("owner") or "").strip()
+        if not owner or owner.lower() in ("unassigned", "team", "everyone", ""):
+            continue
+        member = _find_member(owner, team)
+        if member:
+            sent_email = False
+            task["department"] = request.department
+            task["notion_url"] = notion_result.get("url_map", {}).get(task.get("id"), "")
+            if member.get("email"):
+                try:
+                    sent_email = await send_task_email(member, task, request.meeting_title)
+                except Exception:
+                    sent_email = False
+            dispatch_log.append({
+                "task": task.get("description", ""),
+                "owner": owner,
+                "email": sent_email,
+            })
+
+    notion_result["dispatch"] = dispatch_log
     return notion_result
 
 

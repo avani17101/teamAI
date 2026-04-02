@@ -59,7 +59,8 @@
       "Bash(sshpass:*)",
       "Bash(sudo systemctl status:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(unzip:*)"
     ]
   }
 }

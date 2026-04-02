@@ -304,7 +304,7 @@
                      style="width:16px;height:16px;accent-color:var(--accent);cursor:pointer">
               <span id="notion-toggle-label" style="font-size:13px;color:var(--text)">🤖 Auto-sync tasks to Notion</span>
             </label>
-            <span id="notion-toggle-hint" style="margin-left:auto;font-size:11px;color:var(--text-muted)">All tasks created automatically</span>
+            <span id="notion-toggle-hint" style="margin-left:auto;font-size:11px;color:var(--text-muted)">Tasks created + emails sent automatically</span>
           </div>
           <button class="btn btn-primary" onclick="uploadMeeting()" id="upload-btn">Process</button>
           <button class="btn btn-ghost" style="margin-left:8px" onclick="fillDemoTranscript()">Load Sample</button>
@@ -1250,10 +1250,10 @@ function updateNotionToggle() {
   const auto = document.getElementById('auto-notion-toggle').checked;
   document.getElementById('notion-toggle-label').textContent = auto
     ? '🤖 Auto-sync tasks to Notion'
-    : '👤 Review tasks before Notion sync';
+    : '👤 Human review mode';
   document.getElementById('notion-toggle-hint').textContent = auto
-    ? 'All tasks created automatically'
-    : 'You approve each task before it goes to Notion';
+    ? 'Tasks created + emails sent automatically'
+    : 'No emails sent, no tagging — you approve each task';
 }
 
 // ── Upload ────────────────────────────────────────

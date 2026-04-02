@@ -16,7 +16,7 @@ import smtplib
 from datetime import datetime, timedelta
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from ..config import SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS
+from ..config import SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, DEBUG_MODE
 
 
 def _is_configured() -> bool:
@@ -25,6 +25,11 @@ def _is_configured() -> bool:
 
 def _send_smtp(to_email: str, subject: str, html: str, text: str) -> bool:
     """Synchronous SMTP send (run in executor for async compatibility)."""
+    # Debug mode: log but don't actually send
+    if DEBUG_MODE:
+        print(f"[Email] DEBUG_MODE: Would send to {to_email} | Subject: {subject[:50]}...")
+        return True
+
     msg = MIMEMultipart("alternative")
     msg["Subject"] = subject
     msg["From"] = f"TeamAI <{SMTP_USER}>"

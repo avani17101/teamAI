@@ -7,6 +7,10 @@ load_dotenv()
 ENV = os.getenv("ENV", "development")  # development | production
 DEBUG = os.getenv("DEBUG", "true").lower() == "true" if ENV == "development" else False
 
+# Debug mode: skips actual email sending and Notion people tagging
+# Set DEBUG_MODE=true in .env to enable (useful for testing without spamming)
+DEBUG_MODE = os.getenv("DEBUG_MODE", "false").lower() == "true"
+
 # K2 API - using api.k2think.ai production endpoint
 K2_THINK_BASE_URL = os.getenv("K2_THINK_BASE_URL", "https://api.k2think.ai/v1")
 K2_INSTRUCT_BASE_URL = os.getenv("K2_INSTRUCT_BASE_URL", "https://api.k2think.ai/v1")
@@ -16,7 +20,7 @@ K2_INSTRUCT_MODEL = os.getenv("K2_INSTRUCT_MODEL", "MBZUAI-IFM/K2-Think-v2")
 
 # OpenAI API - fallback if K2 is unavailable
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
-OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")  # Cost-effective default
+OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o")  # High quality model for reliable extraction
 
 # OpenClaw
 USE_OPENCLAW = os.getenv("USE_OPENCLAW", "false").lower() == "true"

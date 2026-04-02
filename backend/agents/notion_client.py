@@ -6,7 +6,7 @@ Properties: Task name, Status, Priority, Due date, Description, Department, Assi
 from __future__ import annotations
 import httpx
 from datetime import datetime
-from ..config import NOTION_API_KEY, NOTION_DATABASE_ID
+from ..config import NOTION_API_KEY, NOTION_DATABASE_ID, DEBUG_MODE
 
 # Module-level cache of workspace members: [{id, name}]
 _workspace_members: list = []
@@ -133,6 +133,7 @@ async def create_task(
     department: str = "engineering",
     members: list = None,
     database_id: str = None,
+    skip_tagging: bool = False,
 ) -> dict:
     """Create a single task in the Notion Tasks Tracker database."""
     # Use department-specific database ID or fall back to global config
@@ -172,10 +173,13 @@ async def create_task(
     }
 
     # Assignee: fuzzy-match owner name to a Notion workspace user (if workspace has members)
-    if members:
+    # In HITL mode (skip_tagging=True), don't tag people - just use the Owner text field
+    if members and not skip_tagging:
         user_id = _match_owner_to_user_id(owner, members)
         if user_id:
             properties["Assignee"] = {"people": [{"id": user_id}]}
+    elif skip_tagging:
+        print(f"[Notion] Skipping Assignee tagging (HITL mode) for '{owner}'")
 
     # Add due date only if it's a real date (not "Not specified" or "Friday")
     if deadline and deadline not in ("Not specified", "not specified", ""):
@@ -223,10 +227,13 @@ async def create_task(
         }
 
 
-async def sync_tasks(tasks: list[dict], meeting_title: str = "", department: str = "engineering", database_id: str = None) -> dict:
+async def sync_tasks(tasks: list[dict], meeting_title: str = "", department: str = "engineering", database_id: str = None, skip_tagging: bool = False) -> dict:
     """
     Sync a list of extracted tasks to Notion.
     Returns summary including per-task notion_url keyed by task_id.
+
+    Args:
+        skip_tagging: If True, don't tag people as Assignee (HITL mode - just write names as text)
     """
     if not NOTION_API_KEY:
         return {"ok": False, "error": "Notion API key not configured"}
@@ -268,6 +275,7 @@ async def sync_tasks(tasks: list[dict], meeting_title: str = "", department: str
                 department=department,
                 members=members,
                 database_id=db_id,
+                skip_tagging=skip_tagging,
             )
             tid = task.get("id", "")
             created.append({
