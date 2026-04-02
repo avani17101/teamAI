@@ -46,6 +46,7 @@ class MeetingUploadRequest(BaseModel):
     transcript: str
     department: str = "engineering"
     auto_sync_notion: bool = True   # False = return tasks for HITL review, don't create in Notion
+    debug_mode: bool = False        # True = skip emails, don't tag people in Notion (just names)
 
 
 class NotionSyncRequest(BaseModel):

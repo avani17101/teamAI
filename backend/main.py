@@ -363,12 +363,14 @@ async def upload_meeting(request: MeetingUploadRequest):
     )
 
     # Notion: sync tasks to Tasks Tracker database (unless HITL review mode)
+    # In debug mode: skip people tagging (just write names as text)
     notion_result = {"ok": False, "created": 0, "pages": [], "url_map": {}, "skipped": False}
     if request.auto_sync_notion:
         notion_result = await notion_sync_tasks(
             tasks=[t.dict() for t in extraction.tasks],
             meeting_title=request.title,
             department=request.department,
+            skip_tagging=request.debug_mode,  # Debug mode: don't tag people, just names
         )
         # Persist Notion page URLs and IDs back to SQLite
         if notion_result.get("ok") and notion_result.get("url_map"):
@@ -414,8 +416,9 @@ async def upload_meeting(request: MeetingUploadRequest):
             task_dict = task.dict()
             task_dict["department"] = request.department
 
-            # Only send notifications in auto mode, skip in HITL review mode
-            if request.auto_sync_notion:
+            # Only send notifications in auto mode AND not in debug mode
+            # Debug mode: skip all notifications
+            if request.auto_sync_notion and not request.debug_mode:
                 if member.get("telegram_handle"):
                     try:
                         sent_telegram = await send_task_assigned(member, task_dict, request.title)
@@ -426,6 +429,8 @@ async def upload_meeting(request: MeetingUploadRequest):
                         sent_email = await send_task_email(member, task_dict, request.title)
                     except Exception:
                         sent_email = False
+            elif request.debug_mode:
+                print(f"[Debug] Skipping notifications for {owner} (debug mode)")
 
             dispatch_log.append({
                 "task": task.description,

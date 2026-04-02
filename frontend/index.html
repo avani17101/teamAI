@@ -298,13 +298,22 @@
             <textarea id="meeting-transcript" rows="12" placeholder="Paste your meeting transcript here..."></textarea>
           </div>
           <!-- HITL toggle -->
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;padding:10px 14px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;padding:10px 14px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">
             <label class="toggle-wrap" style="display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none">
               <input type="checkbox" id="auto-notion-toggle" checked onchange="updateNotionToggle()"
                      style="width:16px;height:16px;accent-color:var(--accent);cursor:pointer">
               <span id="notion-toggle-label" style="font-size:13px;color:var(--text)">🤖 Auto-sync tasks to Notion</span>
             </label>
             <span id="notion-toggle-hint" style="margin-left:auto;font-size:11px;color:var(--text-muted)">Tasks created + emails sent automatically</span>
+          </div>
+          <!-- Debug mode toggle -->
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;padding:10px 14px;background:var(--surface2);border-radius:8px;border:1px solid rgba(245,158,11,0.3)">
+            <label class="toggle-wrap" style="display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none">
+              <input type="checkbox" id="debug-mode-toggle"
+                     style="width:16px;height:16px;accent-color:var(--yellow);cursor:pointer">
+              <span style="font-size:13px;color:var(--text)">🧪 Debug mode</span>
+            </label>
+            <span style="margin-left:auto;font-size:11px;color:var(--yellow)">No emails, names only (no tagging)</span>
           </div>
           <button class="btn btn-primary" onclick="uploadMeeting()" id="upload-btn">Process</button>
           <button class="btn btn-ghost" style="margin-left:8px" onclick="fillDemoTranscript()">Load Sample</button>
@@ -1289,6 +1298,7 @@ async function uploadMeeting() {
 
   try {
     const autoNotion = document.getElementById('auto-notion-toggle').checked;
+    const debugMode = document.getElementById('debug-mode-toggle').checked;
     // K2 API can take 20-40 seconds, set timeout to 120 seconds
     const controller = new AbortController();
     timeout = setTimeout(() => controller.abort(), 120000);
@@ -1296,7 +1306,7 @@ async function uploadMeeting() {
     const r = await fetch(API + '/api/meetings/upload', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({title, transcript, department: activeDept || 'engineering', auto_sync_notion: autoNotion}),
+      body: JSON.stringify({title, transcript, department: activeDept || 'engineering', auto_sync_notion: autoNotion, debug_mode: debugMode}),
       signal: controller.signal
     });
     clearTimeout(timeout);
