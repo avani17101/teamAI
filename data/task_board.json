@@ -2987,8 +2987,395 @@
       "status": "pending",
       "meeting_id": "c8d33b12-c20e-478d-93ac-5190eba7a683",
       "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "17464e1c-3714-4f92-978a-066605d040da",
+      "description": "Complete authentication module",
+      "owner": "Bob",
+      "deadline": "May 14, 2026",
+      "status": "pending",
+      "meeting_id": "4e2ef89b-18dd-43e2-8805-c48267dd20aa",
+      "meeting_title": "Test Meeting"
+    },
+    {
+      "id": "ace819a3-808e-47e8-a37d-8fba85a95a57",
+      "description": "...",
+      "owner": "...",
+      "deadline": "...",
+      "status": "pending",
+      "meeting_id": "0fe779ad-975d-41b3-a71d-5044a7cd4cca",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "28a811d4-468d-4815-977e-545e1c401b6a",
+      "description": "Finalize the Q2 roadmap",
+      "owner": "Team",
+      "deadline": "May 07, 2026",
+      "status": "pending",
+      "meeting_id": "67d0090f-17bc-41fd-a338-afcdcc793a4a",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "549541b2-1765-41a8-9276-551c69c8d7e3",
+      "description": "Finish the login page",
+      "owner": "John",
+      "deadline": "May 11, 2026",
+      "status": "pending",
+      "meeting_id": "67d0090f-17bc-41fd-a338-afcdcc793a4a",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "663f40c5-47e8-4929-ad1f-50cd8fc4cb2a",
+      "description": "Review the database schema",
+      "owner": "Maria",
+      "deadline": "May 13, 2026",
+      "status": "pending",
+      "meeting_id": "67d0090f-17bc-41fd-a338-afcdcc793a4a",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "24aaf7cd-d3ac-47fd-b191-d638d0617106",
+      "description": "Write unit tests for the auth module",
+      "owner": "John",
+      "deadline": "May 08, 2026",
+      "status": "pending",
+      "meeting_id": "67d0090f-17bc-41fd-a338-afcdcc793a4a",
+      "meeting_title": "Sprint Planning"
+    },
+    {
+      "id": "445eea0d-e9b1-45bf-9e5c-b9cb157d22ae",
+      "description": "Talk to IT about expanding GPU capacity or getting priority access for Dr. Aisha Rahman.",
+      "owner": "Prof. Ibrahim Al-Mansour",
+      "deadline": "May 08, 2026",
+      "status": "pending",
+      "meeting_id": "5e82d8e8-1ff7-4e19-bea1-cd903666faca",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "fd8731b1-2b5b-41f7-9b61-f9a184353dd2",
+      "description": "Follow up with legal on the TechCorp MoU to nail down the signing date.",
+      "owner": "Mohammed Al-Hashimi",
+      "deadline": "May 09, 2026",
+      "status": "pending",
+      "meeting_id": "5e82d8e8-1ff7-4e19-bea1-cd903666faca",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "4fbdcedc-0102-41e0-a066-d90a6f4d87a3",
+      "description": "Complete the technical proposal for the ADEK grant application.",
+      "owner": "Dr. Nadia Khan",
+      "deadline": "May 11, 2026",
+      "status": "pending",
+      "meeting_id": "5e82d8e8-1ff7-4e19-bea1-cd903666faca",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "4a5e4a72-2d31-4dea-b608-c6003705fe48",
+      "description": "Complete the financials for the ADEK grant application.",
+      "owner": "Sara Ahmed",
+      "deadline": "May 11, 2026",
+      "status": "pending",
+      "meeting_id": "5e82d8e8-1ff7-4e19-bea1-cd903666faca",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "ac1fbc7b-c599-4227-a9e4-b504c238b6a0",
+      "description": "Merge and review the ADEK grant application components.",
+      "owner": "Team",
+      "deadline": "March 17th",
+      "status": "pending",
+      "meeting_id": "5e82d8e8-1ff7-4e19-bea1-cd903666faca",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "95a55104-090c-4a4b-beb1-66c6a142ce93",
+      "description": "Obtain IT security review sign-off for the Arabic Voice Dataset v2.",
+      "owner": "Khalid Mansoor",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "5e82d8e8-1ff7-4e19-bea1-cd903666faca",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "f0a66017-e4b8-4e92-b7bd-247c8109a74f",
+      "description": "Lead the technical side of the Al Noor Hospital pilot integration testing.",
+      "owner": "Yusuf Ali",
+      "deadline": "May 11, 2026",
+      "status": "pending",
+      "meeting_id": "5e82d8e8-1ff7-4e19-bea1-cd903666faca",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "5ca10036-cca0-47e0-8c20-34bf7b839d26",
+      "description": "Lead the application for the UNESCO AI Ethics grant.",
+      "owner": "Dr. Hana Said",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "5e82d8e8-1ff7-4e19-bea1-cd903666faca",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "d8e8173c-0043-49aa-a5ab-7d6d42076176",
+      "description": "Showcase the partnership and collaboration in funding for the equipment.",
+      "owner": "Akshera Rai",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "e283f86c-ff30-48b1-9808-125e5cdf4e81",
+      "meeting_title": "30th March, Team Meeting"
+    },
+    {
+      "id": "a66ba191-585a-4272-8195-95f348c999c7",
+      "description": "Track the budget once the proposal review process proceeds and awards are given.",
+      "owner": "Akshera Rai",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "e283f86c-ff30-48b1-9808-125e5cdf4e81",
+      "meeting_title": "30th March, Team Meeting"
+    },
+    {
+      "id": "3d1107d4-f87c-4a29-8ff9-47d05f0d2e84",
+      "description": "Move the meeting with Sana to discuss the alignment on processes.",
+      "owner": "Anna Kalakutskaya",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "e283f86c-ff30-48b1-9808-125e5cdf4e81",
+      "meeting_title": "30th March, Team Meeting"
+    },
+    {
+      "id": "a27bfb5d-3291-412c-89b1-1a2643591922",
+      "description": "Send all contracts and NDAs to Anna Kalakutskaya and Marta.",
+      "owner": "Team",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "e283f86c-ff30-48b1-9808-125e5cdf4e81",
+      "meeting_title": "30th March, Team Meeting"
+    },
+    {
+      "id": "246542b0-9f57-4c1f-8325-b585d0558aa0",
+      "description": "Continue sending reminders to Space 42 and TII regarding the agreements.",
+      "owner": "Najid Mohammed",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "e283f86c-ff30-48b1-9808-125e5cdf4e81",
+      "meeting_title": "30th March, Team Meeting"
+    },
+    {
+      "id": "9fbd294a-5760-4ac4-a190-4f5df3855c9c",
+      "description": "Reach out to the PIs for visibility on the stalled agreements with Space 42 and TII.",
+      "owner": "Najid Mohammed",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "e283f86c-ff30-48b1-9808-125e5cdf4e81",
+      "meeting_title": "30th March, Team Meeting"
+    },
+    {
+      "id": "8845e899-0b00-4d76-9519-6af4089df227",
+      "description": "Get an update from Nils on the scope of work for the Etihad agreement.",
+      "owner": "Najid Mohammed",
+      "deadline": "March 31, 2026 (morning)",
+      "status": "pending",
+      "meeting_id": "e283f86c-ff30-48b1-9808-125e5cdf4e81",
+      "meeting_title": "30th March, Team Meeting"
+    },
+    {
+      "id": "deb319c3-918a-4e7b-9af5-bd3d95c121af",
+      "description": "Provide feedback on the scope of work for Atkins Realist to the PIs.",
+      "owner": "Joe Battikh",
+      "deadline": "April 01, 2026",
+      "status": "pending",
+      "meeting_id": "e283f86c-ff30-48b1-9808-125e5cdf4e81",
+      "meeting_title": "30th March, Team Meeting"
+    },
+    {
+      "id": "1d0a1786-0a2e-45c7-a890-130fb4bcda12",
+      "description": "Ensure NDA is signed before setting up a workshop with the Abu Environmental Agency.",
+      "owner": "Joe Battikh",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "e283f86c-ff30-48b1-9808-125e5cdf4e81",
+      "meeting_title": "30th March, Team Meeting"
+    },
+    {
+      "id": "c9be955e-097e-4170-be02-d52e683278ca",
+      "description": "Summarize the proposal for Atkins Realist in a few slides with budget estimates.",
+      "owner": "Joe Battikh",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "e283f86c-ff30-48b1-9808-125e5cdf4e81",
+      "meeting_title": "30th March, Team Meeting"
+    },
+    {
+      "id": "e2ef0ebc-74f4-4881-a1b3-0c4242399713",
+      "description": "Check with the PI on how to proceed with the Abu Dhabi police data collection.",
+      "owner": "Elias Benlaieb",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "e283f86c-ff30-48b1-9808-125e5cdf4e81",
+      "meeting_title": "30th March, Team Meeting"
+    },
+    {
+      "id": "3b130f1d-d45c-4748-b82b-aebaaa07f4b5",
+      "description": "Put the Abu Dhabi police engagement on hold until further notice.",
+      "owner": "Elias Benlaieb",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "e283f86c-ff30-48b1-9808-125e5cdf4e81",
+      "meeting_title": "30th March, Team Meeting"
+    },
+    {
+      "id": "44dcb43b-da49-4a93-ba4d-0ffd26aa5f25",
+      "description": "Discuss the project scope with Rocks Motors and propose a consultancy proposal.",
+      "owner": "Elias Benlaieb",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "e283f86c-ff30-48b1-9808-125e5cdf4e81",
+      "meeting_title": "30th March, Team Meeting"
+    },
+    {
+      "id": "62fdb86a-04e2-4964-a1c9-4a20c436f337",
+      "description": "Follow up with procurement to get an answer about including the robot drones and compute in the contract.",
+      "owner": "Elias Benlaieb",
+      "deadline": "April 03, 2026",
+      "status": "pending",
+      "meeting_id": "e283f86c-ff30-48b1-9808-125e5cdf4e81",
+      "meeting_title": "30th March, Team Meeting"
+    },
+    {
+      "id": "c19f7972-7cbc-41f7-8eda-e273733e4bba",
+      "description": "Reach out to Professor Xiaosong to inquire about the next team meeting for the awareness session.",
+      "owner": "Ramzi Ben Ouaghrem",
+      "deadline": "ASAP",
+      "status": "pending",
+      "meeting_id": "e283f86c-ff30-48b1-9808-125e5cdf4e81",
+      "meeting_title": "30th March, Team Meeting"
+    },
+    {
+      "id": "d7b30757-fd66-4840-9088-86c15fb627d7",
+      "description": "Finalize the list of faculty nominees for the committee for the review of the submissions.",
+      "owner": "Eliza Mic",
+      "deadline": "April 03, 2026",
+      "status": "pending",
+      "meeting_id": "e283f86c-ff30-48b1-9808-125e5cdf4e81",
+      "meeting_title": "30th March, Team Meeting"
+    },
+    {
+      "id": "815d2e3a-832b-42dd-b81c-e9fd2eda06de",
+      "description": "Reach out to finance to confirm if funds are available for disbursement.",
+      "owner": "Eliza Mic",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "e283f86c-ff30-48b1-9808-125e5cdf4e81",
+      "meeting_title": "30th March, Team Meeting"
+    },
+    {
+      "id": "93e47e55-04b1-40bb-96a5-a2d1f9d99e25",
+      "description": "Organize monthly webinar sessions leading up to the bigger innovation day.",
+      "owner": "Eliza Mic",
+      "deadline": "6th of May",
+      "status": "pending",
+      "meeting_id": "e283f86c-ff30-48b1-9808-125e5cdf4e81",
+      "meeting_title": "30th March, Team Meeting"
+    },
+    {
+      "id": "0115cc82-88da-4c9a-b21a-0b2b2d653dd6",
+      "description": "Prepare a slide template for the visit to the robotics lab.",
+      "owner": "Kim",
+      "deadline": "March 31, 2026",
+      "status": "pending",
+      "meeting_id": "e283f86c-ff30-48b1-9808-125e5cdf4e81",
+      "meeting_title": "30th March, Team Meeting"
+    },
+    {
+      "id": "e0f5512d-a617-43c7-8ae8-936e1de7d0b5",
+      "description": "Check with Sana and Professor Yan about rescheduling the meeting to Wednesday at 10:30.",
+      "owner": "Anna Kalakutskaya",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "e283f86c-ff30-48b1-9808-125e5cdf4e81",
+      "meeting_title": "30th March, Team Meeting"
+    },
+    {
+      "id": "95f8a4c4-b430-435d-a626-bb437fd21585",
+      "description": "Follow up with Aya regarding the podcast invitations.",
+      "owner": "Eliza Mic",
+      "deadline": "ASAP",
+      "status": "pending",
+      "meeting_id": "e283f86c-ff30-48b1-9808-125e5cdf4e81",
+      "meeting_title": "30th March, Team Meeting"
+    },
+    {
+      "id": "9de33297-6f09-4200-9210-82c8c3760469",
+      "description": "Talk to IT about expanding GPU capacity or getting priority access for Dr. Aisha Rahman.",
+      "owner": "Prof. Ibrahim Al-Mansour",
+      "deadline": "May 08, 2026",
+      "status": "pending",
+      "meeting_id": "33c231a4-0b19-40b3-bac9-888b97a2c5ef",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "f87404d2-ac94-4f8a-92cf-28a2d39bfce8",
+      "description": "Follow up with legal on the TechCorp MoU to nail down the signing date.",
+      "owner": "Mohammed Al-Hashimi",
+      "deadline": "May 09, 2026",
+      "status": "pending",
+      "meeting_id": "33c231a4-0b19-40b3-bac9-888b97a2c5ef",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "a2a1e267-9d27-420d-ba3e-bc8907fbdf09",
+      "description": "Complete the technical proposal for the ADEK grant application.",
+      "owner": "Dr. Nadia Khan",
+      "deadline": "May 11, 2026",
+      "status": "pending",
+      "meeting_id": "33c231a4-0b19-40b3-bac9-888b97a2c5ef",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "281b26af-e3a4-4595-9b7a-030add2440b4",
+      "description": "Complete the financials for the ADEK grant application.",
+      "owner": "Sara Ahmed",
+      "deadline": "May 11, 2026",
+      "status": "pending",
+      "meeting_id": "33c231a4-0b19-40b3-bac9-888b97a2c5ef",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "9a24822f-0858-408d-a9da-a1720d5ab44d",
+      "description": "Merge and review the ADEK grant application by March 17th.",
+      "owner": "Team",
+      "deadline": "March 17th",
+      "status": "pending",
+      "meeting_id": "33c231a4-0b19-40b3-bac9-888b97a2c5ef",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "a7ef1b9a-08c3-4141-993e-63f54df149b8",
+      "description": "Get IT security sign-off for the Arabic Voice Dataset v2.",
+      "owner": "Khalid Mansoor",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "33c231a4-0b19-40b3-bac9-888b97a2c5ef",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "c6eac894-1142-4cb2-9526-a25029cf94ce",
+      "description": "Lead the application for the UNESCO AI Ethics grant.",
+      "owner": "Dr. Hana Said",
+      "deadline": "Not specified",
+      "status": "pending",
+      "meeting_id": "33c231a4-0b19-40b3-bac9-888b97a2c5ef",
+      "meeting_title": "Innovation Lab Sync"
+    },
+    {
+      "id": "ea06f2c4-dee5-4d4d-b8cc-738faca2d4e2",
+      "description": "Start integration testing for the Al Noor Hospital pilot.",
+      "owner": "Yusuf Ali",
+      "deadline": "May 11, 2026",
+      "status": "pending",
+      "meeting_id": "33c231a4-0b19-40b3-bac9-888b97a2c5ef",
+      "meeting_title": "Innovation Lab Sync"
     }
   ],
-  "last_updated": "2026-03-24T09:27:37.673653",
-  "total": 332
+  "last_updated": "2026-05-08T06:20:03.309018",
+  "total": 375
 }

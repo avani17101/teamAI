@@ -43,7 +43,7 @@ from .agents.opportunity_extractor import (
 from .models.schemas import (
     MeetingUploadRequest, ChatRequest, ChatResponse,
     TaskUpdateRequest, FullTaskUpdateRequest, NotionSyncRequest,
-    TeamMemberRequest, OrgContextRequest, NotificationRequest
+    TeamMemberRequest, BulkTeamMemberRequest, OrgContextRequest, NotificationRequest
 )
 
 app = FastAPI(
@@ -504,6 +504,155 @@ async def list_tasks(status: Optional[str] = None, department: Optional[str] = N
     return {"tasks": tasks, "total": len(tasks)}
 
 
+@app.get("/api/tasks/export")
+async def export_tasks(
+    format: str = "csv",
+    status: Optional[str] = None,
+    department: Optional[str] = None,
+    owner: Optional[str] = None
+):
+    """
+    Export tasks to CSV or Excel format.
+    Useful for reporting and sharing with team.
+
+    Args:
+        format: 'csv' or 'excel' (default: csv)
+        status: Filter by status (pending, in_progress, done)
+        department: Filter by department
+        owner: Filter by owner name
+    """
+    import csv
+    import io
+    from datetime import datetime
+
+    tasks = get_all_tasks(status=status, department=department)
+
+    # Filter by owner if specified
+    if owner:
+        owner_lower = owner.lower()
+        tasks = [t for t in tasks if owner_lower in (t.get("owner") or "").lower()]
+
+    if not tasks:
+        raise HTTPException(404, "No tasks found matching criteria")
+
+    if format.lower() == "excel":
+        # Excel export using openpyxl
+        try:
+            from openpyxl import Workbook
+            from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+        except ImportError:
+            raise HTTPException(500, "openpyxl not installed. Use format=csv instead.")
+
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Tasks"
+
+        # Define columns
+        columns = [
+            ("Task Description", 60),
+            ("Owner", 20),
+            ("Deadline", 15),
+            ("Status", 12),
+            ("Department", 15),
+            ("Meeting", 30),
+            ("Created", 20),
+        ]
+
+        # Header styling
+        header_fill = PatternFill(start_color="4F46E5", end_color="4F46E5", fill_type="solid")
+        header_font = Font(bold=True, color="FFFFFF")
+        thin_border = Border(
+            left=Side(style='thin'),
+            right=Side(style='thin'),
+            top=Side(style='thin'),
+            bottom=Side(style='thin')
+        )
+
+        # Write headers
+        for col_idx, (col_name, col_width) in enumerate(columns, 1):
+            cell = ws.cell(row=1, column=col_idx, value=col_name)
+            cell.fill = header_fill
+            cell.font = header_font
+            cell.alignment = Alignment(horizontal="center", vertical="center")
+            cell.border = thin_border
+            ws.column_dimensions[cell.column_letter].width = col_width
+
+        # Status colors
+        status_colors = {
+            "pending": "FEF3C7",      # Yellow
+            "in_progress": "DBEAFE",   # Blue
+            "done": "D1FAE5",          # Green
+        }
+
+        # Write data
+        for row_idx, task in enumerate(tasks, 2):
+            row_data = [
+                task.get("description", ""),
+                task.get("owner", "TBD"),
+                task.get("deadline", ""),
+                task.get("status", "pending"),
+                task.get("department", ""),
+                task.get("meeting_title", ""),
+                task.get("created_at", "")[:10] if task.get("created_at") else "",
+            ]
+
+            for col_idx, value in enumerate(row_data, 1):
+                cell = ws.cell(row=row_idx, column=col_idx, value=value)
+                cell.border = thin_border
+                cell.alignment = Alignment(vertical="center", wrap_text=True)
+
+                # Color status column
+                if col_idx == 4:  # Status column
+                    status_val = (value or "pending").lower()
+                    if status_val in status_colors:
+                        cell.fill = PatternFill(start_color=status_colors[status_val],
+                                               end_color=status_colors[status_val],
+                                               fill_type="solid")
+
+        # Save to bytes
+        output = io.BytesIO()
+        wb.save(output)
+        output.seek(0)
+
+        filename = f"tasks_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+        return FileResponse(
+            output,
+            media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            filename=filename,
+            headers={"Content-Disposition": f"attachment; filename={filename}"}
+        )
+
+    else:
+        # CSV export (default)
+        output = io.StringIO()
+        writer = csv.writer(output)
+
+        # Write header
+        writer.writerow(["Description", "Owner", "Deadline", "Status", "Department", "Meeting", "Created"])
+
+        # Write data
+        for task in tasks:
+            writer.writerow([
+                task.get("description", ""),
+                task.get("owner", "TBD"),
+                task.get("deadline", ""),
+                task.get("status", "pending"),
+                task.get("department", ""),
+                task.get("meeting_title", ""),
+                task.get("created_at", "")[:10] if task.get("created_at") else "",
+            ])
+
+        output.seek(0)
+        filename = f"tasks_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+
+        from fastapi.responses import StreamingResponse
+        return StreamingResponse(
+            iter([output.getvalue()]),
+            media_type="text/csv",
+            headers={"Content-Disposition": f"attachment; filename={filename}"}
+        )
+
+
 @app.patch("/api/tasks/{task_id}")
 async def update_task_endpoint(task_id: str, request: TaskUpdateRequest):
     """Update task status and sync to OpenClaw task board and Notion."""
@@ -796,6 +945,34 @@ async def add_team_member(request: TeamMemberRequest):
         telegram_handle=request.telegram_handle,
     )
     return {"ok": True, "id": member_id}
+
+
+@app.post("/api/team/bulk")
+async def bulk_add_team_members(request: BulkTeamMemberRequest):
+    """Bulk add team members (for unknown stakeholders from meetings)."""
+    added = []
+    failed = []
+    for member in request.members:
+        try:
+            member_id = save_team_member(
+                name=member.name,
+                role=member.role,
+                role_details=member.role_details,
+                responsibilities=member.responsibilities,
+                department=member.department,
+                email=member.email,
+                telegram_handle=member.telegram_handle,
+            )
+            added.append({"id": member_id, "name": member.name})
+        except Exception as e:
+            failed.append({"name": member.name, "error": str(e)})
+    return {
+        "ok": True,
+        "added": len(added),
+        "failed": len(failed),
+        "members": added,
+        "errors": failed
+    }
 
 
 @app.put("/api/team/{member_id}")

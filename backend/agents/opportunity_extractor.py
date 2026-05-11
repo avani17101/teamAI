@@ -154,7 +154,7 @@ Return ONLY valid JSON, no additional text."""
     try:
         async with httpx.AsyncClient(timeout=60.0) as client:
             response = await client.post(
-                f"{K2_THINK_BASE_URL}/v1/chat/completions",
+                f"{K2_THINK_BASE_URL}/chat/completions",
                 headers={
                     "Authorization": f"Bearer {K2_API_KEY}",
                     "Content-Type": "application/json",

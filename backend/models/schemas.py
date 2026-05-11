@@ -101,6 +101,11 @@ class TeamMemberRequest(BaseModel):
     telegram_handle: str = ""
 
 
+class BulkTeamMemberRequest(BaseModel):
+    """Bulk add team members (for unknown stakeholders)."""
+    members: List[TeamMemberRequest]
+
+
 class OrgContextRequest(BaseModel):
     department: str
     mission: str

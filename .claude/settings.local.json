@@ -60,7 +60,11 @@
       "Bash(sudo systemctl status:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(unzip:*)"
+      "Bash(unzip:*)",
+      "Bash(tee:*)",
+      "Bash(scp:*)",
+      "Bash(/opt/anaconda3/bin/python:*)",
+      "WebFetch(domain:10.127.143.5)"
     ]
   }
 }
